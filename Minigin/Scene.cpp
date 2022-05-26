@@ -23,6 +23,11 @@ void Scene::Update(float dt)
 	}
 }
 
+void Scene::FixedUpdate()
+{
+
+}
+
 void Scene::Render() const
 {
 	for (const auto& object : m_Objects)

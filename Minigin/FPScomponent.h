@@ -7,9 +7,10 @@ namespace dae
 	class FPScomponent :public BaseComponent
 	{
 	public:
-		FPScomponent(std::shared_ptr<TextComponent> text);
-		~FPScomponent();
+		FPScomponent(std::shared_ptr<GameObject>& ,std::shared_ptr<TextComponent> text);
+		~FPScomponent() = default;
 		void update(float dt) override;
+	
 		void Render() const override;
 		void SetPosition(float, float, float) override;
 		void SetText();
@@ -17,7 +18,8 @@ namespace dae
 		void SetPreviousTime(uint64_t);
 	private:
 		std::shared_ptr<TextComponent> m_TextComponent;
-		std::shared_ptr<Transform> m_Transform;
+		//std::shared_ptr<Transform> m_Transform;
+		
 		std::string m_fpsString;
 		float m_fpsTimer;
 		float m_FPScount;

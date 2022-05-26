@@ -1,8 +1,11 @@
 #include "MiniginPCH.h"
 #include "FPScomponent.h"
 
-dae::FPScomponent::FPScomponent(std::shared_ptr<TextComponent> text)
-	:m_TextComponent(text),
+#include "GameObject.h"
+
+dae::FPScomponent::FPScomponent(std::shared_ptr<GameObject>& pGameObj,std::shared_ptr<TextComponent> text)
+	:BaseComponent(pGameObj),
+	m_TextComponent(text),
 	 m_fpsTimer{},
      m_SecondsPerBound{1.f/(float)SDL_GetPerformanceFrequency()},
 	 m_CurrentTime{},
@@ -15,13 +18,9 @@ dae::FPScomponent::FPScomponent(std::shared_ptr<TextComponent> text)
 	m_PreviousTime = startTime;
 }
 
-dae::FPScomponent::~FPScomponent()
-{
-	
-}
 
 
-void dae::FPScomponent::update(float )
+void dae::FPScomponent::update(float)
 {
 		
 	/*
@@ -29,6 +28,7 @@ void dae::FPScomponent::update(float )
 	 
 	 */
 
+	//m_pGameObject->GetComponent<TransformComponent>()->SetPosition(2,2,0);
 
 	uint64_t currentTime = SDL_GetPerformanceCounter();
 	m_CurrentTime = currentTime;
@@ -59,9 +59,9 @@ void dae::FPScomponent::Render() const
 	m_TextComponent->Render();
 }
 
-void dae::FPScomponent::SetPosition(float x, float y, float)
+void dae::FPScomponent::SetPosition(float x, float y , float z)
 {
-	m_Transform->SetPosition(x, y, 0);
+	m_TextComponent->SetPosition(x, y, z);
 }
 
 void dae::FPScomponent::SetText()

@@ -2,11 +2,57 @@
 #include "BaseComponent.h"
 #include "Renderer.h"
 #include "RenderComponent.h"
+
+#include "GameObject.h"
 #include "ResourceManager.h"
+#include "Texture2D.h"
+
+dae::RenderComponent::RenderComponent(std::shared_ptr<GameObject>& pGameObj)
+	:BaseComponent(pGameObj)
+{
+	
+}
+
 void dae::RenderComponent::Render() const
 {
-	const auto& pos = m_Transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
+	Renderer::GetInstance().RenderTexture(*m_Texture, m_position.x, m_position.y);
+
+}
+
+//void dae::RenderComponent::Render() const
+//{
+//	//const auto& pos = m_Transform.GetPosition();
+//	//Renderer::GetInstance().RenderTexture(*m_Texture, m_position.x, m_position.y);
+//	RenderTexture();
+//}
+
+void dae::RenderComponent::RenderLine(const float posx1, const float posy1, const float posx2, const float posy2)
+{
+	Renderer::GetInstance().RenderLine(posx1, posy1, posx2, posy2);
+}
+
+void dae::RenderComponent::RenderTexture(Rectf dstRect, const float left, const float bottom,bool horizontal)
+{
+
+	//auto texture = std::make_shared<Texture2D>(m_Texture->scale(40, 40));
+	Renderer::GetInstance().RenderTexture(*m_Texture, dstRect.left, dstRect.bottom, dstRect.width, dstRect.height,left,bottom,horizontal);
+
+}
+
+void dae::RenderComponent::RenderTexture() const
+{
+	Renderer::GetInstance().RenderTexture(*m_Texture, m_position.x, m_position.y);
+}
+
+dae::Texture2D dae::RenderComponent::FlipTexture(const float x, const float y, const float width, const float height, const float startLeft, const float startBottombool,bool horizontal)
+{
+	auto texture =  Renderer::GetInstance().FlipTexture(*m_Texture, x, y, width, height, startLeft, startBottombool, horizontal);
+	return static_cast<Texture2D>(texture);
+}
+
+void dae::RenderComponent::RenderBox(const Rectf& box, int scale) const
+{
+	Renderer::GetInstance().RenderBox(box, scale);
 }
 
 void dae::RenderComponent::SetTexture(const std::string& filename)
@@ -16,5 +62,10 @@ void dae::RenderComponent::SetTexture(const std::string& filename)
 
 void dae::RenderComponent::SetPosition(float x, float y,float)
 {
-	m_Transform.SetPosition(x, y, 0.0f);
+	//m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(x, y,0);
+	m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(x,y,0);
+	m_position = m_pGameObject.lock()->GetComponent<TransformComponent>()->GetPosition();
+
+	//std::cout <<a.x<<a.y<<a.z;
+	//m_Transform.SetPosition(x, y, 0.0f);
 }
