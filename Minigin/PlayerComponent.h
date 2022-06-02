@@ -20,7 +20,7 @@ namespace dae
 	class PlayerComponent : public BaseComponent
 	{
 	public:
-		PlayerComponent(std::shared_ptr<GameObject>&);
+		PlayerComponent(std::shared_ptr<GameObject>&, LevelComponent&);
 		~PlayerComponent();
 
 		PlayerComponent(const PlayerComponent& other) = delete;
@@ -65,7 +65,7 @@ namespace dae
 		
 		const int MAX_OBSERVERS{ 3 };
 		std::vector<std::shared_ptr<Observer>> m_Observers;
-		std::shared_ptr<TransformComponent> m_TransformComponent;
+		//std::shared_ptr<TransformComponent> m_TransformComponent;
 		std::shared_ptr<RenderComponent> m_SpriteTexture;
 		EVENT eve;
 		Vector2f m_playerPos;
@@ -90,6 +90,7 @@ namespace dae
 
 		PlayerState m_PlayerState{ PlayerState::standing };
 		playerMovement m_playerMovement;
+		 LevelComponent* m_sLevel;
 
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;

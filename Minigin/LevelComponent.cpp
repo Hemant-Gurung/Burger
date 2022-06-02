@@ -6,7 +6,8 @@
 
 LevelComponent::LevelComponent(std::shared_ptr<dae::GameObject>& pGameObject)
 	:BaseComponent(pGameObject)
-	,m_level()
+	/*,m_level()*/
+	,m_vertices()
 	
 {
 	
@@ -31,7 +32,7 @@ void LevelComponent::Draw() const
 	
 }
 
-void LevelComponent::Update(float /*dt*/)
+void LevelComponent::update(float /*dt*/)
 {
 	
 }
@@ -286,6 +287,11 @@ bool LevelComponent::IsOnGround(const Rectf& actorShape, Vector2f& actorvelocity
 		}
 	}
 	return false;
+}
+
+void LevelComponent::FixedUpdate()
+{
+	BaseComponent::FixedUpdate();
 }
 
 void LevelComponent::DrawVertices()

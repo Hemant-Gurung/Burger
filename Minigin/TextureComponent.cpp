@@ -7,7 +7,7 @@ dae::TextureComponent::TextureComponent(std::shared_ptr<GameObject>& pGameObj)
 	:BaseComponent(pGameObj)
 	
 {
-
+	m_Transform = std::make_shared<TransformComponent>(pGameObj);
 }
 
 void dae::TextureComponent::SetTexture(const std::string& filename)
@@ -17,5 +17,5 @@ void dae::TextureComponent::SetTexture(const std::string& filename)
 
 void dae::TextureComponent::SetPosition(float x, float y,float)
 {
-	m_Transform.SetPosition(x, y, 0.0f);
+	m_Transform->SetPosition(x, y, 0.0f);
 }

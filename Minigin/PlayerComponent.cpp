@@ -12,7 +12,7 @@
 
 namespace dae
 {
-	dae::PlayerComponent::PlayerComponent(std::shared_ptr<GameObject>& pGameObj)
+	dae::PlayerComponent::PlayerComponent(std::shared_ptr<GameObject>& pGameObj,  LevelComponent& pLevel)
 		:BaseComponent(pGameObj),
 		m_Velocity(Vector2f(0,0)),
 		m_Acceleration(Vector2f(0,-981.f)),
@@ -36,14 +36,15 @@ namespace dae
 		m_PlayerState(PlayerState::standing),
 		IsTextureFlipped(false),
 		IsMoving(false),
-		m_playerMovement(playerMovement::idle)
+		m_playerMovement(playerMovement::idle),
+		m_sLevel(&pLevel)
 	{
 		Initialize();
 		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
 		m_SpriteTexture->SetTexture("CharacterSprite.png");
 		//pGameObj->GetComponent<TransformComponent>()->SetPosition(10.f, 400.f, 0.f);
-		m_SpriteTexture->SetPosition(20.f, 100.f, 0.f);
-		pGameObj->AddComponent(m_SpriteTexture);
+		//m_SpriteTexture->SetPosition(20.f, 100.f, 0.f);
+		//pGameObj->AddComponent(m_SpriteTexture);
 	}
 
 	PlayerComponent::~PlayerComponent()
@@ -159,13 +160,13 @@ namespace dae
 		const int size =30;
 
 		//get render component
-		auto rendercom = m_pGameObject.lock()->GetComponent<RenderComponent>();
+		//auto rendercom = m_pGameObject.lock()->GetComponent<RenderComponent>();
 
 		// draw box using the render box
-		rendercom->RenderBox(m_DestRect, size);
+		m_SpriteTexture->RenderBox(m_DestRect, size);
 
 		// draw texture using the render texture function
-		rendercom->RenderTexture(m_DestRect,m_SrcRect.left,m_SrcRect.bottom,IsTextureFlipped);
+		m_SpriteTexture->RenderTexture(m_DestRect,m_SrcRect,IsTextureFlipped);
 	}
 
 	void PlayerComponent::SetPosition(float /*x*/, float /*x1*/, float /*x2*/)
@@ -257,9 +258,9 @@ namespace dae
 	void PlayerComponent::UpdatePlayerMovement(float elapsedSec)
 	{
 		//const int size = 0;
-		auto level = m_pGameObject.lock()->GetComponent<LevelComponent>();
+		//auto level = m_pGameObject.lock()->GetComponent<LevelComponent>();
 		//add player possible movements
-		level->HandleCollision(m_DestRect, m_Velocity,m_playerMovement);
+		m_sLevel->HandleCollision(m_DestRect, m_Velocity,m_playerMovement);
 		if (IsMoving)
 		{
 			switch (m_PlayerState)
@@ -269,19 +270,19 @@ namespace dae
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-				m_pGameObject.lock()->GetComponent<RenderComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				break;
 			case  PlayerState::running:
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-				m_pGameObject.lock()->GetComponent<RenderComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				break;
 			case PlayerState::climbing:
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-				m_pGameObject.lock()->GetComponent<RenderComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				break;
 			}
 		}

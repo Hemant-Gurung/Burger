@@ -31,11 +31,11 @@ void dae::RenderComponent::RenderLine(const float posx1, const float posy1, cons
 	Renderer::GetInstance().RenderLine(posx1, posy1, posx2, posy2);
 }
 
-void dae::RenderComponent::RenderTexture(Rectf dstRect, const float left, const float bottom,bool horizontal)
+void dae::RenderComponent::RenderTexture(Rectf dstRect, const Rectf& srcrect,bool horizontal)
 {
 
 	//auto texture = std::make_shared<Texture2D>(m_Texture->scale(40, 40));
-	Renderer::GetInstance().RenderTexture(*m_Texture, dstRect.left, dstRect.bottom, dstRect.width, dstRect.height,left,bottom,horizontal);
+	Renderer::GetInstance().RenderTexture(*m_Texture, dstRect.left, dstRect.bottom, dstRect.width, dstRect.height, srcrect,horizontal);
 
 }
 
@@ -44,9 +44,9 @@ void dae::RenderComponent::RenderTexture() const
 	Renderer::GetInstance().RenderTexture(*m_Texture, m_position.x, m_position.y);
 }
 
-dae::Texture2D dae::RenderComponent::FlipTexture(const float x, const float y, const float width, const float height, const float startLeft, const float startBottombool,bool horizontal)
+dae::Texture2D dae::RenderComponent::FlipTexture(const float x, const float y, const float width, const float height, const Rectf& srcrect ,bool horizontal)
 {
-	auto texture =  Renderer::GetInstance().FlipTexture(*m_Texture, x, y, width, height, startLeft, startBottombool, horizontal);
+	auto texture =  Renderer::GetInstance().FlipTexture(*m_Texture, x, y, width, height, srcrect, horizontal);
 	return static_cast<Texture2D>(texture);
 }
 

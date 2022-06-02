@@ -1,19 +1,28 @@
 #include "BaseComponent.h"
 #include "RenderComponent.h"
+#include "LevelComponent.h"
 namespace dae
 {
-	enum EnemyMovement
+	enum  EnemyStates
 	{
 		movingLeft,
 		movingRight,
 		movingUp,
-		movingDown
+		movingDown,
+		Dead
 	};
+
+	enum EnemyType
+	{
+		Red,
+		Egg
+	};
+
 
 	class EnemyComponent :public BaseComponent
 	{
 	public:
-		EnemyComponent(std::shared_ptr<GameObject>&);
+		EnemyComponent(std::shared_ptr<GameObject>&,EnemyType&, LevelComponent&);
 		~EnemyComponent();
 
 		EnemyComponent(const EnemyComponent& other) = delete;
@@ -21,11 +30,42 @@ namespace dae
 		EnemyComponent& operator=(const EnemyComponent& other) = delete;
 		EnemyComponent& operator=(EnemyComponent&& other) noexcept = delete;
 
-	private:
+		void Initialize();
+		void InitializeDstRect();
+		void InitializeSrcRect();
 
+
+		void Render() const override;
+		void update(float) override;
+
+		void UpdateSprite(float elapsedSec);
+		void UpdateSourceRect();
+
+		void UpdateEnemyMovement(float elapsedSec);
+		
+	private:
+		EnemyType m_enemyType;
 		std::shared_ptr<RenderComponent> m_EnemySprite;
+		LevelComponent* m_sLevel;
 		Rectf m_DestRect;
 		Rectf m_SrcRect;
+
+		float m_SpriteSheetWidth;
+		float m_SpriteSheetHeight;
+		float m_SpriteSheetLeft;
+		float m_SpriteSheetTop;
+		float m_StartPoint;
+		float m_InitialDestRectBottom;
+
+		float m_AccumulatedSec;
+		int m_CurrFrame;
+		float m_FrameTime;
+		float m_FramesPerSecond;
+
+		int m_Colums;
+		int m_Rows;
+
+		
 	};
 
 }

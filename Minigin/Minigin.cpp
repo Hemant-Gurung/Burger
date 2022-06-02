@@ -15,10 +15,12 @@
 #include "Observer.h"
 #include "PlayerComponent.h"
 #include "ScoreComponent.h"
+#include "BurgerComponent.h"
 #include <steam_api.h>
 //#include "Achievements.h"
 #include <SDL_mixer.h>
 #include "SServiceLocator.h"
+
 
 using namespace std;
 
@@ -63,7 +65,7 @@ void dae::Minigin::Initialize()
 {
 	//parse svg level
 	//m_pLevel = new LevelComponent();
-
+	isOn = false;
 
 
 	//Mix_Init(MIX_INIT_MP3);
@@ -103,7 +105,7 @@ void dae::Minigin::Initialize()
 
 	//m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
 
-
+	InitializeImgui();
 	Renderer::GetInstance().Init(m_Window);
 }
 
@@ -118,17 +120,17 @@ void dae::Minigin::LoadGame() const
 	
 
 	////////// game object_1
-	auto gameObj = std::make_shared<GameObject>();
-	auto transformLevel = std::make_shared<TransformComponent>(gameObj);
-	gameObj->AddComponent(transformLevel);
+	//auto gameObj = std::make_shared<GameObject>();
+	//auto transform = std::make_shared<TransformComponent>(gameObj);
+	//gameObj->AddComponent(transform);
 
 	
 	 //Text
 	//
 	////gameobj3
 	auto gameObj3 = std::make_shared<GameObject>();
-	auto transform = std::make_shared<TransformComponent>(gameObj3);
-	gameObj3->AddComponent(transform);
+	auto transform1 = std::make_shared<TransformComponent>(gameObj3);
+	gameObj3->AddComponent(transform1);
 	
 	scene.Add(gameObj3);
 
@@ -149,16 +151,54 @@ void dae::Minigin::LoadGame() const
 	
 	scene.Add(gameObjFPS);
 
-	//Addplayer 1
-	PlayerOne(scene);
-	
-	//PlayerTwo(scene);
+	auto gameObjectLevel = std::make_shared<GameObject>();
+	////make render component
+	auto Renderlevel = std::make_shared<RenderComponent>(gameObjectLevel);
+	auto transformLevel_1 = std::make_shared<TransformComponent>(gameObjectLevel);
+	gameObjectLevel->AddComponent(transformLevel_1);
+
+	Renderlevel->SetTexture(LEVELS[0]);
+	gameObjectLevel->AddComponent(Renderlevel);
+	////ADD LEVEL SKELETON
+	auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
+	levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
+	gameObjectLevel->AddComponent(levelVertices);
 
 	
+
+
+	//add component to gameobject
+	//gameObj->AddComponent(RenderComp);
+	//gameObjectLevel->AddComponent(level);
+
+
+	
+
+	scene.Add(gameObjectLevel);
+
+	auto Level = gameObjectLevel->GetComponent<LevelComponent>();
+	////Addplayer 1
+	PlayerOne(scene, *Level);
+	////PlayerTwo(scene);
+	EnemyType enemy = EnemyType::Red;
+	Enemy(scene, enemy, *Level);
+
+	enemy = EnemyType::Egg;
+	Enemy(scene, enemy, *Level);
+	////PlayerTwo(scene);
+
+
+	//BURGER
+	AddBurger(scene, *Level);
 }
 
 void dae::Minigin::Cleanup()
 {
+	//clean up imgui
+	ImGui_ImplOpenGL2_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
@@ -168,6 +208,16 @@ void dae::Minigin::Cleanup()
 void dae::Minigin::Run()
 {
 	Initialize();
+
+	
+
+	//scenemanager
+
+	//ImGui::Render();
+	//ImGui_ImplSDL2_InitForSDLRenderer(m_Window);
+	
+	//ImGui::GetDrawData();
+
 
 	// tell the resource manager where he can find the game data
 	ResourceManager::GetInstance().Init("../Data/");
@@ -189,6 +239,10 @@ void dae::Minigin::Run()
 		bool doContinue = true;
 		while (doContinue)
 		{
+			ImGui_ImplOpenGL2_NewFrame();
+			ImGui_ImplSDL2_NewFrame(m_Window);
+			ImGui::NewFrame();
+
 			auto currTime = chrono::high_resolution_clock::now();
 
 			//calculate deltaTime
@@ -202,8 +256,10 @@ void dae::Minigin::Run()
 		
 			input.HandleInput();
 			
-			
-			
+			/*ImGui_ImplOpenGL2_NewFrame();
+			ImGui_ImplSDL2_NewFrame(m_Window);
+			ImGui::NewFrame();*/
+
 			
 			while (lag >= msperupdate)
 			{
@@ -217,19 +273,33 @@ void dae::Minigin::Run()
 				//call run steamapi callbacks
 			//SteamAPI_RunCallbacks();
 
+			// ImguiUpdate();
 			renderer.Render();
-			
 			
 			//Mix_FreeMusic(gMusic);
 			//Mix_Quit();
 			
 		}
 	}
-
+	
 	Cleanup();
 }
 
-void dae::Minigin::PlayerOne(Scene& scene) const
+void dae::Minigin::InitializeImgui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	//setup dear imgui style
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplSDL2_InitForOpenGL(m_Window, SDL_GL_GetCurrentContext());
+	ImGui_ImplOpenGL2_Init();
+	
+	
+}
+
+void dae::Minigin::PlayerOne(Scene& scene,  LevelComponent& slevel) const
 {
 	
 		//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
@@ -264,23 +334,23 @@ void dae::Minigin::PlayerOne(Scene& scene) const
 
 		gameObjectPlayer->AddComponent(transformPlayer1);
 		//player one
-		auto player = std::make_shared<PlayerComponent>(gameObjectPlayer);
+		auto player = std::make_shared<PlayerComponent>(gameObjectPlayer,slevel);
 
 
 		//make render component
-		auto level = std::make_shared<RenderComponent>(gameObjectPlayer);
-		level->SetTexture(LEVELS[0]);
-
+		//auto level = std::make_shared<RenderComponent>(gameObjectPlayer);
+		//level->SetTexture(LEVELS[0]);
+//
 		//add component to gameobject
 		//gameObj->AddComponent(RenderComp);
-		gameObjectPlayer->AddComponent(level);
+		//gameObjectPlayer->AddComponent(level);
 
 
 		//ADD LEVEL SKELETON
-		auto levelVertices = std::make_shared<LevelComponent>(gameObjectPlayer);
-		levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
+		//auto levelVertices = std::make_shared<LevelComponent>(gameObjectPlayer);
+		//levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
 		//levelVertices->SetPosition(70, 20, 0);
-		gameObjectPlayer->AddComponent(levelVertices);
+		//gameObjectPlayer->AddComponent(levelVertices);
 
 		//add gameobject to scene
 		scene.Add(gameObjectPlayer);
@@ -293,7 +363,7 @@ void dae::Minigin::PlayerOne(Scene& scene) const
 		//transformPlayer1->SetPosition(900 / 2, 400, 0);
 		//renderlogo->SetPosition(216, 180, 0);
 		gameObjectPlayer->AddComponent(player);
-		gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
+		//gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
 		//score
 		// gameObjLivesCounter = std::make_shared<GameObject>();
 
@@ -356,7 +426,7 @@ void dae::Minigin::PlayerOne(Scene& scene) const
 
 }
 
-void dae::Minigin::PlayerTwo(Scene&) const
+void dae::Minigin::PlayerTwo(Scene&, LevelComponent&) const
 {
 	//{
 	//	//===PLAYER TWO ===========================================================>>>>>>>>>>>>>>>
@@ -439,3 +509,36 @@ void dae::Minigin::PlayerTwo(Scene&) const
 	//	
 	//}
 }
+
+void dae::Minigin::Enemy(Scene& scene,EnemyType& enemyType,  LevelComponent& level) const
+{
+	auto gameObjectEnemy = std::make_shared<GameObject>();
+
+	auto enemy = std::make_shared<EnemyComponent>(gameObjectEnemy,enemyType,level);
+	
+	gameObjectEnemy->AddComponent(enemy);
+	scene.Add(gameObjectEnemy);
+
+}
+
+void dae::Minigin::AddBurger(Scene& scene, LevelComponent& level) const
+{
+	auto gameobjectBurger = std::make_shared<GameObject>();
+	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level);
+	gameobjectBurger->AddComponent(burger);
+	scene.Add(gameobjectBurger);
+}
+
+void dae::Minigin::ImguiUpdate()
+{
+	ImGui::Begin("MyWindow",NULL,ImGuiWindowFlags_NoResize);
+	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
+	ImGui::Checkbox("Boolean property", &isOn);
+	if (ImGui::Button("Reset Speed")) {
+		// This code is executed when the user clicks the button
+		//this->speed = 0;
+	}
+	//ImGui::SliderFloat("Speed", &this->speed, 0.0f, 10.0f);
+	ImGui::End();
+}
+

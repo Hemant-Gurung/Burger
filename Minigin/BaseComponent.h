@@ -14,6 +14,7 @@ namespace dae
 		 virtual void Render() const ;
 		 virtual void SetTexture(const std::string& );
 		 virtual void SetPosition(float, float,float) ;
+		 
 		// virtual void AddPhysics();
 		 
 	protected:

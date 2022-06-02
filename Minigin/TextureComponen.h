@@ -2,6 +2,7 @@
 
 #include "BaseComponent.h"
 #include "Transform.h"
+#include "TransformComponent.h"
 namespace dae
 {
 	class Texture2D;
@@ -13,7 +14,7 @@ namespace dae
 		void SetPosition(float x, float y,float z) override;
 	private:
 		
-		Transform m_Transform{};
+		std::shared_ptr<TransformComponent> m_Transform;
 		// todo: mmm, every gameobject has a texture? Is that correct?
 		std::shared_ptr<Texture2D> m_Texture{};
 	};

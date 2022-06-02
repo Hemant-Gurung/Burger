@@ -18,14 +18,11 @@ enum  playerMovement
 
 class LevelComponent:public dae::BaseComponent
 {
-	
-
 public:
 
 	LevelComponent(std::shared_ptr<dae::GameObject>&);
 
-
-	~LevelComponent() = default;
+	virtual ~LevelComponent() = default;
 	
 
 	LevelComponent(const LevelComponent&) = delete;
@@ -35,11 +32,12 @@ public:
 
 	void Initialize(const std::string& filename);
 	void Draw() const;
-	void Update(float dt);
+	void update(float dt) override;
 	void Render() const override;
 	void HandleCollision(Rectf& actorShape, Vector2f& actorvelocity,playerMovement&);
 	bool doOverlap(Vector2f l1, Vector2f r1, Vector2f l2, Vector2f r2);
 	bool IsOnGround(const Rectf& actorShape, Vector2f& actorvelocity);
+
 
 	Point2f rayStartFirst;
 	Point2f rayEndFirst;
@@ -50,10 +48,13 @@ public:
 	Point2f rayStartLast;
 	Point2f rayEndLast;
 
+protected:
+	void FixedUpdate() override;
+	//void update(float) override;
 private:
 	std::vector<std::vector<Point2f>> m_vertices;
 	SVGParser m_svg_parser_;
-	LevelComponent* m_level;
+	//LevelComponent* m_level;
 	/*SDL_Window* m_window;
 	SDL_Renderer* m_Renderer;*/
 

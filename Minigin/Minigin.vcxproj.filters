@@ -159,6 +159,9 @@
     <ClInclude Include="EnemyComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="BurgerComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -285,6 +288,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="EnemyComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="BurgerComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

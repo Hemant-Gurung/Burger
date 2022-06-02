@@ -16,9 +16,9 @@ namespace dae
 
 		
 		void RenderLine(const float posx1, const float posy1, const float posx2, const float posy2);
-		void RenderTexture(Rectf dstRect,const float left = 16.f, const float bottom = 0,bool horizontal = false);
+		void RenderTexture(Rectf dstRect,const Rectf& ,bool horizontal = false);
 		void RenderTexture() const; 
-		dae::Texture2D FlipTexture(const float x, const float y, const float width, const float height, const float startLeft, const float startBottombool,bool horizontal = true);
+		dae::Texture2D FlipTexture(const float x, const float y, const float width, const float height, const Rectf& ,bool horizontal = true);
 		void RenderBox(const Rectf& box, int scale) const ;
 
 		virtual void Render() const override;

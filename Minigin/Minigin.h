@@ -5,6 +5,7 @@
 #include "sdl_sound_system.h"
 #include "SVGParser.h"
 #include "Scene.h"
+#include "EnemyComponent.h"
 struct SDL_Window;
 
 
@@ -39,6 +40,8 @@ namespace dae
 		void LoadGame() const;
 		void Cleanup();
 		void Run();
+		void InitializeImgui();
+
 
 	private:
 		static const int MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
@@ -50,7 +53,13 @@ namespace dae
 		 std::vector<std::vector<Point2f>> m_vertices;
 
 
-		  void PlayerOne(Scene&) const;
-		  void PlayerTwo(Scene&) const;
+		  void PlayerOne(Scene&, LevelComponent&) const;
+		  void PlayerTwo(Scene&, LevelComponent&) const;
+		  void Enemy(Scene&,EnemyType&,  LevelComponent&) const;
+		  void AddBurger(Scene&, LevelComponent&) const;
+
+		  void ImguiUpdate();
+
+		  bool isOn;
 	};
 }
