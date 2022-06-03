@@ -94,7 +94,7 @@ void dae::Minigin::Initialize()
 		"Programming 4 assignment",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		900,
+		1280,
 		700,
 		SDL_WINDOW_OPENGL
 	);
@@ -179,7 +179,7 @@ void dae::Minigin::LoadGame() const
 	auto Level = gameObjectLevel->GetComponent<LevelComponent>();
 	////Addplayer 1
 	PlayerOne(scene, *Level);
-	////PlayerTwo(scene);
+	//PlayerTwo(scene,*Level);
 	EnemyType enemy = EnemyType::Red;
 	Enemy(scene, enemy, *Level);
 
@@ -307,61 +307,33 @@ void dae::Minigin::PlayerOne(Scene& scene,  LevelComponent& slevel) const
 
 		//Do this inside player class
 		//player commands
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonA), std::move(std::make_unique<DeathCommand>(gameObjectPlayer)));
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonB), std::move(std::make_unique<ScoreCommand>(gameObjectPlayer)));
+		//InputAction a = InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne);
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne));
+		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayer), GamePadIndex::playerOne));
 		//RIGHT
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadRight), std::move(std::make_unique<MoveRightCommand>(gameObjectPlayer)));
+		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadRight), InputAction(std::make_unique<MoveRightCommand>(gameObjectPlayer), GamePadIndex::playerOne));
 		//LEFT
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadLeft), std::move(std::make_unique<MoveLeftCommand>(gameObjectPlayer)));
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadLeft), InputAction(std::make_unique<MoveLeftCommand>(gameObjectPlayer), GamePadIndex::playerOne));
 		//UP
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadUp), std::move(std::make_unique<MoveUpCommand>(gameObjectPlayer)));
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadUp), InputAction(std::make_unique<MoveUpCommand>(gameObjectPlayer), GamePadIndex::playerOne));
 		//DOWN
-		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadDown), std::move(std::make_unique<MoveDownCommand>(gameObjectPlayer)));
+		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadDown), InputAction(std::make_unique<MoveDownCommand>(gameObjectPlayer), GamePadIndex::playerOne));
+
 
 		auto transformPlayer1 = std::make_shared<TransformComponent>(gameObjectPlayer);
 		//transformPlayer1->SetPosition(216, 180, 0);
 
 		//player observer
-		//scene.Add(gameObjectPlayer);
-		//auto playerText1 = std::make_shared<RenderComponent>(gameObjectPlayer);
-		//playerText1->SetTexture("chef.png");
-
-		//gameObjectPlayer->AddComponent(playerText1);
-
-
-
-
 
 		gameObjectPlayer->AddComponent(transformPlayer1);
 		//player one
 		auto player = std::make_shared<PlayerComponent>(gameObjectPlayer,slevel);
 
-
-		//make render component
-		//auto level = std::make_shared<RenderComponent>(gameObjectPlayer);
-		//level->SetTexture(LEVELS[0]);
-//
-		//add component to gameobject
-		//gameObj->AddComponent(RenderComp);
-		//gameObjectPlayer->AddComponent(level);
-
-
-		//ADD LEVEL SKELETON
-		//auto levelVertices = std::make_shared<LevelComponent>(gameObjectPlayer);
-		//levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
-		//levelVertices->SetPosition(70, 20, 0);
-		//gameObjectPlayer->AddComponent(levelVertices);
-
+		
 		//add gameobject to scene
 		scene.Add(gameObjectPlayer);
 
-	//observer
-		//player->Initialize();
-		//Transform component
-		
-		//transformPlayer1->SetPosition(900, 900, 0);
-		//transformPlayer1->SetPosition(900 / 2, 400, 0);
-		//renderlogo->SetPosition(216, 180, 0);
+
 		gameObjectPlayer->AddComponent(player);
 		//gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
 		//score
@@ -371,10 +343,10 @@ void dae::Minigin::PlayerOne(Scene& scene,  LevelComponent& slevel) const
 		auto transformLives = std::make_shared<TransformComponent>(gameObjectPlayer);
 
 		//make text component
-		auto fontLives = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
-		auto textLives = std::make_shared<TextComponent>(gameObjectPlayer, " ", fontLives, SDL_Color(255, 0, 0));
-		auto fontScore = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
-		auto textScore = std::make_shared<TextComponent>(gameObjectPlayer, " ", fontScore, SDL_Color(0, 255, 0));
+		auto fontLives = ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 20);
+		auto textLives = std::make_shared<TextComponent>(gameObjectPlayer, " ", fontLives, SDL_Color(255, 255, 255));
+		auto fontScore = ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
+		auto textScore = std::make_shared<TextComponent>(gameObjectPlayer, " ", fontScore, SDL_Color(255, 255, 255));
 
 		// score achievement 
 		//auto scoreAchievement = std::make_shared<Achievements>(g_Achievements, 4, gameObjectPlayer);
@@ -411,13 +383,11 @@ void dae::Minigin::PlayerOne(Scene& scene,  LevelComponent& slevel) const
 		//add textComponent for score
 		gameObjectPlayer->AddComponent(textScore);
 
-		gameObjectPlayer->RemoveComponent(textScore);
-
 		//set score position
-		textScore->SetPosition(10, 10, 0);
+		textScore->SetPosition(350, 5, 0);
 
 		//set lives position
-		textLives->SetPosition(10, 30, 0);
+		textLives->SetPosition(570, 5, 0);
 
 	
 		//add to scent
@@ -426,88 +396,161 @@ void dae::Minigin::PlayerOne(Scene& scene,  LevelComponent& slevel) const
 
 }
 
-void dae::Minigin::PlayerTwo(Scene&, LevelComponent&) const
+void dae::Minigin::PlayerTwo(Scene& scene, LevelComponent& level) const
 {
-	//{
-	//	//===PLAYER TWO ===========================================================>>>>>>>>>>>>>>>
-	//	auto gameObjectPlayerTwo = std::make_shared<GameObject>();
-	//	//player two
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonX), std::move(std::make_unique<DeathCommand>(gameObjectPlayerTwo)));
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down, XBOX360Controller::ControllerButton::ButtonY), std::move(std::make_unique<ScoreCommand>(gameObjectPlayerTwo)));
-	//	//RIGHT
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadRight), std::move(std::make_unique<MoveRightCommand>(gameObjectPlayerTwo)));
-	//	//LEFT
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadLeft), std::move(std::make_unique<MoveLeftCommand>(gameObjectPlayerTwo)));
-	//	//UP
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadUp), std::move(std::make_unique<MoveUpCommand>(gameObjectPlayerTwo)));
-	//	//DOWN
-	//	Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::held, XBOX360Controller::ControllerButton::DpadDown), std::move(std::make_unique<MoveDownCommand>(gameObjectPlayerTwo)));
-	//	//player one
-	//	auto playerTwo = std::make_shared<PlayerComponent>(gameObjectPlayerTwo);
-	//	//observer
-
-	//	auto fontLives = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
-	//	
-	//	auto fontScore = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
-	//	auto textScore = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontScore, SDL_Color(0, 255, 0));
-
-	//	gameObjectPlayerTwo->AddComponent(playerTwo);
-	//	auto textLives2 = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontLives, SDL_Color(255, 0, 0));
-
-	//	auto textScore2 = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontScore, SDL_Color(0, 255, 0));
-	//	//make livescounter component/ observer
-	//	auto lives2 = std::make_shared<LivesCounterComponent>(gameObjectPlayerTwo, textLives2);
-
-	//	//score counter
-	//	auto score2 = std::make_shared<ScoreComponent>(gameObjectPlayerTwo, textScore2);
-
-	//	//add observers
-	//	playerTwo->AddObserver(lives2);
-
-	//	//add score observer
-	//	playerTwo->AddObserver(score2);
-
-	//	//Transform component
-	//	auto transformPlayer2 = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
-	//	//transformPlayer1->SetPosition(216, 180, 0);
-	//	
-	//	//make transform component for the game object
-	//	auto transformLives = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
-	//	//player observer
-	//	//scene.Add(gameObjectPlayer);
-	//	auto playerText2 = std::make_shared<RenderComponent>(gameObjectPlayerTwo);
-	//	playerText2->SetTexture("chef.png");
-
-	//	gameObjectPlayerTwo->AddComponent(playerText2);
-	//	gameObjectPlayerTwo->AddComponent(transformPlayer2);
-	//	playerText2->SetPosition(216, 180, 0);
-	//	//add transform component to gameobject
-	//	gameObjectPlayerTwo->AddComponent(transformLives);
-
-	//	//add counter to gameobject
-	//	gameObjectPlayerTwo->AddComponent(lives2);
-
-	//	//add score component to gameobject
-	//	gameObjectPlayerTwo->AddComponent(score2);
-
-	//	//add text component for lives
-	//	gameObjectPlayerTwo->AddComponent(textLives2);
+	{
+		//===PLAYER TWO ===========================================================>>>>>>>>>>>>>>>
+		auto gameObjectPlayerTwo = std::make_shared<GameObject>();
+		//player two
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::down1, XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<DeathCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
+		Input::GetInstance().MapEvent(std::make_pair(XBOX360Controller::ButtonState::down1, XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
+		//RIGHT
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::held1, XBOX360Controller::ControllerButton::DpadRight), InputAction(std::make_unique<MoveRightCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
+		//LEFT
+		Input::GetInstance().MapEvent(std::make_pair(  XBOX360Controller::ButtonState::held1, XBOX360Controller::ControllerButton::DpadLeft ), InputAction(std::make_unique<MoveLeftCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
+		//UP
+		Input::GetInstance().MapEvent(std::make_pair( XBOX360Controller::ButtonState::held1, XBOX360Controller::ControllerButton::DpadUp), InputAction(std::make_unique<MoveUpCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
+		//DOWN
+		Input::GetInstance().MapEvent(std::make_pair(  XBOX360Controller::ButtonState::held1, XBOX360Controller::ControllerButton::DpadDown), InputAction(std::make_unique<MoveDownCommand>(gameObjectPlayerTwo), GamePadIndex::playerTwo));
 
 
-	//	//add textComponent for score
-	//	gameObjectPlayerTwo->AddComponent(textScore2);
+		auto transformPlayer1 = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
+		//transformPlayer1->SetPosition(216, 180, 0);
 
-	//	//set score position
-	//	textScore2->SetPosition(500, 10, 0);
+		//player observer
 
-	//	//set lives position
-	//	textLives2->SetPosition(500, 30, 0);
+		gameObjectPlayerTwo->AddComponent(transformPlayer1);
+		//player one
+		auto player = std::make_shared<PlayerComponent>(gameObjectPlayerTwo, level);
 
-	//	//add to scent
-	//	scene.Add(gameObjectPlayerTwo);
 
-	//	
-	//}
+		//add gameobject to scene
+		scene.Add(gameObjectPlayerTwo);
+
+
+		gameObjectPlayerTwo->AddComponent(player);
+		//gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
+		//score
+		// gameObjLivesCounter = std::make_shared<GameObject>();
+
+		//make transform component for the game object
+		auto transformLives = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
+
+		//make text component
+		auto fontLives = ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 20);
+		auto textLives = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontLives, SDL_Color(255, 255, 255));
+		auto fontScore = ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
+		auto textScore = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontScore, SDL_Color(255, 255, 255));
+
+		// score achievement 
+		//auto scoreAchievement = std::make_shared<Achievements>(g_Achievements, 4, gameObjectPlayer);
+
+		//make livescounter component/ observer
+		auto lives = std::make_shared<LivesCounterComponent>(gameObjectPlayerTwo, textLives);
+
+		//score counter
+		auto score = std::make_shared<ScoreComponent>(gameObjectPlayerTwo, textScore);
+		//score achievement observer
+		//player->AddObserver(scoreAchievement);
+
+		//add observers
+		player->AddObserver(lives);
+
+		//add score observer
+		player->AddObserver(score);
+
+		//add gameobject scoreAchievement to gameobject
+		//gameObjectPlayer->AddComponent(scoreAchievement);
+		//add transform component to gameobject
+		gameObjectPlayerTwo->AddComponent(transformLives);
+
+		//add counter to gameobject
+		gameObjectPlayerTwo->AddComponent(lives);
+
+		//add score component to gameobject
+		gameObjectPlayerTwo->AddComponent(score);
+
+		//add text component for lives
+		gameObjectPlayerTwo->AddComponent(textLives);
+
+
+		//add textComponent for score
+		gameObjectPlayerTwo->AddComponent(textScore);
+
+		//set score position
+		textScore->SetPosition(350, 5, 0);
+
+		//set lives position
+		textLives->SetPosition(570, 5, 0);
+
+
+		//add to scent
+		scene.Add(gameObjectPlayerTwo);
+		//auto playerTwo = std::make_shared<PlayerComponent>(gameObjectPlayerTwo,level);
+		////observer
+
+		//auto fontLives = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
+		//
+		//auto fontScore = ResourceManager::GetInstance().LoadFont("Burgertime.otf", 16);
+		//auto textScore = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontScore, SDL_Color(0, 255, 0));
+
+		//gameObjectPlayerTwo->AddComponent(playerTwo);
+		//auto textLives2 = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontLives, SDL_Color(255, 0, 0));
+
+		//auto textScore2 = std::make_shared<TextComponent>(gameObjectPlayerTwo, " ", fontScore, SDL_Color(0, 255, 0));
+		////make livescounter component/ observer
+		//auto lives2 = std::make_shared<LivesCounterComponent>(gameObjectPlayerTwo, textLives2);
+
+		////score counter
+		//auto score2 = std::make_shared<ScoreComponent>(gameObjectPlayerTwo, textScore2);
+
+		////add observers
+		//playerTwo->AddObserver(lives2);
+
+		////add score observer
+		//playerTwo->AddObserver(score2);
+
+		////Transform component
+		//auto transformPlayer2 = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
+		////transformPlayer1->SetPosition(216, 180, 0);
+		//
+		////make transform component for the game object
+		//auto transformLives = std::make_shared<TransformComponent>(gameObjectPlayerTwo);
+		////player observer
+		////scene.Add(gameObjectPlayer);
+		////auto playerText2 = std::make_shared<RenderComponent>(gameObjectPlayerTwo);
+		////playerText2->SetTexture("chef.png");
+
+		////gameObjectPlayerTwo->AddComponent(playerText2);
+		//gameObjectPlayerTwo->AddComponent(transformPlayer2);
+		////playerText2->SetPosition(216, 180, 0);
+		////add transform component to gameobject
+		//gameObjectPlayerTwo->AddComponent(transformLives);
+
+		////add counter to gameobject
+		//gameObjectPlayerTwo->AddComponent(lives2);
+
+		////add score component to gameobject
+		//gameObjectPlayerTwo->AddComponent(score2);
+
+		////add text component for lives
+		//gameObjectPlayerTwo->AddComponent(textLives2);
+
+
+		////add textComponent for score
+		//gameObjectPlayerTwo->AddComponent(textScore2);
+
+		////set score position
+		//textScore2->SetPosition(500, 10, 0);
+
+		////set lives position
+		//textLives2->SetPosition(500, 30, 0);
+
+		////add to scent
+		//scene.Add(gameObjectPlayerTwo);
+
+		
+	}
 }
 
 void dae::Minigin::Enemy(Scene& scene,EnemyType& enemyType,  LevelComponent& level) const
@@ -524,14 +567,55 @@ void dae::Minigin::Enemy(Scene& scene,EnemyType& enemyType,  LevelComponent& lev
 void dae::Minigin::AddBurger(Scene& scene, LevelComponent& level) const
 {
 	auto gameobjectBurger = std::make_shared<GameObject>();
-	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level);
+	float4 burgerPos;
+	//Bottom
+	burgerPos.one = 25.f;
+	burgerPos.two = 123.6f;
+	burgerPos.three = 224.7f;
+	burgerPos.four = 370.78f;
+
+	float leftPos = 55.f;
+	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos, burgerPos);
 	gameobjectBurger->AddComponent(burger);
+
+	//float4 burgerPos;
+	//Bottom
+	burgerPos.one = 173.f;
+	burgerPos.two = 275.2f;
+	burgerPos.three = 369.7f;
+	burgerPos.four = 589.f;
+
+	float leftPos2 = 202.2f;
+	auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos2, burgerPos);
+	gameobjectBurger->AddComponent(burger2);
+
+	burgerPos.one = 125.f;
+	burgerPos.two = 275.2f;
+	burgerPos.three = 369.7f;
+	burgerPos.four = 471.9f;
+
+	float leftPos3 = 348.2f;
+	auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos3, burgerPos);
+	gameobjectBurger->AddComponent(burger3);
+
+
+	burgerPos.one = 125.8f;
+	burgerPos.two = 220.83f;
+	burgerPos.three = 322.225f;
+	burgerPos.four = 471.9f;
+
+	float leftPos4 = 505.f;
+	auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos4, burgerPos);
+	gameobjectBurger->AddComponent(burger4);
+
+
+
 	scene.Add(gameobjectBurger);
 }
 
 void dae::Minigin::ImguiUpdate()
 {
-	ImGui::Begin("MyWindow",NULL,ImGuiWindowFlags_NoResize);
+	ImGui::Begin("MyWindow",NULL);
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
 	ImGui::Checkbox("Boolean property", &isOn);
 	if (ImGui::Button("Reset Speed")) {

@@ -50,9 +50,9 @@ dae::Texture2D dae::RenderComponent::FlipTexture(const float x, const float y, c
 	return static_cast<Texture2D>(texture);
 }
 
-void dae::RenderComponent::RenderBox(const Rectf& box, int scale) const
+void dae::RenderComponent::RenderBox(const Rectf& box, int width, int height) const
 {
-	Renderer::GetInstance().RenderBox(box, scale);
+	Renderer::GetInstance().RenderBox(box, width,height);
 }
 
 void dae::RenderComponent::SetTexture(const std::string& filename)

@@ -4,6 +4,8 @@
 #include "PlayerComponent.h"
 #include <iostream>
 
+
+
 class Command
 {
 public:
@@ -176,4 +178,21 @@ public:
 		dae::PlayerState state = dae::PlayerState::climbing;
 		playerObj->ChangeState(state);
 	}
+};
+
+
+
+struct InputAction
+{
+	InputAction() :
+		playerIndex(GamePadIndex::playerOne)
+		, command(nullptr) {}
+
+	InputAction(std::unique_ptr<Command> command = nullptr, GamePadIndex playerIndex = GamePadIndex::playerOne) :
+		command(std::move(command)),
+		playerIndex(playerIndex)
+
+	{}
+	std::unique_ptr<Command> command;
+	GamePadIndex playerIndex;
 };

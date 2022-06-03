@@ -212,12 +212,12 @@ void dae::Renderer::RenderLine(const float posx1, const float posy1, const float
 	SDL_RenderDrawLine(GetSDLRenderer(), (int)posx1, (int)posy1, (int)posx2, (int)posy2);
 }
 
-void dae::Renderer::RenderBox(const Rectf& box,int size) const
+void dae::Renderer::RenderBox(const Rectf& box, int /*width*/, int /*height*/) const
 {
-	RenderLine(box.left, box.bottom, box.left + size, box.bottom);
-	RenderLine(box.left + size, box.bottom, box.left + size, box.bottom + size);
-	RenderLine(box.left + size, box.bottom + size, box.left, box.bottom + size);
-	RenderLine(box.left, box.bottom + size, box.left, box.bottom);
+	RenderLine(box.left, box.bottom, box.left + box.width, box.bottom);
+	RenderLine(box.left + box.width, box.bottom, box.left + box.width, box.bottom + box.height);
+	RenderLine(box.left + box.width, box.bottom + box.height, box.left, box.bottom + box.height);
+	RenderLine(box.left, box.bottom + box.height, box.left, box.bottom);
 }
 
 SDL_Texture* dae::Renderer::FlipTexture(Texture2D& texture, const float x, const float y, const float width, const float height, const Rectf srcRect,bool vertical) const

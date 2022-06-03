@@ -1,6 +1,7 @@
 #pragma once
 // prog-2 files
 #include <string>
+#include <iostream>
 
 struct Window
 {
@@ -13,7 +14,15 @@ struct Window
 	bool isVSyncOn;
 };
 
-
+struct float4
+{
+	float4();
+	explicit float4(float one, float two,float three,float four);
+	float one;
+	float two;
+	float three;
+	float four;
+};
 
 
 struct Point2f
@@ -72,6 +81,16 @@ struct Ellipsef
 	float radiusX;
 	float radiusY;
 };
+
+
+//ENUM
+enum class GamePadIndex
+{
+	playerOne,
+	playerTwo
+};
+
+
 
 
 

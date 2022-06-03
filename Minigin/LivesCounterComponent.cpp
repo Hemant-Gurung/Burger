@@ -5,7 +5,7 @@
 
 dae::LivesCounterComponent::LivesCounterComponent(std::shared_ptr<GameObject>& pGameObject, std::shared_ptr<TextComponent> text)
 	:BaseComponent(pGameObject), Observer(),
-	m_TotalLives{5},
+	m_TotalLives{3},
 	m_TextComponent(text)
 {
 	
@@ -14,7 +14,7 @@ dae::LivesCounterComponent::LivesCounterComponent(std::shared_ptr<GameObject>& p
 void dae::LivesCounterComponent::update(float)
 {
 	
-	m_TextComponent->SetText("TotalLives: " + std::to_string(m_TotalLives));
+	m_TextComponent->SetText(" " + std::to_string(m_TotalLives));
 }
 
 void dae::LivesCounterComponent::Render() const

@@ -41,18 +41,22 @@ public:
 	bool ProcessInput()
 	{
 		// swap the states
-		std::swap(m_PreviousState, m_CurrentState);
-		ZeroMemory(m_CurrentState, sizeof(XINPUT_STATE) * XUSER_MAX_COUNT);
+		
 	
 		DWORD dwResult;
 		for (int i = 0; i < XUSER_MAX_COUNT; i++)
 		{
-			//get the state
-		   dwResult = XInputGetState(i, &m_CurrentState[i]);
+			std::swap(m_PreviousState[i], m_CurrentState[i]);
 
+			XINPUT_STATE state;
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+			//get the state
+		    dwResult = XInputGetState(i, &state);
+			m_CurrentState[i] = state;
 			if(dwResult == ERROR_SUCCESS)
 			{
 				//std::cout << "controller " << i << " connected\n";
+				
 			}
 			else
 			{
@@ -83,15 +87,15 @@ public:
 	void Update()
 	{
 		
-		//check the change in button state using xor
-		auto buttonchanges = m_CurrentState->Gamepad.wButtons ^ m_PreviousState->Gamepad.wButtons;
+		////check the change in button state using xor
+		//auto buttonchanges = m_CurrentState[int()]->Gamepad.wButtons ^ m_PreviousState->Gamepad.wButtons;
 
-		//check if button is pressed this frame using binary and
-		buttonPressedThisFrame = buttonchanges & m_CurrentState->Gamepad.wButtons;
+		////check if button is pressed this frame using binary and
+		//buttonPressedThisFrame = buttonchanges & m_CurrentState->Gamepad.wButtons;
 
-		//std::cout << m_CurrentState->Gamepad.wButtons << std::endl;
-		//check if button is released this frame using binary and
-		buttonReleasedThisFrame = buttonchanges & (~m_CurrentState->Gamepad.wButtons);
+		////std::cout << m_CurrentState->Gamepad.wButtons << std::endl;
+		////check if button is released this frame using binary and
+		//buttonReleasedThisFrame = buttonchanges & (~m_CurrentState->Gamepad.wButtons);
 
 	}
 
@@ -104,22 +108,23 @@ public:
 		// use for loop to go through commands 
 		for (auto it = pInstance.m_ConsoleCommands.begin(); it != pInstance.m_ConsoleCommands.end(); ++it)
 		{
-			if(it->first.first == XBOX360Controller::ButtonState::down)
+			if(it->first.first == XBOX360Controller::ButtonState::down || it->first.first == XBOX360Controller::ButtonState::down1)
 			{
-				if (IsDownThisFrame(static_cast<unsigned int>(it->first.second)))
+				if (IsDownThisFrame(static_cast<unsigned int>(it->first.second),it->second.playerIndex))
 				{
 					//execute the command
-					it->second->Execute();
-
+					//it->second->Execute();
+					it->second.command->Execute();
 				}
 			}
-			else if (it->first.first == XBOX360Controller::ButtonState::held)
+			else if (it->first.first == XBOX360Controller::ButtonState::held || it->first.first == XBOX360Controller::ButtonState::held1)
 				// check if a button is down this frame
 			{
-				if (IsPressed(static_cast<unsigned int>(it->first.second)))
+				if (IsPressed(static_cast<unsigned int>(it->first.second), it->second.playerIndex))
 				{
 					//execute the command
-					it->second->Execute();
+					//it->second->Execute();
+					it->second.command->Execute();
 
 				}
 			}
@@ -127,14 +132,14 @@ public:
 
 	}
 
-	bool IsDownThisFrame(unsigned int button) const { return buttonPressedThisFrame & button; }
+	bool IsDownThisFrame(unsigned int button,GamePadIndex& playerIndex) const { return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button; }
 
-	bool IsUpThisFrame(unsigned int button) const { return buttonReleasedThisFrame & button; }
+	bool IsUpThisFrame(unsigned int button, GamePadIndex& playerIndex) const { return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button; }
 
-	bool IsPressed(unsigned int button) const {
+	bool IsPressed(unsigned int button, GamePadIndex& playerIndex) const {
 
 		//if(m_CurrentState!=nullptr) 
-		return m_CurrentState->Gamepad.wButtons & button;
+		return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button;
 
 		//return false;
 	}
@@ -142,10 +147,11 @@ public:
 };
 
 //map events
-void Input::MapEvent(ControllerKey key, std::unique_ptr<Command> command)
+void Input::MapEvent(ControllerKey key, InputAction action)
 {
-	m_ConsoleCommands.insert({ key,std::move(command) });
-
+	
+	m_ConsoleCommands.insert({ key,std::move(action)});
+	
 }
 
 InputManager::InputManager()
@@ -158,8 +164,8 @@ InputManager::InputManager()
 bool InputManager::ProcessInput()
 {
 	
-	return pImpl->ProcessInput();
-	
+	auto input =  pImpl->ProcessInput();
+	return input;
 }
 
 InputManager::~InputManager()
@@ -169,17 +175,17 @@ InputManager::~InputManager()
 	delete pImpl;
 }
 
-void InputManager::Update()
+void InputManager::Update() 
 {
 	pImpl->Update();
 
 }
 
-bool InputManager::IsDown(unsigned int button) const { return pImpl->IsDownThisFrame(static_cast<unsigned int>(button)); }
+bool InputManager::IsDown(unsigned int button, GamePadIndex& pIndx) const { return pImpl->IsDownThisFrame(static_cast<unsigned int>(button), pIndx); }
 
-bool InputManager::IsUp(unsigned int button) const { return pImpl->IsUpThisFrame(static_cast<unsigned int>(button)); }
+bool InputManager::IsUp(unsigned int button, GamePadIndex& pIndx) const { return pImpl->IsUpThisFrame(static_cast<unsigned int>(button), pIndx); }
 
-bool InputManager::IsPressed(unsigned int button) const { return pImpl->IsPressed(static_cast<unsigned int>(button)); }
+bool InputManager::IsPressed(unsigned int button, GamePadIndex& pIndx) const { return pImpl->IsPressed(static_cast<unsigned int>(button), pIndx); }
 
 void InputManager::HandleInput()
 {

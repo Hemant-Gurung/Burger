@@ -14,7 +14,8 @@ namespace dae
 	{
 		standing,
 		running,
-		climbing
+		climbing,
+		dead
 	};
 
 	class PlayerComponent : public BaseComponent
@@ -28,11 +29,7 @@ namespace dae
 		PlayerComponent& operator=(const PlayerComponent& other) = delete;
 		PlayerComponent& operator=(PlayerComponent&& other) = delete;
 
-		/*void Jump();
-		void Fart();
-		void Duck();
-		void Fire();*/
-
+		
 		void Initialize();
 
 		void DeathCall();
@@ -57,6 +54,8 @@ namespace dae
 		void ChangeState(PlayerState&);
 		bool GetIsFlipped() { return IsTextureFlipped; }
 		void FLipTexture(bool flip);
+		
+		Rectf& GetPlayerPos() { return m_DestRect; }
 		//bool m_SetVelocity = false;
 	protected:
 		
@@ -67,14 +66,17 @@ namespace dae
 		std::vector<std::shared_ptr<Observer>> m_Observers;
 		//std::shared_ptr<TransformComponent> m_TransformComponent;
 		std::shared_ptr<RenderComponent> m_SpriteTexture;
+		
+		std::shared_ptr<dae::RenderComponent> m_PlayerIcon;
 		EVENT eve;
 		Vector2f m_playerPos;
 		Vector2f m_Velocity{};
+		float m_MoveSpeed;
 		Vector2f m_Acceleration{};
 		Sound_System* a;
 		std::thread walk;
 		std::thread die;
-		float m_MoveSpeed;
+		
 
 		//sprite
 		Rectf m_DestRect;
@@ -103,6 +105,8 @@ namespace dae
 		void InitializeSrcRect();
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
+		void RenderPlayerLiveCount() const;
+		void CheckIfPlayerIsDead();
 	};
 }
 

@@ -29,20 +29,38 @@ namespace dae
 			DpadDown = XINPUT_GAMEPAD_DPAD_DOWN,
 			DpadLeft = XINPUT_GAMEPAD_DPAD_LEFT,
 			DpadRight = XINPUT_GAMEPAD_DPAD_RIGHT,
-			ButtonStart = XINPUT_GAMEPAD_START,
-			ButtonBack = XINPUT_GAMEPAD_BACK,
-			StickLeftThumb = XINPUT_GAMEPAD_LEFT_THUMB,
-			StickRightThumb = XINPUT_GAMEPAD_RIGHT_THUMB,
-			ButtonLeftShoulder = XINPUT_GAMEPAD_LEFT_SHOULDER,
-			ButtonRightShoulder = XINPUT_GAMEPAD_RIGHT_SHOULDER
+
+
+			ButtonA1 = XINPUT_GAMEPAD_A,
+			ButtonB1 = XINPUT_GAMEPAD_B,
+			ButtonX1 = XINPUT_GAMEPAD_X,
+			ButtonY1 = XINPUT_GAMEPAD_Y,
+			DpadUp1 = XINPUT_GAMEPAD_DPAD_UP,
+			DpadDown1 = XINPUT_GAMEPAD_DPAD_DOWN,
+			DpadLeft1 = XINPUT_GAMEPAD_DPAD_LEFT,
+			DpadRight1 = XINPUT_GAMEPAD_DPAD_RIGHT,
+
+
+
+
+
+			//ButtonStart = XINPUT_GAMEPAD_START,
+			//ButtonBack = XINPUT_GAMEPAD_BACK,
+			//StickLeftThumb = XINPUT_GAMEPAD_LEFT_THUMB,
+			//StickRightThumb = XINPUT_GAMEPAD_RIGHT_THUMB,
+			//ButtonLeftShoulder = XINPUT_GAMEPAD_LEFT_SHOULDER,
+			//ButtonRightShoulder = XINPUT_GAMEPAD_RIGHT_SHOULDER
 
 		};
 
 		enum class ButtonState
 		{
 			up,
+			up1,
 			down,
-			held
+			down1,
+			held,
+			held1
 		};
 	};
 	class InputManager final :public Singleton<InputManager>
@@ -61,9 +79,9 @@ namespace dae
 		bool ProcessInput();
 		void HandleInput();
 
-		bool IsDown(unsigned int button) const;
-		bool IsUp(unsigned int button) const;
-		bool IsPressed(unsigned int button) const;
+		bool IsDown(unsigned int button,GamePadIndex&) const;
+		bool IsUp(unsigned int button, GamePadIndex&) const;
+		bool IsPressed(unsigned int button, GamePadIndex&) const;
 
 	private:
 
@@ -75,11 +93,12 @@ namespace dae
 	class Input final : public Singleton<Input>
 	{
 	public:
-		using ControllerKey = std::pair<XBOX360Controller::ButtonState, XBOX360Controller::ControllerButton>;
-		using ControllerCommandMap = std::map<ControllerKey, std::unique_ptr<Command>>;
+		using ControllerKey = std::pair< XBOX360Controller::ButtonState, XBOX360Controller::ControllerButton>;
+		using ControllerCommandMap = std::map<ControllerKey, InputAction>;
 		ControllerCommandMap m_ConsoleCommands{};
-		void MapEvent(ControllerKey key, std::unique_ptr<Command> command);
+		void MapEvent(ControllerKey key, InputAction);
 		std::vector<std::unique_ptr<XBOX360Controller>> m_Controllers{};
+		
 	private:
 
 

@@ -22,7 +22,22 @@ Point2f::Point2f( )
 Point2f::Point2f( float x, float y )
 	:x{ x }, y{ y }
 {
+
 }
+
+//float4 constructors
+float4::float4()
+	:float4(0.f,0.f,0.f,0.f)
+{
+	
+}
+
+float4::float4(float x,float y,float z,float w)
+	:one{x},two{y},three{z},four{w}
+{
+	
+}
+
 
 //-----------------------------------------------------------------
 // Rectf Constructors

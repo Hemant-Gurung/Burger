@@ -3,14 +3,14 @@
 #include "LevelComponent.h"
 namespace dae
 {
-	enum  EnemyStates
+	/*enum  EnemyStates
 	{
 		movingLeft,
 		movingRight,
 		movingUp,
 		movingDown,
 		Dead
-	};
+	};*/
 
 	enum EnemyType
 	{
@@ -41,9 +41,14 @@ namespace dae
 		void UpdateSprite(float elapsedSec);
 		void UpdateSourceRect();
 
-		void UpdateEnemyMovement(float elapsedSec);
-		
+		void UpdateEnemyMovementState(float elapsedSec);
+		void UpdateEnemyMovementusingState(float elapsedSec);
+		void HandleEnemyCollision();
+		bool checkIfMovementIsPossible(EnemyStates&);
+		Rectf& GetEnemyPos();
+	
 	private:
+		EnemyStates m_enemyState;
 		EnemyType m_enemyType;
 		std::shared_ptr<RenderComponent> m_EnemySprite;
 		LevelComponent* m_sLevel;
@@ -65,7 +70,8 @@ namespace dae
 		int m_Colums;
 		int m_Rows;
 
-		
+		Vector2f m_Velocity{};
+		float m_MoveSpeed;
 	};
 
 }
