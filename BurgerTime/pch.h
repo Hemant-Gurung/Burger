@@ -7,6 +7,10 @@
 #ifndef PCH_H
 #define PCH_H
 
+#pragma warning(push, 0)
+#include <glm/glm.hpp>
+#include <SDL.h>
+#pragma warning (pop)
 // add headers that you want to pre-compile here
 
 #endif //PCH_H

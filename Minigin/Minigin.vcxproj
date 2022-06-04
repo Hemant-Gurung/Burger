@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -190,7 +190,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -222,42 +222,44 @@
     <ClInclude Include="..\3rdParty\imgui-1.86\imstb_rectpack.h" />
     <ClInclude Include="..\3rdParty\imgui-1.86\imstb_textedit.h" />
     <ClInclude Include="..\3rdParty\imgui-1.86\imstb_truetype.h" />
-    <ClInclude Include="Achievements.h" />
-    <ClInclude Include="BaseComponent.h" />
-    <ClInclude Include="BurgerComponent.h" />
-    <ClInclude Include="Command.h" />
-    <ClInclude Include="Font.h" />
-    <ClInclude Include="FPScomponent.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="LevelComponent.h" />
-    <ClInclude Include="LivesCounterComponent.h" />
+    <ClInclude Include="Base\Command.h" />
+    <ClInclude Include="Base\Font.h" />
+    <ClInclude Include="Base\Observer.h" />
+    <ClInclude Include="Base\SceneObject.h" />
+    <ClInclude Include="Components\Achievements.h" />
+    <ClInclude Include="Components\BaseComponent.h" />
+    <ClInclude Include="Components\BurgerComponent.h" />
+    <ClInclude Include="Components\EnemyComponent.h" />
+    <ClInclude Include="Components\FPScomponent.h" />
+    <ClInclude Include="Components\LevelComponent.h" />
+    <ClInclude Include="Components\LivesCounterComponent.h" />
+    <ClInclude Include="Components\PlayerComponent.h" />
+    <ClInclude Include="Components\RenderComponent.h" />
+    <ClInclude Include="Components\ScoreComponent.h" />
+    <ClInclude Include="Components\TextComponent.h" />
+    <ClInclude Include="Components\TextureComponen.h" />
+    <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Scenegraph\GameScene.h" />
+    <ClInclude Include="Graphics\Renderer.h" />
+    <ClInclude Include="Graphics\Texture2D.h" />
+    <ClInclude Include="Managers\InputManager.h" />
+    <ClInclude Include="Managers\ResourceManager.h" />
+    <ClInclude Include="Managers\SceneManager.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="MiniginPCH.h" />
-    <ClInclude Include="EnemyComponent.h" />
-    <ClInclude Include="NullSoundSystem.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="PlayerComponent.h" />
-    <ClInclude Include="RenderComponent.h" />
-    <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="ScoreComponent.h" />
-    <ClInclude Include="sdl_sound_system.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="Sound_System.h" />
-    <ClInclude Include="SServiceLocator.h" />
-    <ClInclude Include="structs.h" />
-    <ClInclude Include="SVGParser.h" />
-    <ClInclude Include="TextComponent.h" />
-    <ClInclude Include="Texture2D.h" />
-    <ClInclude Include="TextureComponen.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="Vector2f.h" />
+    <ClInclude Include="Scenegraph\GameObject.h" />
+    <ClInclude Include="Scenegraph\Scene.h" />
+    <ClInclude Include="Scenegraph\SceneObject.h" />
+    <ClInclude Include="Utils\NullSoundSystem.h" />
+    <ClInclude Include="Utils\sdl_sound_system.h" />
+    <ClInclude Include="Utils\Singleton.h" />
+    <ClInclude Include="Utils\Sound_System.h" />
+    <ClInclude Include="Utils\SServiceLocator.h" />
+    <ClInclude Include="Utils\structs.h" />
+    <ClInclude Include="Utils\SVGParser.h" />
+    <ClInclude Include="Utils\Transform.h" />
+    <ClInclude Include="Utils\utils.h" />
+    <ClInclude Include="Utils\Vector2f.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\3rdParty\imgui-1.86\imgui.cpp">
@@ -312,22 +314,28 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Achievements.cpp">
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</TreatWarningAsError>
-      <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</TreatWarningAsError>
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Level4</WarningLevel>
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Level4</WarningLevel>
-    </ClCompile>
-    <ClCompile Include="BaseComponent.cpp" />
-    <ClCompile Include="BurgerComponent.cpp" />
-    <ClCompile Include="Command.cpp" />
-    <ClCompile Include="Font.cpp" />
-    <ClCompile Include="FPScomponent.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="LevelComponent.cpp" />
-    <ClCompile Include="LivesCounterComponent.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Base\Command.cpp" />
+    <ClCompile Include="Base\Font.cpp" />
+    <ClCompile Include="Base\Observer.cpp" />
+    <ClCompile Include="Components\Achievements.cpp" />
+    <ClCompile Include="Components\BaseComponent.cpp" />
+    <ClCompile Include="Components\BurgerComponent.cpp" />
+    <ClCompile Include="Components\EnemyComponent.cpp" />
+    <ClCompile Include="Components\FPScomponent.cpp" />
+    <ClCompile Include="Components\LevelComponent.cpp" />
+    <ClCompile Include="Components\LivesCounterComponent.cpp" />
+    <ClCompile Include="Components\PlayerComponent.cpp" />
+    <ClCompile Include="Components\RenderComponent.cpp" />
+    <ClCompile Include="Components\ScoreComponent.cpp" />
+    <ClCompile Include="Components\TextComponent.cpp" />
+    <ClCompile Include="Components\TextureComponent.cpp" />
+    <ClCompile Include="Components\TransformComponent.cpp" />
+    <ClCompile Include="Scenegraph\GameScene.cpp" />
+    <ClCompile Include="Graphics\Renderer.cpp" />
+    <ClCompile Include="Graphics\Texture2D.cpp" />
+    <ClCompile Include="Managers\InputManager.cpp" />
+    <ClCompile Include="Managers\ResourceManager.cpp" />
+    <ClCompile Include="Managers\SceneManager.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="MiniginPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -336,28 +344,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MiniginPCH.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="EnemyComponent.cpp" />
-    <ClCompile Include="NullSoundSystem.cpp" />
-    <ClCompile Include="Observer.cpp" />
-    <ClCompile Include="PlayerComponent.cpp" />
-    <ClCompile Include="RenderComponent.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="ScoreComponent.cpp" />
-    <ClCompile Include="sdl_sound_system.cpp" />
-    <ClCompile Include="Sound_System.cpp" />
-    <ClCompile Include="SServiceLocator.cpp" />
-    <ClCompile Include="structs.cpp" />
-    <ClCompile Include="SVGParser.cpp" />
-    <ClCompile Include="TextComponent.cpp" />
-    <ClCompile Include="Texture2D.cpp" />
-    <ClCompile Include="TextureComponent.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="utils.cpp" />
-    <ClCompile Include="Vector2f.cpp" />
+    <ClCompile Include="Scenegraph\GameObject.cpp" />
+    <ClCompile Include="Scenegraph\Scene.cpp" />
+    <ClCompile Include="Utils\NullSoundSystem.cpp" />
+    <ClCompile Include="Utils\sdl_sound_system.cpp" />
+    <ClCompile Include="Utils\Sound_System.cpp" />
+    <ClCompile Include="Utils\SServiceLocator.cpp" />
+    <ClCompile Include="Utils\structs.cpp" />
+    <ClCompile Include="Utils\SVGParser.cpp" />
+    <ClCompile Include="Utils\Transform.cpp" />
+    <ClCompile Include="Utils\utils.cpp" />
+    <ClCompile Include="Utils\Vector2f.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

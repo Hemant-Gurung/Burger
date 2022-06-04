@@ -10,6 +10,7 @@ struct SDL_Window;
 
 
 
+
 namespace dae
 {
 	
@@ -17,19 +18,7 @@ namespace dae
 	{
 	public:
 
-		const char* LEVELS[3] =
-		{
-			"Level_1.png",
-			"Level_2.png",
-			"Level_3.png"
-		};
-		const char* LEVEL_COLLISIONS[3] =
-		{
-			"../Data/Level - SDL_1.svg",
-			"../Data/Level - SDL_2.svg",
-			"../Data/Level - SDL_3.svg"
-		};
-
+		
 		~Minigin()
 		{
 			//delete m_pLevel;
@@ -37,11 +26,15 @@ namespace dae
 		}
 		void Instruction();
 		void Initialize();
-		void LoadGame() const;
+		virtual void LoadGame() const;
 		void Cleanup();
 		void Run();
-		void InitializeImgui();
 
+		void InitializeImgui();
+		void PlayerOne(Scene&, LevelComponent&) const;
+		void PlayerTwo(Scene&, LevelComponent&) const;
+		void Enemy(Scene&, EnemyType&, LevelComponent&) const;
+		void AddBurger(Scene&, LevelComponent&) const;
 
 	private:
 		static const int MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps
@@ -51,12 +44,6 @@ namespace dae
 		 sdl_sound_system* ss;
 		 SVGParser m_svg_parser_;
 		 std::vector<std::vector<Point2f>> m_vertices;
-
-
-		  void PlayerOne(Scene&, LevelComponent&) const;
-		  void PlayerTwo(Scene&, LevelComponent&) const;
-		  void Enemy(Scene&,EnemyType&,  LevelComponent&) const;
-		  void AddBurger(Scene&, LevelComponent&) const;
 
 		  void ImguiUpdate();
 
