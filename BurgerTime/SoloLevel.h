@@ -3,7 +3,9 @@
 #include "GameScene.h"
 #include "LevelComponent.h"
 #include "Scene.h"
-//#include "EnemyComponent.h"
+#include "PlayerComponent.h"
+#include "LevelComponent.h"
+
 
 class SoloLevel final :
     public GameScene
@@ -22,6 +24,17 @@ public:
 
 private:
     void PlayerOne(LevelComponent& slevel) ;
-    
+
+    Rectf m_enemyPos;
+    Rectf m_PlayerPos;
+
+    dae::PlayerComponent* m_Player;
+    LevelComponent* m_pLevel;
+    bool m_hasOverlapped;
+    bool CheckIfPlayerIsDead(dae::PlayerComponent&);
+    void ResetScene();
+  
+
 };
+
 

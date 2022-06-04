@@ -1,6 +1,6 @@
 #include "MiniginPCH.h"
 #include "SceneManager.h"
-
+#include "InputManager.h"
 
 void dae::SceneManager::Update(float deltaTime)
 {
@@ -62,12 +62,16 @@ void dae::SceneManager::AddGameScene(std::shared_ptr<GameScene> scene)
 
 void dae::SceneManager::setActive(std::string name)
 {
+	
 	for(auto scene:m_Scenes)
 	{
 		if(scene->GetSceneName() == name)
 		{
+
 			m_CurrentScene = scene;
-			
+			InputManager::GetInstance().ResetInput();
+			m_CurrentScene->Initialize();
+			return;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "SoloLevel.h"
+#include "Utils.h"
 #include "InputManager.h"
 #include "LivesCounterComponent.h"
 #include "BurgerComponent.h"
@@ -10,26 +11,18 @@
 
 SoloLevel::SoloLevel()
 	:GameScene("SoloLevel")
+,m_PlayerPos(),
+m_Player{nullptr}
 {
-	Initialize();
+	//Initialize();
 }
 
-void SoloLevel::Update(float dt)
-{
-	for (const auto& object : m_sceneObjects)
-	{
-		object->Update(dt);
-	}
-}
 
-void SoloLevel::FixedUpdate()
-{
-}
 
 void SoloLevel::Initialize()
 {
 	//auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
-	
+	m_hasOverlapped = false;
 	//dae::SceneManager::GetInstance().AddGameScene("Demo");
 	dae::ResourceManager::GetInstance().Init("../Data/");
 
@@ -50,7 +43,7 @@ void SoloLevel::Initialize()
 	//scene.Add(gameObjectLevel);
 
 	auto Level = gameObjectLevel->GetComponent<LevelComponent>();
-
+	m_pLevel = Level;
 	AddChild(gameObjectLevel);
 	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
 	PlayerOne( *Level);
@@ -61,13 +54,87 @@ void SoloLevel::Initialize()
 	// Enemy Red
 	EnemyType enemy = EnemyType::Red;
 	Enemy( enemy, *Level);
-
+	
 
 	//Enemy Egg
 	enemy = EnemyType::Egg;
 	Enemy(enemy, *Level);
 
 	
+}
+
+
+void SoloLevel::Update(float dt)
+{
+
+	for (const auto& object : m_sceneObjects)
+	{
+		// get enemy0 pos
+		
+		auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+		if(enemy0!=nullptr)
+		{
+			m_enemyPos = enemy0->GetEnemyPos();
+		}
+
+		if (m_PlayerPos.width <= 0)
+		{
+			auto player1 = object->GetComponent<dae::PlayerComponent>();
+			
+			if (player1 != nullptr)
+			{
+				m_Player = player1;
+			}
+		}
+
+		
+
+		if (m_Player != nullptr)
+		{
+			if (object->GetTag() == L"Player1")
+			{
+				m_PlayerPos = m_Player->GetPlayerPos();
+			}
+			if(CheckIfPlayerIsDead(*m_Player))
+			{
+				dae::InputManager::GetInstance().ResetInput();
+				ResetScene();
+				break;
+			}
+
+		}
+
+	
+		//if(player)
+		
+		object->Update(dt);
+		
+	}
+
+
+
+}
+
+bool SoloLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
+{
+	
+	if (!m_hasOverlapped && m_enemyPos.left!= 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+	{
+
+		m_hasOverlapped = true;
+		player.CallPlayerIsDead();
+		m_Player = nullptr;
+		m_PlayerPos = Rectf(0, 0, 0, 0);
+		return true;
+	}
+	return false;
+}
+
+
+
+
+void SoloLevel::FixedUpdate()
+{
 }
 
 void SoloLevel::Render()
@@ -85,8 +152,9 @@ void SoloLevel::Enemy( EnemyType& enemytype, LevelComponent& level)
 	
 
 	auto enemy = std::make_shared<dae::EnemyComponent>(gameObjectEnemy, enemytype, level);
-
+	gameObjectEnemy->SetTag(L"Enemy");
 	gameObjectEnemy->AddComponent(enemy);
+	
 	//scene.Add(gameObjectEnemy);
 	AddChild(gameObjectEnemy);
 }
@@ -136,7 +204,7 @@ void SoloLevel::AddBurger( LevelComponent& level)
 	gameobjectBurger->AddComponent(burger4);
 
 
-
+	gameobjectBurger->SetTag(L"Burger");
 	//scene.Add(gameobjectBurger);
 	AddChild(gameobjectBurger);
 }
@@ -147,19 +215,21 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 
 	//Do this inside player class
 	//player commands
-	//InputAction a = InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne);
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-	//RIGHT
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadRight), InputAction(std::make_unique<MoveRightCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-	//LEFT
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadLeft), InputAction(std::make_unique<MoveLeftCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-	//UP
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadUp), InputAction(std::make_unique<MoveUpCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-	//DOWN
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadDown), InputAction(std::make_unique<MoveDownCommand>(gameObjectPlayer), GamePadIndex::playerOne));
-
-
+	//if (dae::Input::GetInstance().m_ConsoleCommands.size() <= 0)
+	{
+		//InputAction a = InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne);
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), 'O', GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayer), 'P', GamePadIndex::playerOne));
+		//RIGHT
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadRight), InputAction(std::make_unique<MoveRightCommand>(gameObjectPlayer), 'D', GamePadIndex::playerOne));
+		//LEFT
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadLeft), InputAction(std::make_unique<MoveLeftCommand>(gameObjectPlayer), 'A', GamePadIndex::playerOne));
+		//UP
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadUp), InputAction(std::make_unique<MoveUpCommand>(gameObjectPlayer), 'W', GamePadIndex::playerOne));
+		//DOWN
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadDown), InputAction(std::make_unique<MoveDownCommand>(gameObjectPlayer), 'S', GamePadIndex::playerOne));
+	}
+	
 
 	auto transformPlayer1 = std::make_shared<dae::TransformComponent>(gameObjectPlayer);
 	//transformPlayer1->SetPosition(216, 180, 0);
@@ -230,8 +300,51 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 	//set lives position
 	textLives->SetPosition(570, 5, 0);
 
-
+	gameObjectPlayer->SetTag(L"Player1");
 	//add to scent
 	//scene.Add(gameObjectPlayer);
 	AddChild(gameObjectPlayer);
+}
+
+void SoloLevel::ResetScene()
+{
+	ClearScene();
+	
+	//auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
+	m_hasOverlapped = false;
+	//dae::SceneManager::GetInstance().AddGameScene("Demo");
+	dae::ResourceManager::GetInstance().Init("../Data/");
+
+	//auto gameObjectLevel = std::make_shared<dae::GameObject>();
+	//////make render component
+	//auto Renderlevel = std::make_shared<dae::RenderComponent>(gameObjectLevel);
+	//auto transformLevel_1 = std::make_shared<dae::TransformComponent>(gameObjectLevel);
+	//gameObjectLevel->AddComponent(transformLevel_1);
+
+	////auto texture = dae::ResourceManager::GetInstance().LoadTexture(LEVELS[0]);
+	//Renderlevel->SetTexture(LEVELS[0]);
+	//gameObjectLevel->AddComponent(Renderlevel);
+	//////ADD LEVEL SKELETON
+	//auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
+	//levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
+	//gameObjectLevel->AddComponent(levelVertices);
+
+	////scene.Add(gameObjectLevel);
+
+	//auto Level = gameObjectLevel->GetComponent<LevelComponent>();
+
+	//AddChild(gameObjectLevel);
+	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
+	PlayerOne(*m_pLevel);
+	
+	// Enemy Red
+	EnemyType enemy = EnemyType::Red;
+	Enemy(enemy, *m_pLevel);
+
+
+	//Enemy Egg
+	enemy = EnemyType::Egg;
+	Enemy(enemy, *m_pLevel);
+
+
 }

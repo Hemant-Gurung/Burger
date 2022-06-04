@@ -7,13 +7,13 @@ GameScene::GameScene(std::string scene)
 
 }
 
-void GameScene::AddChild(std::shared_ptr<SceneObject> scene)
+void GameScene::AddChild(std::shared_ptr<dae::GameObject> scene)
 {
 	//add scene to the list
 	m_sceneObjects.emplace_back(scene);
 }
 
-void GameScene::RemoveChild(std::shared_ptr<SceneObject> scenechild)
+void GameScene::RemoveChild(std::shared_ptr<dae::GameObject> scenechild)
 {
 
 	// remove the child from the scene objects
@@ -21,7 +21,7 @@ void GameScene::RemoveChild(std::shared_ptr<SceneObject> scenechild)
 }
 
 
- void GameScene::RootUpdate(float dt)
+void GameScene::RootUpdate(float dt)
 {
 	for (auto element : m_sceneObjects)
 	{
@@ -29,7 +29,7 @@ void GameScene::RemoveChild(std::shared_ptr<SceneObject> scenechild)
 	}
 }
 
- void GameScene::RootFixedUpdate()
+void GameScene::RootFixedUpdate()
 {
 	for (auto element : m_sceneObjects)
 	{
@@ -37,10 +37,33 @@ void GameScene::RemoveChild(std::shared_ptr<SceneObject> scenechild)
 	}
 }
 
- void GameScene::RootRender() const
+void GameScene::RootRender() const
 {
 	for (auto element : m_sceneObjects)
 	{
 		element->Render();
 	}
+}
+
+void GameScene::ClearScene()
+{
+	for (auto obj : m_sceneObjects)
+	{
+		if (obj == nullptr)
+		{
+
+		}
+		
+		else if(this->GetSceneName() == "startScreen")
+		{
+			m_sceneObjects.clear();
+			return;
+		}
+		else if (obj.get()->GetTag() == L"Player1" || obj.get()->GetTag() == L"Enemy")
+		{
+			m_sceneObjects.erase(std::remove(std::begin(m_sceneObjects), std::end(m_sceneObjects), obj), std::end(m_sceneObjects));
+		}
+		
+	}
+	//m_sceneObjects.clear();
 }

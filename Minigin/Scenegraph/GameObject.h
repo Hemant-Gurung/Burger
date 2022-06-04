@@ -1,6 +1,9 @@
 #pragma once
 #include "TransformComponent.h"
-#include "SceneObject.h"
+//#include "SceneObject.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace dae
 {
@@ -8,14 +11,16 @@ namespace dae
 	class Texture2D;
 
 	// todo: this should become final.
-	class GameObject final :public SceneObject
+	class GameObject final 
 	{
 	public:
 
 		
-		void Update(float) override;
-		void FixedUpdate() override;
-		void Render() const override;
+		void SetTag(const std::wstring& tag) { m_Tag = tag; };
+		std::wstring& GetTag() { return m_Tag; }
+		void Update(float);
+		void FixedUpdate() ;
+		void Render() const ;
 
 		GameObject() = default;
 
@@ -62,6 +67,7 @@ namespace dae
 		std::vector<std::shared_ptr<BaseComponent>> m_sComponents{};
 		std::vector<GameObject*> m_pChildrens;
 		GameObject* m_pParent;
+		std::wstring m_Tag;
 	};
 
 	

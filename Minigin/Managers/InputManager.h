@@ -74,7 +74,7 @@ namespace dae
 		InputManager();
 		~InputManager();
 
-		
+		void Initialize();
 		void Update();
 		bool ProcessInput();
 		void HandleInput();
@@ -82,7 +82,7 @@ namespace dae
 		bool IsDown(unsigned int button,GamePadIndex&) const;
 		bool IsUp(unsigned int button, GamePadIndex&) const;
 		bool IsPressed(unsigned int button, GamePadIndex&) const;
-
+		void ResetInput();
 	private:
 
 
@@ -97,7 +97,7 @@ namespace dae
 		using ControllerCommandMap = std::map<ControllerKey, InputAction>;
 		ControllerCommandMap m_ConsoleCommands{};
 		void MapEvent(ControllerKey key, InputAction);
-		std::vector<std::unique_ptr<XBOX360Controller>> m_Controllers{};
+		//std::vector<std::unique_ptr<XBOX360Controller>> m_Controllers{};
 		
 	private:
 

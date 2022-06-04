@@ -1,12 +1,12 @@
 #pragma once
 #include "Observer.h"
-#include "Components/BaseComponent.h"
+#include "BaseComponent.h"
 //#include "box2d.h"
 #include <thread>
 #include "Sound_System.h"
-#include  "Components/LevelComponent.h"
-#include "Components/TextComponent.h"
-#include "Components/RenderComponent.h"
+#include  "LevelComponent.h"
+#include "TextComponent.h"
+#include "RenderComponent.h"
 namespace dae
 {
 
@@ -56,6 +56,7 @@ namespace dae
 		void FLipTexture(bool flip);
 		
 		Rectf& GetPlayerPos() { return m_DestRect; }
+		void CallPlayerIsDead();
 		//bool m_SetVelocity = false;
 	protected:
 		
@@ -106,7 +107,7 @@ namespace dae
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
 		void RenderPlayerLiveCount() const;
-		void CheckIfPlayerIsDead();
+		
 	};
 }
 

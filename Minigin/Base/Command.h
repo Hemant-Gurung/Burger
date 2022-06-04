@@ -3,6 +3,8 @@
 #include "BaseComponent.h"
 #include "PlayerComponent.h"
 #include <iostream>
+#include "SceneManager.h"
+
 
 
 
@@ -127,7 +129,7 @@ public:
 	MoveRightCommand(std::shared_ptr<dae::GameObject> pGameobject) :
 		Command(pGameobject)
 	{
-
+		
 	}
 
 	void Execute() override
@@ -180,19 +182,46 @@ public:
 	}
 };
 
+class Button : public Command
+{
+public:
+	Button(std::shared_ptr<dae::GameObject> pGameobject) :
+		Command(pGameobject)
+	{
+		
+		
+	}
+
+	void Execute() override
+	{
+		
+		dae::SceneManager::GetInstance().setActive("SoloLevel");
+		/*auto playerObj = m_pGameObject.lock()->GetComponent<dae::PlayerComponent>();
+		playerObj->MoveDown();
+		dae::PlayerState state = dae::PlayerState::climbing;
+		playerObj->ChangeState(state);*/
+	}
+};
+
+
+
+
 
 
 struct InputAction
 {
 	InputAction() :
 		playerIndex(GamePadIndex::playerOne)
-		, command(nullptr) {}
+		, command(nullptr),
+		keyboardCode(-1) {}
 
-	InputAction(std::unique_ptr<Command> command = nullptr, GamePadIndex playerIndex = GamePadIndex::playerOne) :
+	InputAction(std::unique_ptr<Command> command = nullptr,int keyboardCode =-1, GamePadIndex playerIndex = GamePadIndex::playerOne) :
 		command(std::move(command)),
-		playerIndex(playerIndex)
+		playerIndex(playerIndex),
+		keyboardCode(keyboardCode)
 
 	{}
 	std::unique_ptr<Command> command;
 	GamePadIndex playerIndex;
+	int keyboardCode; //VK 0x07 to 0xFE
 };

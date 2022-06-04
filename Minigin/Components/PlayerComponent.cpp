@@ -115,24 +115,27 @@ namespace dae
 		m_Velocity.x = 0;
 		
 			m_playerMovement = playerMovement::movinddown;
+			IsMoving = true;
 		}
-		IsMoving = true;
+		
 
 	}
 
 	void PlayerComponent::MoveLeft()
 	{
-		IsMoving = true;
-		//auto f1 = std::async(&SServiceLocator::get_sound_system);
-		//a = &f1.get();
-		//a->Play(SoundID::WALK, 50);
+		if (m_PlayerState != PlayerState::dead)
+		{
+			IsMoving = true;
+			//auto f1 = std::async(&SServiceLocator::get_sound_system);
+			//a = &f1.get();
+			//a->Play(SoundID::WALK, 50);
 
-		m_Velocity.x = -m_MoveSpeed;
-		m_Velocity.y = 0;
-		m_playerMovement = playerMovement::movingleft;
+			m_Velocity.x = -m_MoveSpeed;
+			m_Velocity.y = 0;
+			m_playerMovement = playerMovement::movingleft;
 
-		//UpdateSourceRect();
-
+			//UpdateSourceRect();
+		}
 	}
 
 	void PlayerComponent::MoveRight()
@@ -160,15 +163,16 @@ namespace dae
 		
 		if (a != nullptr)
 			a->Update();
+
+		//CheckIfPlayerIsDead();
+		UpdateSprite(elapsedSec);
 		if (m_PlayerState != PlayerState::dead)
 		{
-			//CheckIfPlayerIsDead();
-			UpdateSprite(elapsedSec);
-
 			UpdatePlayerMovement(elapsedSec);
+			IsMoving = false;
 		}
 	
-		IsMoving = false;
+		
 	}
 
 	void PlayerComponent::Render() const
@@ -354,7 +358,7 @@ namespace dae
 		m_PlayerIcon->RenderTexture(plaerIconPos, plaerIconSrc);
 	}
 
-	void PlayerComponent::CheckIfPlayerIsDead()
+	void PlayerComponent::CallPlayerIsDead()
 	{
 		//if (m_sLevel->CheckPlayerEnemyCollision())
 		{
