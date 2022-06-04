@@ -2,18 +2,22 @@
 #include "SoloLevel.h"
 #include "Utils.h"
 #include "InputManager.h"
-#include "LivesCounterComponent.h"
+
 #include "BurgerComponent.h"
 #include "ResourceManager.h"
-#include "ScoreComponent.h"
+
 #include "BurgerGame.h"
 
 
 SoloLevel::SoloLevel()
 	:GameScene("SoloLevel")
 ,m_PlayerPos(),
-m_Player{nullptr}
+m_Player(nullptr)
+, m_lives(nullptr)
+,m_Score(nullptr),
+m_accumulatedDeathTime(0)
 {
+	m_hasOverlapped = false;
 	//Initialize();
 }
 
@@ -42,6 +46,8 @@ void SoloLevel::Initialize()
 
 	//scene.Add(gameObjectLevel);
 
+
+
 	auto Level = gameObjectLevel->GetComponent<LevelComponent>();
 	m_pLevel = Level;
 	AddChild(gameObjectLevel);
@@ -66,28 +72,25 @@ void SoloLevel::Initialize()
 
 void SoloLevel::Update(float dt)
 {
-
+	//bool isPlayerOverlappingWithBurger = false;
 	for (const auto& object : m_sceneObjects)
 	{
 		// get enemy0 pos
-		
 		auto enemy0 = object->GetComponent<dae::EnemyComponent>();
 		if(enemy0!=nullptr)
 		{
 			m_enemyPos = enemy0->GetEnemyPos();
 		}
 
-		if (m_PlayerPos.width <= 0)
-		{
-			auto player1 = object->GetComponent<dae::PlayerComponent>();
-			
-			if (player1 != nullptr)
-			{
-				m_Player = player1;
-			}
-		}
-
-		
+		//if (m_PlayerPos.width <= 0)
+		//{
+		//	auto player1 = object->GetComponent<dae::PlayerComponent>();
+		//	
+		//	if (player1 != nullptr)
+		//	{
+		//		m_Player = player1;
+		//	}
+		//}
 
 		if (m_Player != nullptr)
 		{
@@ -95,36 +98,64 @@ void SoloLevel::Update(float dt)
 			{
 				m_PlayerPos = m_Player->GetPlayerPos();
 			}
-			if(CheckIfPlayerIsDead(*m_Player))
-			{
-				dae::InputManager::GetInstance().ResetInput();
-				ResetScene();
-				break;
-			}
+			CheckIfPlayerIsDead(*m_Player);
 
 		}
 
-	
+		// check for game win
+		if(object->GetTag()==L"Burger")
+		{
+			int count = 0;
+			for (auto burger : object.get()->GetAllcomponents())
+			{
+				if(burger->GetPosition().bottom>480)
+				{
+					count++;
+				}
+			}
+			if(count>=4)
+			{
+				//Game won
+				std::cout << "Game Won";
+				ClearScene();
+				dae::SceneManager::GetInstance().setActive("startScreen");
+			}
+		}
+
 		//if(player)
 		
 		object->Update(dt);
 		
 	}
 
-
-
+	if (m_hasOverlapped)
+	{
+		m_accumulatedDeathTime += 10 * dt;
+		if (m_accumulatedDeathTime >= 50.f)
+		{
+			m_accumulatedDeathTime = 0;
+			ResetScene();
+			m_hasOverlapped = false;
+		}
+	}
 }
 
 bool SoloLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
 {
+	if(m_Player->GetLives() <=0)
+	{
+		ClearScene();
+		dae::SceneManager::GetInstance().setActive("startScreen");
+		
+	}
 	
-	if (!m_hasOverlapped && m_enemyPos.left!= 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+	else if (!m_hasOverlapped && m_enemyPos.left!= 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
 	{
 
 		m_hasOverlapped = true;
 		player.CallPlayerIsDead();
-		m_Player = nullptr;
-		m_PlayerPos = Rectf(0, 0, 0, 0);
+		//m_Player = nullptr;
+		//m_PlayerPos = Rectf(0, 0, 0, 0);
 		return true;
 	}
 	return false;
@@ -171,6 +202,7 @@ void SoloLevel::AddBurger( LevelComponent& level)
 
 	float leftPos = 55.f;
 	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos, burgerPos);
+	burger->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger);
 
 	//float4 burgerPos;
@@ -182,6 +214,7 @@ void SoloLevel::AddBurger( LevelComponent& level)
 
 	float leftPos2 = 202.2f;
 	auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos2, burgerPos);
+	burger2->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger2);
 
 	burgerPos.one = 125.f;
@@ -191,6 +224,7 @@ void SoloLevel::AddBurger( LevelComponent& level)
 
 	float leftPos3 = 348.2f;
 	auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos3, burgerPos);
+	burger3->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger3);
 
 
@@ -201,6 +235,7 @@ void SoloLevel::AddBurger( LevelComponent& level)
 
 	float leftPos4 = 505.f;
 	auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos4, burgerPos);
+	burger4->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger4);
 
 
@@ -239,7 +274,7 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 	gameObjectPlayer->AddComponent(transformPlayer1);
 	//player one
 	auto player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, slevel);
-
+	m_Player = player;
 
 	//add gameobject to scene
 	//scene.Add(gameObjectPlayer);
@@ -263,18 +298,25 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 	//auto scoreAchievement = std::make_shared<Achievements>(g_Achievements, 4, gameObjectPlayer);
 
 	//make livescounter component/ observer
-	auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
-
+	if (m_lives == nullptr)
+	{
+		auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+		m_lives = lives;
+	}
 	//score counter
-	auto score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
+	if (m_Score == nullptr)
+	{
+		auto score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
+		m_Score = score;
+	}
 	//score achievement observer
 	//player->AddObserver(scoreAchievement);
 
 	//add observers
-	player->AddObserver(lives);
+	player->AddObserver(m_lives);
 
 	//add score observer
-	player->AddObserver(score);
+	player->AddObserver(m_Score);
 
 	//add gameobject scoreAchievement to gameobject
 	//gameObjectPlayer->AddComponent(scoreAchievement);
@@ -282,10 +324,10 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 	gameObjectPlayer->AddComponent(transformLives);
 
 	//add counter to gameobject
-	gameObjectPlayer->AddComponent(lives);
+	gameObjectPlayer->AddComponent(m_lives);
 
 	//add score component to gameobject
-	gameObjectPlayer->AddComponent(score);
+	gameObjectPlayer->AddComponent(m_Score);
 
 	//add text component for lives
 	gameObjectPlayer->AddComponent(textLives);
@@ -308,43 +350,20 @@ void SoloLevel::PlayerOne( LevelComponent& slevel)
 
 void SoloLevel::ResetScene()
 {
-	ClearScene();
+	//ClearScene();
+	m_Player->SetPlayerStartPosition(Point2f{ 450.f,450.f });
+	m_PlayerPos = m_Player->GetPlayerPos();
+
+	auto playerState = dae::PlayerState::standing;
+	m_Player->ChangeState(playerState);
+
+	for (auto obj : m_sceneObjects)
+	{
+		if(obj->GetTag() == L"Enemy")
+		{
+			obj->GetComponent<dae::EnemyComponent>()->ResetEnemyPos();
+		}
+	}
 	
-	//auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
-	m_hasOverlapped = false;
-	//dae::SceneManager::GetInstance().AddGameScene("Demo");
-	dae::ResourceManager::GetInstance().Init("../Data/");
-
-	//auto gameObjectLevel = std::make_shared<dae::GameObject>();
-	//////make render component
-	//auto Renderlevel = std::make_shared<dae::RenderComponent>(gameObjectLevel);
-	//auto transformLevel_1 = std::make_shared<dae::TransformComponent>(gameObjectLevel);
-	//gameObjectLevel->AddComponent(transformLevel_1);
-
-	////auto texture = dae::ResourceManager::GetInstance().LoadTexture(LEVELS[0]);
-	//Renderlevel->SetTexture(LEVELS[0]);
-	//gameObjectLevel->AddComponent(Renderlevel);
-	//////ADD LEVEL SKELETON
-	//auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
-	//levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
-	//gameObjectLevel->AddComponent(levelVertices);
-
-	////scene.Add(gameObjectLevel);
-
-	//auto Level = gameObjectLevel->GetComponent<LevelComponent>();
-
-	//AddChild(gameObjectLevel);
-	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
-	PlayerOne(*m_pLevel);
-	
-	// Enemy Red
-	EnemyType enemy = EnemyType::Red;
-	Enemy(enemy, *m_pLevel);
-
-
-	//Enemy Egg
-	enemy = EnemyType::Egg;
-	Enemy(enemy, *m_pLevel);
-
 
 }

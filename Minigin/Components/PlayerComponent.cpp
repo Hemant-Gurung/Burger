@@ -38,6 +38,7 @@ namespace dae
 		IsMoving(false),
 		m_playerMovement(playerMovement::idle),
 		m_sLevel(&pLevel)
+		,m_TotalLives(3)
 	{
 		Initialize();
 		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
@@ -65,6 +66,7 @@ namespace dae
 
 	void PlayerComponent::Initialize()
 	{
+		m_TotalLives = 3;
 		m_FrameTime = 1.f / m_FramesPerSecond;
 		//auto level = m_pGameObject.lock()->GetComponent<LevelComponent>();
 		InitializeDestRect();
@@ -79,7 +81,7 @@ namespace dae
 
 	void PlayerComponent::ScoreCall()
 	{
-		std::cout << "Score increased\n";
+		//std::cout << "Score increased\n";
 		Notify(*this, EVENT::PLAYER_SCOREADD);
 	}
 
@@ -193,7 +195,7 @@ namespace dae
 
 	void PlayerComponent::SetPosition(float /*x*/, float /*x1*/, float /*x2*/)
 	{
-		m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(300.f, 20.f, 0.f);
+		m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(450, 450, 0.f);
 		//m_TransformComponent->SetPosition(30.f, 30.f, 0.f);
 	}
 
@@ -368,5 +370,21 @@ namespace dae
 			m_Velocity.x = 0;
 			m_Velocity.y = 0;
 		}
+	}
+
+	void PlayerComponent::CallScoreNotify()
+	{
+		ScoreCall();
+	}
+
+
+	void PlayerComponent::DestroyLive()
+	{
+		m_TotalLives--;
+		if(m_TotalLives<=0)
+		{
+			m_TotalLives = 0;
+		}
+		
 	}
 }

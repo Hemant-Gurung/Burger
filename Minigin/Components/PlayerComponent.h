@@ -57,6 +57,17 @@ namespace dae
 		
 		Rectf& GetPlayerPos() { return m_DestRect; }
 		void CallPlayerIsDead();
+
+		void CallScoreNotify();
+
+		void DestroyLive();
+		int GetLives() { return m_TotalLives; }
+
+		void SetPlayerStartPosition(const Point2f& pos)
+		{
+			m_DestRect.bottom = pos.y;
+			m_DestRect.left = pos.x;
+		}
 		//bool m_SetVelocity = false;
 	protected:
 		
@@ -107,7 +118,8 @@ namespace dae
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
 		void RenderPlayerLiveCount() const;
-		
+
+		int m_TotalLives;
 	};
 }
 

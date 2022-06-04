@@ -43,7 +43,7 @@ void dae::ScoreComponent::OnNotify(const dae::BaseComponent&, dae::EVENT& notifi
 	{
 	case EVENT::PLAYER_SCOREADD:
 	{
-		m_Score += 100;
+		m_Score += 50;
 	}
 	break;
 	default:

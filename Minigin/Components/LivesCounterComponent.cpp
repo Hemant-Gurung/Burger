@@ -2,10 +2,12 @@
 #include "LivesCounterComponent.h"
 #include "TextComponent.h"
 #include "GameObject.h"
+#include "PlayerComponent.h"
+
+ static int m_TotalLives = 3;
 
 dae::LivesCounterComponent::LivesCounterComponent(std::shared_ptr<GameObject>& pGameObject, std::shared_ptr<TextComponent> text)
 	:BaseComponent(pGameObject), Observer(),
-	m_TotalLives{3},
 	m_TextComponent(text)
 {
 	
@@ -13,8 +15,10 @@ dae::LivesCounterComponent::LivesCounterComponent(std::shared_ptr<GameObject>& p
 
 void dae::LivesCounterComponent::update(float)
 {
-	
-	m_TextComponent->SetText(" " + std::to_string(m_TotalLives));
+	if (m_pGameObject.lock() != nullptr)
+	{
+		m_TextComponent->SetText(" " + std::to_string(m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->GetLives()));
+	}
 }
 
 void dae::LivesCounterComponent::Render() const
@@ -35,8 +39,8 @@ void dae::LivesCounterComponent::OnNotify(const dae::BaseComponent&, dae::EVENT&
 	{
 		if (m_TotalLives > 0)
 		{
-			m_TotalLives -= 1;
-			
+			m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->DestroyLive();
+			//m_TotalLives -= 1;
 		}
 	}
 	break;

@@ -4,6 +4,7 @@
 #include "Observer.h"
 namespace dae
 {
+    static int m_TotalLives = 3;
     class LivesCounterComponent :
         public BaseComponent,public Observer
     {
@@ -24,7 +25,7 @@ namespace dae
     private:
         std::shared_ptr<TextComponent> m_TextComponent;
         void UpdateLives();
-        int m_TotalLives{};
+       
     };
 }
 

@@ -5,7 +5,8 @@
 #include "Scene.h"
 #include "PlayerComponent.h"
 #include "LevelComponent.h"
-
+#include "ScoreComponent.h"
+#include "LivesCounterComponent.h"
 
 class SoloLevel final :
     public GameScene
@@ -28,12 +29,19 @@ private:
     Rectf m_enemyPos;
     Rectf m_PlayerPos;
 
-    dae::PlayerComponent* m_Player;
+    std::shared_ptr<dae::PlayerComponent> m_Player;
     LevelComponent* m_pLevel;
+    std::shared_ptr<dae::ScoreComponent> m_Score;
+    std::shared_ptr<dae::LivesCounterComponent> m_lives;
+    std::shared_ptr<dae::TextComponent> m_Textlives;
+    std::shared_ptr<dae::TextComponent> m_TextScore;
+
+
     bool m_hasOverlapped;
     bool CheckIfPlayerIsDead(dae::PlayerComponent&);
     void ResetScene();
-  
+
+    float m_accumulatedDeathTime;
 
 };
 

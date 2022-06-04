@@ -26,3 +26,8 @@ void dae::BaseComponent::SetPosition(float, float,float)
 {
 
 }
+
+Rectf dae::BaseComponent::GetPosition()
+{
+	return Rectf{ 0,0,0,0 };
+}

@@ -12,7 +12,11 @@ public:
     void update(float) override;
     void SetPosition(float, float, float) override;
     void SetTexture(const std::string&) override;
-    void Check_Player_Burger_Collision(Rectf& );
+    Rectf GetPosition() override { return m_TopBurgerSize; }
+
+    bool IsPlayerOverlappingWithPlayer();
+    void AddObserver(std::shared_ptr<dae::Observer> observer);
+    void Notify(BaseComponent&, dae::EVENT);
 private:
 
     //BURGER SPRITE
@@ -31,6 +35,7 @@ private:
 
     LevelComponent* m_sLevel;
 
+    bool Check_Player_Burger_Collision(Rectf&);
     void InitializeBurgers();
     void OnGuiUpdate();
     void Handle_Burger_Burger_Collision();
@@ -52,5 +57,7 @@ private:
     bool m_Top_SaladCollision;
     bool m_Salad_MeatCollision;
     bool m_Meat_BottomCollision;
+
+    std::vector<std::shared_ptr<dae::Observer>> m_Observers;
 };
 

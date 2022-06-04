@@ -31,6 +31,20 @@ namespace dae
 		void HandleEnemyCollision();
 		bool checkIfMovementIsPossible(EnemyStates&);
 		Rectf& GetEnemyPos();
+		void ResetEnemyPos()
+		{
+			if(this->m_enemyType == EnemyType::Red)
+			{
+				m_DestRect.left = 0;
+				m_DestRect.bottom = 450;
+			}
+			else
+			{
+				m_DestRect.left = 0;
+				m_DestRect.bottom = 0;
+			}
+			
+		}
 	
 	private:
 		EnemyStates m_enemyState;

@@ -38,6 +38,9 @@ namespace dae
 		GameObject* GetChildAt(int index);
 		void RemoveChild(GameObject* go);
 
+		std::vector<std::shared_ptr<BaseComponent>> GetAllcomponents() { return m_sComponents; }
+
+
 		template<typename T>
 		T* GetComponent()
 		{

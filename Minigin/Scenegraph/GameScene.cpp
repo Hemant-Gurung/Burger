@@ -47,23 +47,5 @@ void GameScene::RootRender() const
 
 void GameScene::ClearScene()
 {
-	for (auto obj : m_sceneObjects)
-	{
-		if (obj == nullptr)
-		{
-
-		}
-		
-		else if(this->GetSceneName() == "startScreen")
-		{
-			m_sceneObjects.clear();
-			return;
-		}
-		else if (obj.get()->GetTag() == L"Player1" || obj.get()->GetTag() == L"Enemy")
-		{
-			m_sceneObjects.erase(std::remove(std::begin(m_sceneObjects), std::end(m_sceneObjects), obj), std::end(m_sceneObjects));
-		}
-		
-	}
-	//m_sceneObjects.clear();
+	m_sceneObjects.clear();
 }
