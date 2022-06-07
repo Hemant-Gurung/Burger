@@ -1,7 +1,6 @@
 #include "MiniginPCH.h"
 #include "Scene.h"
 #include "GameObject.h"
-#include "BaseComponent.h"
 using namespace dae;
 
 unsigned int Scene::m_IdCounter = 0;

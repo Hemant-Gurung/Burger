@@ -1,7 +1,7 @@
 #include "MiniginPCH.h"
 #include "FPScomponent.h"
 
-#include "GameObject.h"
+#include "Scenegraph/GameObject.h"
 
 dae::FPScomponent::FPScomponent(std::shared_ptr<GameObject>& pGameObj,std::shared_ptr<TextComponent> text)
 	:BaseComponent(pGameObj),

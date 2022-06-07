@@ -7,8 +7,8 @@ namespace dae
 	class EnemyComponent :public dae::BaseComponent
 	{
 	public:
-		EnemyComponent(std::shared_ptr<dae::GameObject>&,EnemyType&, LevelComponent&);
-		virtual ~EnemyComponent();
+		EnemyComponent(std::shared_ptr<dae::GameObject>&,EnemyType&, std::shared_ptr<LevelComponent>);
+		 ~EnemyComponent() = default;
 
 		EnemyComponent(const EnemyComponent& other) = delete;
 		EnemyComponent(EnemyComponent&& other) noexcept = delete;
@@ -18,7 +18,6 @@ namespace dae
 		void Initialize();
 		void InitializeDstRect();
 		void InitializeSrcRect();
-
 
 		void Render() const override;
 		void update(float) override;
@@ -31,17 +30,38 @@ namespace dae
 		void HandleEnemyCollision();
 		bool checkIfMovementIsPossible(EnemyStates&);
 		Rectf& GetEnemyPos();
+
+		void IsDead(bool);
+		bool GetIsDead() { return m_IsDead; }
 		void ResetEnemyPos()
 		{
-			if(this->m_enemyType == EnemyType::Red)
+			if(this->m_enemyType == EnemyType::Egg)
 			{
-				m_DestRect.left = 0;
-				m_DestRect.bottom = 450;
+				int ra = rand() % (1 - 0 + 1) + 0;
+				if (ra == 1)
+				{
+					m_DestRect.left = 0;
+					m_DestRect.bottom = 450;
+				}
+				else
+				{
+					m_DestRect.left = 450;
+					m_DestRect.bottom = 10;
+				}
 			}
 			else
 			{
-				m_DestRect.left = 0;
-				m_DestRect.bottom = 0;
+				int ra = rand() % (1 - 0 + 1) + 0;
+				if (ra == 1)
+				{
+					m_DestRect.left = 0;
+					m_DestRect.bottom = 0;
+				}
+				else
+				{
+					m_DestRect.left = 450;
+					m_DestRect.bottom = 250;
+				}
 			}
 			
 		}
@@ -50,7 +70,7 @@ namespace dae
 		EnemyStates m_enemyState;
 		EnemyType m_enemyType;
 		std::shared_ptr<dae::RenderComponent> m_EnemySprite;
-		LevelComponent* m_sLevel;
+		std::weak_ptr<LevelComponent> m_sLevel;
 		Rectf m_DestRect;
 		Rectf m_SrcRect;
 
@@ -68,6 +88,7 @@ namespace dae
 
 		int m_Colums;
 		int m_Rows;
+		bool m_IsDead;
 
 		Vector2f m_Velocity{};
 		float m_MoveSpeed;

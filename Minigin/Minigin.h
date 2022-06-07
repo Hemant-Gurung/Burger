@@ -1,11 +1,11 @@
 #pragma once
 //#include <SDL_mixer.h>
-#include "LevelComponent.h"
+#include "Components/LevelComponent.h"
 //#include "box2d.h"
 #include "sdl_sound_system.h"
 #include "SVGParser.h"
 #include "Scene.h"
-#include "EnemyComponent.h"
+
 struct SDL_Window;
 
 
@@ -31,10 +31,10 @@ namespace dae
 		void Run();
 
 		void InitializeImgui();
-		void PlayerOne(Scene&, LevelComponent&) const;
+		/*void PlayerOne(Scene&, LevelComponent&) const;
 		void PlayerTwo(Scene&, LevelComponent&) const;
 		void Enemy(Scene&, EnemyType&, LevelComponent&) const;
-		void AddBurger(Scene&, LevelComponent&) const;
+		void AddBurger(Scene&, LevelComponent&) const;*/
 
 	private:
 		static const int MsPerFrame = 16; //16 for 60 fps, 33 for 30 fps

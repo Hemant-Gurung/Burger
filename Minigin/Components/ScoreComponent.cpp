@@ -2,6 +2,7 @@
 #include "ScoreComponent.h"
 #include "TextComponent.h"
 #include "PlayerComponent.h"
+#include  "EnemyComponent.h"
 dae::ScoreComponent::ScoreComponent(std::shared_ptr<GameObject> pGameObject, std::shared_ptr<TextComponent> text)
 	:BaseComponent(pGameObject),
 	m_Score{0},
@@ -12,15 +13,8 @@ dae::ScoreComponent::ScoreComponent(std::shared_ptr<GameObject> pGameObject, std
 void dae::ScoreComponent::update(float)
 {
 	//m_pGameObject.lock()->GetComponent<TextComponent>()->SetText("SCORE " + m_Score);
-	m_TextComponent->SetText("SCORE: " + std::to_string(m_Score));
-	
-	if (m_Score == 500)
-	{
-		auto player = m_pGameObject.lock()->GetComponent<PlayerComponent>();
-		player->ScoreAchievementUnlock();
-	
-	}
-	
+	//auto player = m_pGameObject.lock()->GetComponent<dae::PlayerComponent>();
+	m_TextComponent->SetText("SCORE: " + m_Score);
 }
 
 void dae::ScoreComponent::Render() const
@@ -44,8 +38,18 @@ void dae::ScoreComponent::OnNotify(const dae::BaseComponent&, dae::EVENT& notifi
 	case EVENT::PLAYER_SCOREADD:
 	{
 		m_Score += 50;
+		//m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->AddScore();
 	}
 	break;
+	case EVENT::ENEMY_DEAD:
+	{
+		auto a = m_pGameObject.lock()->GetComponent<dae::EnemyComponent>();
+		if (a != nullptr)
+		{
+			a->IsDead(true);
+		}
+		break;
+	}
 	default:
 		break;
 	}

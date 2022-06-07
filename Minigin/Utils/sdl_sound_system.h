@@ -6,13 +6,15 @@
 
 class sdl_sound_system:public Sound_System
 {
-	const char* _waveFileNames[2] =
+	const char* _waveFileNames[4] =
 	{
-		"prasansa.mp3",
-		"BOW.mp3",
+		"../Data/Sounds/Start.mp3",
+		"../Data/Sounds/Game Music.mp3",
+		"../Data/Sounds/Lose Life.mp3",
+		"../Data/Sounds/Level End.mp3"
 	};
 
-	Mix_Chunk* _sample[2];
+	Mix_Chunk* _sample[3];
 public:
 	sdl_sound_system();
 	~sdl_sound_system();
@@ -33,4 +35,6 @@ private:
 	Mix_Music* gMusic = nullptr;
 	std::mutex mMutex;
 	std::thread m_Thread;
+
+	bool m_isStartPlaying, m_isGameMusicPlaying, m_isLevelEnded, m_isPlayerDead;
 };

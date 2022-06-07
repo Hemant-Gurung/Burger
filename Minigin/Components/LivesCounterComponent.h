@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseComponent.h"
 #include "TextComponent.h"
-#include "Observer.h"
+#include "Base/Observer.h"
 namespace dae
 {
     static int m_TotalLives = 3;

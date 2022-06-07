@@ -9,7 +9,12 @@ LevelComponent::LevelComponent(std::shared_ptr<dae::GameObject>& pGameObject)
 , m_ShowDebugLines(false)
 	/*,m_level()*/
 	,m_vertices()
-	
+,rayStartFirst(Point2f(0,0)),
+ rayStartMiddle(Point2f(0, 0)),
+ rayStartLast(Point2f(0, 0)),
+	rayEndFirst(Point2f(0, 0)),
+	rayEndMiddle(Point2f(0, 0)),
+	rayEndLast(Point2f(0, 0))
 {
 	
 }
@@ -44,10 +49,10 @@ void LevelComponent::Render() const
 	if (m_ShowDebugLines)
 	{
 		//m_pGameObject.lock()->GetComponent<dae::RenderComponent>()->RenderTexture();
-		for (int i = 0; i < m_vertices.size(); ++i)
+		for (size_t i = 0; i < m_vertices.size(); ++i)
 		{
 			auto vert = m_vertices[i];
-			for (int j = 0; j < vert.size(); ++j)
+			for (size_t j = 0; j < vert.size(); ++j)
 			{
 				//draw all thee vertices
 				if (j < vert.size() - 1)
@@ -473,7 +478,7 @@ void LevelComponent::DrawVertices()
 
 void LevelComponent::GuiUpdate()
 {
-	ImGui::Begin("collider", NULL, ImGuiWindowFlags_NoResize);
+	ImGui::Begin("collider", NULL);
 	//ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
 	//ImGui::SetNextWindowPos()
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");

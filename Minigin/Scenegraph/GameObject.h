@@ -1,5 +1,5 @@
 #pragma once
-#include "TransformComponent.h"
+#include "Components/TransformComponent.h"
 //#include "SceneObject.h"
 #include <memory>
 #include <string>

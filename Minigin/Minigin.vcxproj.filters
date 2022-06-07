@@ -168,6 +168,9 @@
     <ClInclude Include="Scenegraph\GameScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Components\PepperComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -297,6 +300,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scenegraph\GameScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\PepperComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,7 +7,8 @@ class BurgerComponent :
     public dae::BaseComponent
 {
 public:
-    BurgerComponent(std::shared_ptr<dae::GameObject>&, LevelComponent&,const float left,const float4& burgerBottom);
+    BurgerComponent(std::shared_ptr<dae::GameObject>&, std::shared_ptr<LevelComponent>,const Point2f left,const float4 burgerBottom);
+    ~BurgerComponent() = default;
     void Render() const override;
     void update(float) override;
     void SetPosition(float, float, float) override;
@@ -33,7 +34,7 @@ private:
     Rectf m_MeatSize;
     Rectf m_BottomBurgerSize;
 
-    LevelComponent* m_sLevel;
+    std::weak_ptr<LevelComponent> m_sLevel;
 
     bool Check_Player_Burger_Collision(Rectf&);
     void InitializeBurgers();
@@ -42,7 +43,8 @@ private:
     void HandleBurgerDropLogicWithPlayer();
     void HandleBurgerDorpLogicWithBurger();
     void RenderBurgerCount() const;
-
+    void HandleBurgerEnemyCollision();
+    void PlayBurgerSound();
     bool m_ShowColliders;
 
     // burger player collision
@@ -50,14 +52,14 @@ private:
     bool m_IsSaladOverlappingWithPlayer;
     bool m_IsMeatOverlappingWithPlayer;
     bool m_IsBottomOverlappingWithPlayer;
-    float m_LowestPos = 590.f;
+    float m_LowestPos;
 
 
     // BURGER- BURGER COLLISION
     bool m_Top_SaladCollision;
     bool m_Salad_MeatCollision;
     bool m_Meat_BottomCollision;
-
+   // float m_LastPos;
     std::vector<std::shared_ptr<dae::Observer>> m_Observers;
 };
 

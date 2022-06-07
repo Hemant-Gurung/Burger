@@ -1,6 +1,6 @@
 #pragma once
-#include "Singleton.h"
-#include "utils.h"
+#include "Utils/Singleton.h"
+#include "Utils/utils.h"
 
 namespace dae
 {

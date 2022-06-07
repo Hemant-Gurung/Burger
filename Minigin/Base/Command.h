@@ -1,7 +1,6 @@
 #pragma once
-#include "GameObject.h"
-#include "BaseComponent.h"
-#include "PlayerComponent.h"
+#include "Scenegraph/GameObject.h"
+#include "Components/PlayerComponent.h"
 #include <iostream>
 #include "SceneManager.h"
 
@@ -46,6 +45,21 @@ public:
 		
 	};
 };
+
+class ThrowPepperCommand : public Command
+{
+public:
+	ThrowPepperCommand(std::shared_ptr<dae::GameObject> pGameobject)
+		:Command(pGameobject)
+	{};
+	void  Execute() override
+	{
+		m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->ThrowPepper();
+
+	};
+};
+
+
 
 class ScoreCommand : public Command
 {

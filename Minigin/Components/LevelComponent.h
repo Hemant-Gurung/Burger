@@ -1,8 +1,8 @@
 #pragma once
 #include "BaseComponent.h"
-#include "SVGParser.h"
-#include "structs.h"
-#include "Vector2f.h"
+#include "Utils/SVGParser.h"
+#include "Utils/structs.h"
+#include "Utils/Vector2f.h"
 
 struct SDL_Renderer;
 struct SDL_Window;
@@ -50,7 +50,7 @@ public:
 	bool doOverlap(Vector2f l1, Vector2f r1, Vector2f l2, Vector2f r2);
 	bool IsOnGround(const Rectf& actorShape, Vector2f& actorvelocity);
 	Rectf& GetPlayerPositionInTheLevel() { return m_PlayerPos; }
-	
+	Rectf& GetEnemyPosInTheLevel() { return m_EnemyPos; }
 
 
 	Point2f rayStartFirst;

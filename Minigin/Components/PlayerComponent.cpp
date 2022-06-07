@@ -1,5 +1,5 @@
 #include "MiniginPCH.h"
-#include "GameObject.h"
+#include "Scenegraph/GameObject.h"
 #include "Components/PlayerComponent.h"
 #include "Components/RenderComponent.h"
 //#include "sdl_sound_system.h"
@@ -12,7 +12,7 @@
 
 namespace dae
 {
-	dae::PlayerComponent::PlayerComponent(std::shared_ptr<GameObject>& pGameObj, LevelComponent& pLevel)
+	dae::PlayerComponent::PlayerComponent(std::shared_ptr<GameObject>& pGameObj, std::shared_ptr<LevelComponent> pLevel)
 		:BaseComponent(pGameObj),
 		m_Velocity(Vector2f(0, 0)),
 		m_Acceleration(Vector2f(0, -981.f)),
@@ -37,13 +37,18 @@ namespace dae
 		IsTextureFlipped(false),
 		IsMoving(false),
 		m_playerMovement(playerMovement::idle),
-		m_sLevel(&pLevel)
+		m_sLevel(std::move(pLevel))
 		,m_TotalLives(3)
+		,m_Pepper(5)
+		,m_Score(0)
+	,m_ShowDebugLines(false)
 	{
 		Initialize();
+		m_PepperIcon = std::make_shared<RenderComponent>(pGameObj);
 		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
 		m_SpriteTexture->SetTexture("CharacterSprite.png");
 
+		m_PepperIcon->SetTexture("PepperPng.png");
 		m_PlayerIcon = std::make_shared<dae::RenderComponent>(pGameObj);
 		m_PlayerIcon->SetTexture("ChefLogo.png");
 		//pGameObj->GetComponent<TransformComponent>()->SetPosition(10.f, 400.f, 0.f);
@@ -128,9 +133,9 @@ namespace dae
 		if (m_PlayerState != PlayerState::dead)
 		{
 			IsMoving = true;
-			//auto f1 = std::async(&SServiceLocator::get_sound_system);
-			//a = &f1.get();
-			//a->Play(SoundID::WALK, 50);
+			auto f1 = std::async(&SServiceLocator::get_sound_system);
+			a = &f1.get();
+			a->Play(SoundID::WALK, 50);
 
 			m_Velocity.x = -m_MoveSpeed;
 			m_Velocity.y = 0;
@@ -142,12 +147,11 @@ namespace dae
 
 	void PlayerComponent::MoveRight()
 	{
-		//auto f1 = std::async(&SServiceLocator::get_sound_system);
-		//a = &f1.get();
+		
 		if (m_PlayerState != PlayerState::dead)
 		{
 			IsMoving = true;
-			//a->Play(SoundID::DIE, 50);
+		
 			m_Velocity.x = m_MoveSpeed;
 			m_Velocity.y = 0;
 			m_playerMovement = playerMovement::movingright;
@@ -173,7 +177,7 @@ namespace dae
 			UpdatePlayerMovement(elapsedSec);
 			IsMoving = false;
 		}
-	
+		GuiUpdate();
 		
 	}
 
@@ -184,13 +188,16 @@ namespace dae
 		//get render component
 		//auto rendercom = m_pGameObject.lock()->GetComponent<RenderComponent>();
 
-		// draw box using the render box
-		m_SpriteTexture->RenderBox(m_DestRect, size, size);
-
+		if (m_ShowDebugLines)
+		{
+			// draw box using the render box
+			m_SpriteTexture->RenderBox(m_DestRect, size, size);
+		}
 		// draw texture using the render texture function
 		m_SpriteTexture->RenderTexture(m_DestRect, m_SrcRect, IsTextureFlipped);
 
 		RenderPlayerLiveCount();
+		RenderPepperIcon();
 	}
 
 	void PlayerComponent::SetPosition(float /*x*/, float /*x1*/, float /*x2*/)
@@ -246,6 +253,9 @@ namespace dae
 		case PlayerState::climbing:
 			m_SrcRect.bottom = 48 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 			break;
+		case PlayerState::throwingPepper:
+			m_SrcRect.bottom = 80; /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			break;
 		case PlayerState::dead:
 			m_SrcRect.bottom = 64;
 			break;
@@ -291,7 +301,7 @@ namespace dae
 		//const int size = 0;
 		//auto level = m_pGameObject.lock()->GetComponent<LevelComponent>();
 		//add player possible movements
-		m_sLevel->HandleCollision(m_DestRect, m_Velocity, m_playerMovement);
+		m_sLevel.lock()->HandleCollision(m_DestRect, m_Velocity, m_playerMovement);
 		if (IsMoving)
 		{
 			switch (m_PlayerState)
@@ -312,6 +322,12 @@ namespace dae
 			case PlayerState::climbing:
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
+				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				break;
+			case PlayerState::throwingPepper:
+				//m_DestRect.left += m_Velocity.x * elapsedSec;
+				//m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				break;
@@ -347,8 +363,8 @@ namespace dae
 	void PlayerComponent::RenderPlayerLiveCount() const
 	{
 		Rectf plaerIconPos;
-		plaerIconPos.left = 540.f;
-		plaerIconPos.bottom = 10.f;
+		plaerIconPos.left = 10.f;
+		plaerIconPos.bottom = 500.f;
 		plaerIconPos.width = 20.f;
 		plaerIconPos.height = 20.f;
 
@@ -357,13 +373,39 @@ namespace dae
 		plaerIconSrc.bottom = 0;
 		plaerIconSrc.width = 7.f;
 		plaerIconSrc.height = 7.f;
-		m_PlayerIcon->RenderTexture(plaerIconPos, plaerIconSrc);
+
+		for (int i = 0; i < m_TotalLives; ++i)
+		{
+			plaerIconPos.bottom +=25;
+			m_PlayerIcon->RenderTexture(plaerIconPos, plaerIconSrc);
+		}
 	}
 
+	void PlayerComponent::RenderPepperIcon() const
+	{
+		Rectf pepperIconPos;
+		pepperIconPos.left = 483.f;
+		pepperIconPos.bottom = 15.f;
+		pepperIconPos.width = 50.f;
+		pepperIconPos.height = 10.f;
+
+		Rectf pepperIconSrc;
+		pepperIconSrc.left = 0;
+		pepperIconSrc.bottom = 0;
+		pepperIconSrc.width = 25.f;
+		pepperIconSrc.height = 6.f;
+
+		m_PepperIcon->RenderTexture(pepperIconPos, pepperIconSrc);
+	}
+
+	
 	void PlayerComponent::CallPlayerIsDead()
 	{
 		//if (m_sLevel->CheckPlayerEnemyCollision())
 		{
+			auto f1 = std::async(&SServiceLocator::get_sound_system);
+			a = &f1.get();
+			a->Play(SoundID::DIE, 50);
 			//std::cout << "Player is Dead\n";
 			Notify(*this, EVENT::PLAYER_DEAD);
 			m_PlayerState = PlayerState::dead;
@@ -377,6 +419,15 @@ namespace dae
 		ScoreCall();
 	}
 
+	void PlayerComponent::ThrowPepper()
+	{
+		if (m_PlayerState != PlayerState::throwingPepper)
+		{
+			Notify(*this, EVENT::PLAYER_PEPPERTHROW);
+		}
+		m_PlayerState = PlayerState::throwingPepper;
+	}
+
 
 	void PlayerComponent::DestroyLive()
 	{
@@ -385,6 +436,51 @@ namespace dae
 		{
 			m_TotalLives = 0;
 		}
+		PlayDeadSound();
+		
+	}
+
+	void PlayerComponent::AddScore()
+	{
+		m_Score += 50;
+	}
+
+	void PlayerComponent::DecreasePepper()
+	{
+		m_Pepper--;
+		if (m_Pepper <= 0)
+		{
+			m_Pepper = 0;
+		}
+	}
+
+	void PlayerComponent::PlayDeadSound()
+	{
+		Mix_Init(MIX_INIT_MP3);
+		Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 0);
+
+		auto dead = Mix_LoadWAV("../Data/Sounds/Lose Life.mp3");
+		//	_sample[0] = dae::ResourceManager::GetInstance().LoadSound("Sounds/Start.wav");
+		if (!Mix_Playing(3))
+		{
+			Mix_PlayChannel(3, dead, 0);
+		}
+	}
+
+	void PlayerComponent::GuiUpdate()
+	{
+
+			ImGui::Begin("PlayerDebugLine", NULL);
+			//ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
+			//ImGui::SetNextWindowPos()
+			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
+			ImGui::Checkbox("ShowPlayerCollider", &m_ShowDebugLines);
+			//if (ImGui::Button("Reset Speed")) {
+				// This code is executed when the user clicks the button
+				//this->speed = 0;
+			//}
+			//ImGui::SliderFloat("Speed", &this->speed, 0.0f, 10.0f);
+			ImGui::End();
 		
 	}
 }

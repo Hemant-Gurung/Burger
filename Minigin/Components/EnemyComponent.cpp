@@ -5,7 +5,7 @@
 
 namespace dae
 {
-	EnemyComponent::EnemyComponent(std::shared_ptr<GameObject>& pGameobject, EnemyType& enemytype, LevelComponent& pLevel)
+	EnemyComponent::EnemyComponent(std::shared_ptr<GameObject>& pGameobject, EnemyType& enemytype, std::shared_ptr<LevelComponent> pLevel)
 		:BaseComponent(pGameobject),
 		m_Velocity(0.f, 0.f),
 		m_MoveSpeed(50.f),
@@ -20,8 +20,9 @@ namespace dae
 		m_Colums(7),
 		m_Rows(7),
 		m_enemyType(enemytype),
-		m_sLevel(&pLevel),
-		m_enemyState(EnemyStates::movingRight)
+		m_sLevel(std::move(pLevel)),
+		m_enemyState(EnemyStates::movingRight),
+		m_IsDead(false)
 
 	{
 		Initialize();
@@ -32,15 +33,13 @@ namespace dae
 
 	}
 
-	dae::EnemyComponent::~EnemyComponent()
-	{
 
-	}
 
 
 	void dae::EnemyComponent::Initialize()
 	{
 		m_FrameTime = 1.f / m_FramesPerSecond;
+		m_IsDead = false;
 		InitializeDstRect();
 		InitializeSrcRect();
 	}
@@ -85,9 +84,11 @@ namespace dae
 	void dae::EnemyComponent::update(float elapsed)
 	{
 		//BaseComponent::update(elapsed);
-		UpdateSprite(elapsed);
-		UpdateEnemyMovementState(elapsed);
-		UpdateEnemyMovementusingState(elapsed);
+		{
+			UpdateSprite(elapsed);
+			UpdateEnemyMovementState(elapsed);
+			UpdateEnemyMovementusingState(elapsed);
+		}
 
 	}
 
@@ -109,26 +110,32 @@ namespace dae
 
 	void dae::EnemyComponent::UpdateSourceRect()
 	{
-		m_SrcRect.left = m_SpriteSheetLeft + (int)m_CurrFrame % m_Colums * m_SrcRect.width;
-
-		switch (m_enemyType)
+		if (!m_IsDead)
 		{
-		case EnemyType::Red:
-			m_SrcRect.bottom = 0;
-			break;
+			m_SrcRect.left = m_SpriteSheetLeft + (int)m_CurrFrame % m_Colums * m_SrcRect.width;
 
-		case EnemyType::Egg:
-			m_SrcRect.bottom = 48;
-			break;
+			switch (m_enemyType)
+			{
+			case EnemyType::Red:
+				m_SrcRect.bottom = 0;
+				break;
+
+			case EnemyType::Egg:
+				m_SrcRect.bottom = 48;
+				break;
+			}
 		}
-
+		else
+		{
+			m_SrcRect.bottom = 100;
+		}
 	}
 
 	void dae::EnemyComponent::UpdateEnemyMovementState(float /*elapsedSec*/)
 	{
 
 		//m_DestRect.left += 10 * elapsedSec;
-		auto playerPos = m_sLevel->GetPlayerPositionInTheLevel();
+		auto playerPos = m_sLevel.lock()->GetPlayerPositionInTheLevel();
 		auto playerCenter = Point2f(playerPos.left + playerPos.width / 2, playerPos.bottom + playerPos.height / 2);
 
 		// make a line from enemyPos to playerPOs
@@ -320,7 +327,7 @@ namespace dae
 
 	void dae::EnemyComponent::UpdateEnemyMovementusingState(float elapsedSec)
 	{
-		auto playerPos = m_sLevel->GetPlayerPositionInTheLevel();
+		auto playerPos = m_sLevel.lock()->GetPlayerPositionInTheLevel();
 		auto playerCenter = Point2f(playerPos.left + playerPos.width / 2, playerPos.bottom + playerPos.height / 2);
 
 		// make a line from enemyPos to playerPOs
@@ -359,14 +366,14 @@ namespace dae
 
 	void dae::EnemyComponent::HandleEnemyCollision()
 	{
-		m_sLevel->HandleCollision(m_DestRect, m_Velocity, m_enemyState);
+		m_sLevel.lock()->HandleCollision(m_DestRect, m_Velocity, m_enemyState);
 	}
 
 	bool dae::EnemyComponent::checkIfMovementIsPossible(EnemyStates& state)
 	{
 		//auto tempCurrentState = state;
 		//auto tempCurrentState = m_enemyState;
-		m_sLevel->HandleCollision(m_DestRect, m_Velocity, state);
+		m_sLevel.lock()->HandleCollision(m_DestRect, m_Velocity, state);
 
 		if (m_Velocity == Vector2f(0, 0))
 		{
@@ -382,4 +389,8 @@ namespace dae
 		return m_DestRect;
 	}
 
+	void EnemyComponent::IsDead(bool dead)
+	{
+		m_IsDead = dead;
+	}
 }

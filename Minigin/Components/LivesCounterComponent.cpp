@@ -1,7 +1,7 @@
 #include "MiniginPCH.h"
 #include "LivesCounterComponent.h"
 #include "TextComponent.h"
-#include "GameObject.h"
+#include "Scenegraph/GameObject.h"
 #include "PlayerComponent.h"
 
  static int m_TotalLives = 3;

@@ -3,8 +3,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include "Renderer.h"
-#include "Texture2D.h"
+#include "Graphics/Renderer.h"
+#include "Graphics/Texture2D.h"
 #include "Font.h"
 
 void dae::ResourceManager::Init(const std::string& dataPath)
@@ -44,3 +44,15 @@ std::shared_ptr<dae::Font> dae::ResourceManager::LoadFont(const std::string& fil
 {
 	return std::make_shared<Font>(m_DataPath + file, size);
 }
+
+Mix_Chunk* dae::ResourceManager::LoadSound(const char* name)
+{
+	std::string  n = m_DataPath + name;
+	auto a = Mix_LoadWAV( n.c_str());
+	if(a == nullptr)
+	{
+		std::cout << Mix_GetError() << std::endl;
+	}
+	return a;
+}
+

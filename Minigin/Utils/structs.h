@@ -95,13 +95,13 @@ inline const char* LEVELS[3] =
 {
 	"Level_1.png",
 	"Level_2.png",
-	"Level_3.png"
+	"Level _3.png"
 };
 inline const char* LEVEL_COLLISIONS[3] =
 {
 	"../Data/Level - SDL_1.svg",
-	"../Data/Level - SDL_2.svg",
-	"../Data/Level - SDL_3.svg"
+	"../Data/BurgerLevel_2_SDL.svg",
+	"../Data/Level -SDL_3.svg"
 };
 
 

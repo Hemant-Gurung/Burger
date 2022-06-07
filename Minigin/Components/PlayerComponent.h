@@ -1,9 +1,9 @@
 #pragma once
-#include "Observer.h"
+#include "Base/Observer.h"
 #include "BaseComponent.h"
 //#include "box2d.h"
 #include <thread>
-#include "Sound_System.h"
+#include "Utils/Sound_System.h"
 #include  "LevelComponent.h"
 #include "TextComponent.h"
 #include "RenderComponent.h"
@@ -15,13 +15,14 @@ namespace dae
 		standing,
 		running,
 		climbing,
+		throwingPepper,
 		dead
 	};
 
 	class PlayerComponent : public BaseComponent
 	{
 	public:
-		PlayerComponent(std::shared_ptr<GameObject>&, LevelComponent&);
+		PlayerComponent(std::shared_ptr<GameObject>&, std::shared_ptr<LevelComponent>);
 		~PlayerComponent();
 
 		PlayerComponent(const PlayerComponent& other) = delete;
@@ -60,8 +61,13 @@ namespace dae
 
 		void CallScoreNotify();
 
+		void ThrowPepper();
 		void DestroyLive();
+		void AddScore();
+		int GetScore() { return m_Score; }
+		void DecreasePepper();
 		int GetLives() { return m_TotalLives; }
+		int GetRemainingPepper() { return m_Pepper; }
 
 		void SetPlayerStartPosition(const Point2f& pos)
 		{
@@ -80,6 +86,7 @@ namespace dae
 		std::shared_ptr<RenderComponent> m_SpriteTexture;
 		
 		std::shared_ptr<dae::RenderComponent> m_PlayerIcon;
+		std::shared_ptr<dae::RenderComponent> m_PepperIcon;
 		EVENT eve;
 		Vector2f m_playerPos;
 		Vector2f m_Velocity{};
@@ -104,7 +111,7 @@ namespace dae
 
 		PlayerState m_PlayerState{ PlayerState::standing };
 		playerMovement m_playerMovement;
-		 LevelComponent* m_sLevel;
+		std::weak_ptr<LevelComponent> m_sLevel;
 
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;
@@ -118,8 +125,16 @@ namespace dae
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
 		void RenderPlayerLiveCount() const;
+		void RenderPepperIcon() const ;
+		void PlayDeadSound();
+
+		void GuiUpdate();
 
 		int m_TotalLives;
+		int m_Score;
+		int m_Pepper;
+
+		bool m_ShowDebugLines;
 	};
 }
 

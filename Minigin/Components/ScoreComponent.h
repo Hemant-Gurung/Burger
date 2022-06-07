@@ -1,6 +1,6 @@
 #pragma once
-#include "Observer.h"
-#include "GameObject.h"
+#include "Base/Observer.h"
+#include "Scenegraph/GameObject.h"
 #include "TextComponent.h"
 #include "BaseComponent.h"
 namespace dae

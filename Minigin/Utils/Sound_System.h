@@ -7,7 +7,10 @@ enum class SoundID
 	NONE = 0,
 	WALK = 1,
 	DIE = 2,
-	FOOD_DROP = 3
+	FOOD_DROP = 3,
+	STARTSCREEN = 4,
+	GAMESOUND =5,
+	LEVEL_END = 6
 	
 };
 struct PlayMessage

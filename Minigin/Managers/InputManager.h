@@ -4,10 +4,8 @@
 #include <map>
 #include <Windows.h>
 #include <Xinput.h>
-#include "Singleton.h"
-#include "Command.h"
-#include <vector>
-#include "Singleton.h"
+#include "Utils/Singleton.h"
+#include "Base/Command.h"
 #include <map>
 
 #pragma comment(lib,"XInput.lib")

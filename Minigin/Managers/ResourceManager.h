@@ -1,6 +1,6 @@
 #pragma once
-#include "Singleton.h"
-
+#include "Utils/Singleton.h"
+#include "SDL_mixer.h"
 namespace dae
 {
 	class Texture2D;
@@ -11,6 +11,7 @@ namespace dae
 		void Init(const std::string& data);
 		std::shared_ptr<Texture2D> LoadTexture(const std::string& file) const;
 		std::shared_ptr<Font> LoadFont(const std::string& file, unsigned int size) const;
+		Mix_Chunk* LoadSound(const char* name);
 		//std::shared_ptr<>
 	private:
 		friend class Singleton<ResourceManager>;

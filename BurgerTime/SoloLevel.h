@@ -1,10 +1,8 @@
 #pragma once
 
-#include "GameScene.h"
-#include "LevelComponent.h"
-#include "Scene.h"
+#include "Scenegraph/GameScene.h"
+#include "Components/LevelComponent.h"
 #include "PlayerComponent.h"
-#include "LevelComponent.h"
 #include "ScoreComponent.h"
 #include "LivesCounterComponent.h"
 
@@ -13,35 +11,46 @@ class SoloLevel final :
 {
 public:
     SoloLevel();
-    ~SoloLevel() = default ;
+    ~SoloLevel()= default;
+
+    SoloLevel(const SoloLevel& other) = delete;
+    SoloLevel(SoloLevel&& other) noexcept = delete;
+    SoloLevel& operator=(const SoloLevel& other) = delete;
+    SoloLevel& operator=(SoloLevel&& other) noexcept = delete;
 
     void Update(float) override;
     void FixedUpdate() override;
     void Initialize() override;
     void Render() override;
 
-    void Enemy( EnemyType&, LevelComponent&) ;
-    void AddBurger(LevelComponent&) ;
+    void Enemy(std::shared_ptr<dae::GameObject>&, EnemyType&, std::shared_ptr<LevelComponent>) ;
+    void AddBurger(std::shared_ptr<dae::GameObject>&,std::shared_ptr<LevelComponent>) ;
 
 private:
-    void PlayerOne(LevelComponent& slevel) ;
-
+    void PlayerOne(std::shared_ptr<LevelComponent> slevel) ;
+    void CheckBurgerDropOnEnemy();
     Rectf m_enemyPos;
     Rectf m_PlayerPos;
 
-    std::shared_ptr<dae::PlayerComponent> m_Player;
-    LevelComponent* m_pLevel;
-    std::shared_ptr<dae::ScoreComponent> m_Score;
-    std::shared_ptr<dae::LivesCounterComponent> m_lives;
-    std::shared_ptr<dae::TextComponent> m_Textlives;
-    std::shared_ptr<dae::TextComponent> m_TextScore;
+   std::weak_ptr<dae::PlayerComponent> m_Player;
+   
+   // std::shared_ptr<LevelComponent> m_sLevel;
+    /*
+    std::weak_ptr<dae::ScoreComponent> m_Score;
+    std::weak_ptr<dae::LivesCounterComponent> m_lives;*/
 
 
     bool m_hasOverlapped;
     bool CheckIfPlayerIsDead(dae::PlayerComponent&);
     void ResetScene();
+    void GenerateEnemies();
 
     float m_accumulatedDeathTime;
+
+    Sound_System* sound;
+   // std::shared_ptr<dae::GameObject> gameObjectEnemy;
+   // std::shared_ptr<dae::GameObject> gameObjectPlayer;
+
 
 };
 

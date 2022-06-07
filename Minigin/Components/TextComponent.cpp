@@ -1,8 +1,8 @@
 #include "MiniginPCH.h"
 #include <SDL_ttf.h>
 #include "TextComponent.h"
-#include "Renderer.h"
-#include "Font.h"
+#include "Graphics/Renderer.h"
+#include "Base/Font.h"
 #include "GameObject.h"
 #include "Texture2D.h"
 

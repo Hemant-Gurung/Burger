@@ -1,8 +1,8 @@
 #pragma once
 #include <glm/fwd.hpp>
 #include "BaseComponent.h"
-#include "GameObject.h"
-#include "Observer.h"
+#include "Scenegraph/GameObject.h"
+#include "Base/Observer.h"
 #include <steam_api.h>
 
 #define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }

@@ -103,7 +103,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Base;$(SolutionDir)BurgerTime\Data;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -160,7 +160,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Base;$(SolutionDir)BurgerTime\Data;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -240,6 +240,7 @@
     <ClInclude Include="Components\TextComponent.h" />
     <ClInclude Include="Components\TextureComponen.h" />
     <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Components\PepperComponent.h" />
     <ClInclude Include="Scenegraph\GameScene.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Texture2D.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="Components\TextComponent.cpp" />
     <ClCompile Include="Components\TextureComponent.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp" />
+    <ClCompile Include="Components\PepperComponent.cpp" />
     <ClCompile Include="Scenegraph\GameScene.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Texture2D.cpp" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseComponent.h"
+#include "Components/BaseComponent.h"
 namespace dae
 {
 	//class Transform//public BaseComponent

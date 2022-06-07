@@ -1,6 +1,5 @@
 #include "MiniginPCH.h"
 #include "TextureComponen.h"
-#include  "Texture2D.h"
 #include "ResourceManager.h"
 
 dae::TextureComponent::TextureComponent(std::shared_ptr<GameObject>& pGameObj)

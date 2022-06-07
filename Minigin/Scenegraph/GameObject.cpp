@@ -1,6 +1,6 @@
 #include "MiniginPCH.h"
 #include "GameObject.h"
-#include "BaseComponent.h"
+#include "Components/BaseComponent.h"
 
 using namespace std;
 dae::GameObject::~GameObject() = default;

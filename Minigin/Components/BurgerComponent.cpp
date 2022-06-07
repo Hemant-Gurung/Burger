@@ -4,15 +4,16 @@
 
 //using namespace 
 
-BurgerComponent::BurgerComponent(std::shared_ptr<dae::GameObject>& pGameObject, LevelComponent& level, const float left,const float4& burgerBottom)
+BurgerComponent::BurgerComponent(std::shared_ptr<dae::GameObject>& pGameObject, std::shared_ptr<LevelComponent> level, const Point2f leftLast,const float4 burgerBottom)
 	:BaseComponent(pGameObject),
-	m_sLevel(&level)
+		m_sLevel(std::move(level))
+		,m_LowestPos(leftLast.y)
 {
 	// Initialize Burger Position
-	m_TopBurgerSize.left = left;
-	m_SaladSize.left = left;
-	m_MeatSize.left = left;
-	m_BottomBurgerSize.left = left;
+	m_TopBurgerSize.left = leftLast.x;
+	m_SaladSize.left = leftLast.x;
+	m_MeatSize.left = leftLast.x;
+	m_BottomBurgerSize.left = leftLast.x;
 
 	//Bottom
 	m_TopBurgerSize.bottom = burgerBottom.one;
@@ -96,14 +97,17 @@ void BurgerComponent::Render() const
 	//RenderBurgerCount();
 }
 
-void BurgerComponent::update(float x)
+void BurgerComponent::update(float /*x*/)
 {
-	BaseComponent::update(x);
+	//BaseComponent::update(x);
 	OnGuiUpdate();
 	IsPlayerOverlappingWithPlayer();
 	Handle_Burger_Burger_Collision();
 	HandleBurgerDropLogicWithPlayer();
 	HandleBurgerDorpLogicWithBurger();
+	HandleBurgerEnemyCollision();
+
+	
 }
 
 void BurgerComponent::SetPosition(float x, float x1, float x2)
@@ -118,7 +122,11 @@ void BurgerComponent::SetTexture(const std::string& basic_string)
 
 bool BurgerComponent::IsPlayerOverlappingWithPlayer()
 {
-	return Check_Player_Burger_Collision(m_sLevel->GetPlayerPositionInTheLevel());
+	if (m_sLevel.lock() != nullptr)
+	{
+		return Check_Player_Burger_Collision(m_sLevel.lock()->GetPlayerPositionInTheLevel());
+	}
+	return false;
 }
 
 void BurgerComponent::AddObserver(std::shared_ptr<dae::Observer> observer)
@@ -138,28 +146,28 @@ bool BurgerComponent::Check_Player_Burger_Collision(Rectf& playerPos)
 {
 	if (utils::IsOverlapping(m_TopBurgerSize, playerPos))
 	{
-		Notify(*this, dae::EVENT::PLAYER_SCOREADD);
+		//Notify(*this, dae::EVENT::PLAYER_SCOREADD);
 		m_IsTopOverlappingWithPlayer = true;
 		return true;
 	}
 	
 	if (utils::IsOverlapping(m_SaladSize, playerPos))
 	{
-		Notify(*this, dae::EVENT::PLAYER_SCOREADD);
+		//Notify(*this, dae::EVENT::PLAYER_SCOREADD);
 		m_IsSaladOverlappingWithPlayer = true;
 		return true;
 	}
 	
 	if (utils::IsOverlapping(m_MeatSize, playerPos))
 	{
-		Notify(*this, dae::EVENT::PLAYER_SCOREADD);
+		//Notify(*this, dae::EVENT::PLAYER_SCOREADD);
 		m_IsMeatOverlappingWithPlayer = true;
 		return true;
 	}
 	
 	if (utils::IsOverlapping(m_BottomBurgerSize, playerPos))
 	{
-		Notify(*this, dae::EVENT::PLAYER_SCOREADD);
+		//Notify(*this, dae::EVENT::PLAYER_SCOREADD);
 		m_IsBottomOverlappingWithPlayer = true;
 		return true;
 	}
@@ -185,21 +193,21 @@ void BurgerComponent::InitializeBurgers()
 
 void BurgerComponent::OnGuiUpdate()
 {
-	ImGui::Begin("BurgerInfo", NULL, ImGuiWindowFlags_NoResize);
-	//ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
-	//ImGui::SetNextWindowPos()
-	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
-	ImGui::Checkbox("ShowColliders", &m_ShowColliders);
-	//if (ImGui::Button("Reset Speed")) {
-		// This code is executed when the user clicks the button
-		//this->speed = 0;
-	//}
-	ImGui::Checkbox("IsOverlapping", &m_IsTopOverlappingWithPlayer);
-	ImGui::SliderFloat("BurgerTopPosition", &m_TopBurgerSize.bottom, 0.0f, 700.0f);
-	ImGui::SliderFloat("BurgerTopLeft", &m_TopBurgerSize.left, 0.0f, 1000.0f);
-	//ImGui::SliderFloat("BurgerTopPosition", &m_TopBurgerSize.bottom, 0.0f, 500.0f);
+	//ImGui::Begin("BurgerInfo", NULL);
+	////ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
+	////ImGui::SetNextWindowPos()
+	//ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
+	//ImGui::Checkbox("ShowColliders", &m_ShowColliders);
+	////if (ImGui::Button("Reset Speed")) {
+	//	// This code is executed when the user clicks the button
+	//	//this->speed = 0;
+	////}
+	//ImGui::Checkbox("IsOverlapping", &m_IsTopOverlappingWithPlayer);
+	//ImGui::SliderFloat("BurgerTopPosition", &m_TopBurgerSize.bottom, 0.0f, 700.0f);
+	//ImGui::SliderFloat("BurgerTopLeft", &m_TopBurgerSize.left, 0.0f, 1000.0f);
+	////ImGui::SliderFloat("BurgerTopPosition", &m_TopBurgerSize.bottom, 0.0f, 500.0f);
 
-	ImGui::End();
+	//ImGui::End();
 }
 
 void BurgerComponent::Handle_Burger_Burger_Collision()
@@ -268,7 +276,7 @@ void BurgerComponent::HandleBurgerDorpLogicWithBurger()
 
 	if(m_Top_SaladCollision)
 	{
-		if(m_IsTopOverlappingWithPlayer)
+		//if(m_IsTopOverlappingWithPlayer)
 		{
 			//m_TopBurgerSize.bottom += 10;
 			
@@ -319,6 +327,47 @@ void BurgerComponent::RenderBurgerCount() const
 	burgerpossrc.width = 7.f;
 	burgerpossrc.height = 7.f;
 	m_BurgerIcon->RenderTexture(burgerpos, burgerpossrc);
+}
+
+void BurgerComponent::HandleBurgerEnemyCollision()
+{
+	if (m_IsTopOverlappingWithPlayer)
+	{
+		if (utils::IsOverlapping(m_TopBurgerSize, m_sLevel.lock()->GetEnemyPosInTheLevel()))
+		{
+			Notify(*this, dae::EVENT::ENEMY_DEAD);
+		
+		}
+	}
+	if (m_IsSaladOverlappingWithPlayer)
+	{
+		if (utils::IsOverlapping(m_SaladSize, m_sLevel.lock()->GetEnemyPosInTheLevel()))
+		{
+			Notify(*this, dae::EVENT::ENEMY_DEAD);
+			
+		}
+	}
+	if (m_IsMeatOverlappingWithPlayer)
+	{
+		if (utils::IsOverlapping(m_MeatSize, m_sLevel.lock()->GetEnemyPosInTheLevel()))
+		{
+			Notify(*this, dae::EVENT::ENEMY_DEAD);
+			
+		}
+	}
+	if (m_IsBottomOverlappingWithPlayer)
+	{
+		if (utils::IsOverlapping(m_BottomBurgerSize, m_sLevel.lock()->GetEnemyPosInTheLevel()))
+		{
+			Notify(*this, dae::EVENT::ENEMY_DEAD);
+			
+		}
+	}
+}
+
+void BurgerComponent::PlayBurgerSound()
+{
+
 }
 
 //BOTTOM BURFER BURGER COLLISION LOGINC

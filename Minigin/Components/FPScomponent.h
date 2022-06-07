@@ -1,5 +1,4 @@
 #pragma once
-#include "Transform.h"
 #include "BaseComponent.h"
 #include "TextComponent.h"
 namespace dae
