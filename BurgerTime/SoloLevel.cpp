@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "SoloLevel.h"
-
 #include <future>
-
 #include "Utils.h"
 #include "InputManager.h"
 #include "BurgerComponent.h"
@@ -42,15 +40,15 @@ void SoloLevel::Initialize()
 	Renderlevel->SetTexture(LEVELS[0]);
 	gameObjectLevel->AddComponent(Renderlevel);
 	////ADD LEVEL SKELETON
-	auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
-	levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
-	gameObjectLevel->AddComponent(levelVertices);
+	auto m_sLevel = std::make_shared<LevelComponent>(gameObjectLevel);
+	m_sLevel.get()->Initialize(LEVEL_COLLISIONS[0]);
+	gameObjectLevel->AddComponent(m_sLevel);
 
 	//scene.Add(gameObjectLevel);
 
 
-	auto level =gameObjectLevel->GetComponent<LevelComponent>();
-	auto m_sLevel = std::shared_ptr<LevelComponent>(level);
+	//auto level =gameObjectLevel->GetComponent<LevelComponent>();
+	//auto m_sLevel = std::shared_ptr<LevelComponent>(level);
 	
 	AddChild(gameObjectLevel);
 	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
