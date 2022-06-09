@@ -1,6 +1,6 @@
 
 This is a 2D engine developed by  Hemant Gurung with the help of DAE teachers. 
-The engine to be specific has commonly known as component system, where each of thema are a gameobject.
+The engine to be specific has commonly known as component system.
 Another thing is that this engine uses scenemanager to add different scenes and switch between them.
 
 It is very easy to add scene and use those in this engine. Every gameobjects can be tagged to be specific and for properly identifying them.
