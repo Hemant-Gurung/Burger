@@ -17,17 +17,22 @@ namespace dae
 		m_AccumulatedSec(0.f),
 		m_FramesPerSecond(60),
 		m_CurrFrame(0),
-		m_Colums(7),
-		m_Rows(7),
+		m_Colums(1),
+		m_Rows(1),
 		m_enemyType(enemytype),
-		m_sLevel(std::move(pLevel)),
+		m_sLevel(pLevel),
 		m_enemyState(EnemyStates::movingRight),
-		m_IsDead(false)
+		m_IsDead(false),
+		m_FlipVertical(false),
+		m_FlipHorizontal(false)
 
 	{
 		Initialize();
 		m_EnemySprite = std::make_shared<RenderComponent>(pGameobject);
-		m_EnemySprite->SetTexture("EnemySprite.png");
+		m_EnemySprite->SetTexture("EnemyTank.png");
+
+		m_EnemySpriteVertical = std::make_shared<RenderComponent>(pGameobject);
+		m_EnemySpriteVertical->SetTexture("EnemyTankVertical.png");
 		//pGameobject->AddComponent(m_EnemySprite);
 
 
@@ -78,13 +83,25 @@ namespace dae
 
 	void dae::EnemyComponent::Render() const
 	{
-		m_EnemySprite->RenderTexture(m_DestRect, m_SrcRect, false);
+		if(m_enemyState == EnemyStates::movingDown || m_enemyState == EnemyStates::movingUp)
+		{
+			m_EnemySpriteVertical->RenderTexture(m_DestRect, m_SrcRect, m_FlipHorizontal, m_FlipVertical);
+
+		}
+		else
+		{
+			m_EnemySprite->RenderTexture(m_DestRect, m_SrcRect, m_FlipHorizontal, m_FlipVertical);
+
+		}
+
+		//m_pGameObject.lock()->GetComponent<RenderComponent>()->RenderBox(m_DestRect,10,10);
 	}
 
 	void dae::EnemyComponent::update(float elapsed)
 	{
 		//BaseComponent::update(elapsed);
 		{
+			
 			UpdateSprite(elapsed);
 			UpdateEnemyMovementState(elapsed);
 			UpdateEnemyMovementusingState(elapsed);
@@ -195,10 +212,12 @@ namespace dae
 				if (playerCenter.y - enemyCenter.y >= 1.f)
 				{
 					m_enemyState = EnemyStates::movingUp;
+
 				}
 				else
 				{
 					m_enemyState = EnemyStates::movingDown;
+
 				}
 			}
 			else
@@ -232,12 +251,19 @@ namespace dae
 				if (playerCenter.x - enemyCenter.x >= 3.f)
 				{
 					if (m_enemyState != EnemyStates::movingLeft)
+					{
 						m_enemyState = EnemyStates::movingRight;
+					}
 				}
 				else
 				{
 					if (m_enemyState != EnemyStates::movingRight)
+					{
 						m_enemyState = EnemyStates::movingLeft;
+						
+
+
+					}
 				}
 			}
 			else
@@ -337,19 +363,24 @@ namespace dae
 		switch (m_enemyState)
 		{
 		case EnemyStates::movingRight:
+			m_FlipHorizontal = true;
+
 			m_Velocity.x = m_MoveSpeed;
 			m_Velocity.y = 0;
 			break;
 		case EnemyStates::movingLeft:
+			m_FlipHorizontal = false;
 			m_Velocity.x = -m_MoveSpeed;
 			m_Velocity.y = 0;
 
 			break;
 		case EnemyStates::movingDown:
+			m_FlipVertical = false;
 			m_Velocity.y = -m_MoveSpeed;
 			m_Velocity.x = 0;
 			break;
 		case EnemyStates::movingUp:
+			m_FlipVertical = true;
 			m_Velocity.y = m_MoveSpeed;
 			m_Velocity.x = 0;
 			break;

@@ -204,9 +204,19 @@ public:
 
 	}
 
-	bool IsDownThisFrame(unsigned int button,GamePadIndex& playerIndex) const { return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button; }
+	bool IsDownThisFrame(unsigned int button,GamePadIndex& playerIndex) const
+	{
+		auto buttonChange = m_CurrentState[(int)playerIndex].Gamepad.wButtons ^ m_PreviousState[(int)playerIndex].Gamepad.wButtons;
+		return buttonChange & button;
+		//return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button;
+	}
 
-	bool IsUpThisFrame(unsigned int button, GamePadIndex& playerIndex) const { return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button; }
+	bool IsUpThisFrame(unsigned int button, GamePadIndex& playerIndex) const
+	{
+		auto buttonChange = m_CurrentState[(int)playerIndex].Gamepad.wButtons ^ m_PreviousState[(int)playerIndex].Gamepad.wButtons;
+		return buttonChange & button;
+		//return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button;
+	}
 
 	bool IsPressed(unsigned int button, GamePadIndex& playerIndex) const {
 		return m_CurrentState[(int)playerIndex].Gamepad.wButtons & button;

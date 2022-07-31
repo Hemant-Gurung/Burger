@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "SServiceLocator.h"
 
 
@@ -59,9 +60,12 @@ void StartScreen::Initialize()
 	AddChild(gameObjectStart_1);
 
 
-	auto f1 = std::async(&SServiceLocator::get_sound_system);
-	sound = &f1.get();
-	sound->Play(SoundID::STARTSCREEN, 50);
+	//auto f1 = std::async(&SServiceLocator::get_sound_system);
+	//sound = &f1.get();
+	//sound->Play(SoundID::STARTSCREEN, 50);
+
+	if (!SoundManager::GetInstance().IsSoundStreamPlaying("Start"))
+		SoundManager::GetInstance().PlaySoundStream("Start", true);
 	
 }
 
@@ -94,9 +98,6 @@ void StartScreen::Update(float dt)
 
 void StartScreen::FixedUpdate()
 {
-	if (sound != nullptr)
-		sound->Update();
-
 	for (auto obj : m_sceneObjects)
 	{
 		obj->FixedUpdate();

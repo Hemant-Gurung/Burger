@@ -77,23 +77,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>Build_Win32\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\Minigin\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)Intermediate\Minigin\$(Configuration)\</IntDir>
+    <OutDir>Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>Build_Win32\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\Minigin\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IntDir>$(SolutionDir)Intermediate\Minigin\$(Configuration)\</IntDir>
+    <OutDir>Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,7 +123,8 @@
       <Command>xcopy $(SolutionDir)3rdParty\steamworks\redistributable_bin\*.dll $(OutputPath) /Y</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>xinput.lib</AdditionalDependencies>
+      <AdditionalDependencies>xinput.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,7 +152,8 @@
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>xinput.lib</AdditionalDependencies>
+      <AdditionalDependencies>xinput.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -178,7 +184,8 @@
       <Command>xcopy $(SolutionDir)3rdParty\steamworks\redistributable_bin\*.dll $(OutputPath) /Y</Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>xinput.lib</AdditionalDependencies>
+      <AdditionalDependencies>xinput.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)3rdParty/SDL2_mixer/lib/x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -191,7 +198,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\lib\x64;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -210,7 +217,8 @@
 </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>xinput.lib</AdditionalDependencies>
+      <AdditionalDependencies>xinput.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -227,6 +235,7 @@
     <ClInclude Include="Base\Font.h" />
     <ClInclude Include="Base\Observer.h" />
     <ClInclude Include="Base\SceneObject.h" />
+    <ClInclude Include="Components\BulletComponent.h" />
     <ClInclude Include="Components\Achievements.h" />
     <ClInclude Include="Components\BaseComponent.h" />
     <ClInclude Include="Components\BurgerComponent.h" />
@@ -255,6 +264,9 @@
     <ClInclude Include="Utils\NullSoundSystem.h" />
     <ClInclude Include="Utils\sdl_sound_system.h" />
     <ClInclude Include="Utils\Singleton.h" />
+    <ClInclude Include="Utils\SoundEffect.h" />
+    <ClInclude Include="Utils\SoundManager.h" />
+    <ClInclude Include="Utils\SoundStream.h" />
     <ClInclude Include="Utils\Sound_System.h" />
     <ClInclude Include="Utils\SServiceLocator.h" />
     <ClInclude Include="Utils\structs.h" />
@@ -319,6 +331,7 @@
     <ClCompile Include="Base\Command.cpp" />
     <ClCompile Include="Base\Font.cpp" />
     <ClCompile Include="Base\Observer.cpp" />
+    <ClCompile Include="Components\BulletComponent.cpp" />
     <ClCompile Include="Components\Achievements.cpp" />
     <ClCompile Include="Components\BaseComponent.cpp" />
     <ClCompile Include="Components\BurgerComponent.cpp" />
@@ -351,6 +364,9 @@
     <ClCompile Include="Scenegraph\Scene.cpp" />
     <ClCompile Include="Utils\NullSoundSystem.cpp" />
     <ClCompile Include="Utils\sdl_sound_system.cpp" />
+    <ClCompile Include="Utils\SoundEffect.cpp" />
+    <ClCompile Include="Utils\SoundManager.cpp" />
+    <ClCompile Include="Utils\SoundStream.cpp" />
     <ClCompile Include="Utils\Sound_System.cpp" />
     <ClCompile Include="Utils\SServiceLocator.cpp" />
     <ClCompile Include="Utils\structs.cpp" />

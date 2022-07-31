@@ -1,0 +1,5 @@
+# ninja log v5
+0	15	0	clean	8c45b54705a541e8
+7	69	6689114072001334	CMakeFiles/glm_dummy.dir/detail/dummy.obj	4cd2ca6348ce96c6
+0	840	6689114079648204	CMakeFiles/glm_dummy.dir/detail/glm.obj	656067dfa2a51b50
+842	1265	6689114083528312	glm_dummy.exe	e7e1ba79113a9261

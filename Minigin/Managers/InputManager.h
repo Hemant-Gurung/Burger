@@ -27,6 +27,8 @@ namespace dae
 			DpadDown = XINPUT_GAMEPAD_DPAD_DOWN,
 			DpadLeft = XINPUT_GAMEPAD_DPAD_LEFT,
 			DpadRight = XINPUT_GAMEPAD_DPAD_RIGHT,
+			ShoulderButtonRight = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+			ShoulderButtonLeft = XINPUT_GAMEPAD_LEFT_SHOULDER,
 
 
 			ButtonA1 = XINPUT_GAMEPAD_A,

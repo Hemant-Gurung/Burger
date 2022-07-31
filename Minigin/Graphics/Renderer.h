@@ -26,10 +26,10 @@ namespace dae
 
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
 		
-		void RenderTexture(Texture2D& texture, float x, float y, float width, float height,const Rectf& srcRect, bool horizontal) const;
+		void RenderTexture(Texture2D& texture, float x, float y, float width, float height,const Rectf& srcRect, bool horizontal,bool vertical,float angle =0) const;
 		void RenderLine(const float posx1, const float posy1, const float posx2, const float posy2)const;
 		void RenderBox(const Rectf&,int width,int height) const;
-		SDL_Texture* FlipTexture(Texture2D& texture,const float x, const float y, const float width, const float height, const Rectf srcRect ,bool horizontal) const;
+		SDL_Texture* FlipTexture(Texture2D& texture,const float x, const float y, const float width, const float height, const Rectf srcRect ,bool horizontal,bool vertical) const;
 
 		SDL_Renderer* GetSDLRenderer() const { return m_Renderer; }
 

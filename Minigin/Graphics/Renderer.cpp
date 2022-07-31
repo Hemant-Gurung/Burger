@@ -176,7 +176,7 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 	SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
 }
 
-void dae::Renderer::RenderTexture(Texture2D& texture, const float x, const float y, const float width, const float height, const Rectf& srcRect,bool horizontal) const
+void dae::Renderer::RenderTexture(Texture2D& texture, const float x, const float y, const float width, const float height, const Rectf& srcRect,bool horizontal,bool vertical,float angle) const
 {
 	SDL_RendererFlip flip=SDL_FLIP_NONE;
 	const float scale = 1.f;
@@ -200,7 +200,11 @@ void dae::Renderer::RenderTexture(Texture2D& texture, const float x, const float
 	{
 		flip = SDL_FLIP_HORIZONTAL;
 	}
-	SDL_RenderCopyEx(GetSDLRenderer(), texture.GetSDLTexture(), &sourceRect, &dst, 0, &center, flip);
+	else if(vertical)
+	{
+		flip = SDL_FLIP_VERTICAL;
+	}
+	SDL_RenderCopyEx(GetSDLRenderer(), texture.GetSDLTexture(), &sourceRect, &dst, angle, &center, flip);
 
 	//SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), &sourceRect, &dst);
 	//SDL_RenderCopy(GetSDLRenderer(), texture.GetSDLTexture(), nullptr, &dst);
@@ -220,7 +224,7 @@ void dae::Renderer::RenderBox(const Rectf& box, int /*width*/, int /*height*/) c
 	RenderLine(box.left, box.bottom + box.height, box.left, box.bottom);
 }
 
-SDL_Texture* dae::Renderer::FlipTexture(Texture2D& texture, const float x, const float y, const float width, const float height, const Rectf srcRect,bool vertical) const
+SDL_Texture* dae::Renderer::FlipTexture(Texture2D& texture, const float x, const float y, const float width, const float height, const Rectf srcRect,bool vertical,bool horizontal) const
 {
 	SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
 	SDL_Rect dst{};
@@ -241,6 +245,10 @@ SDL_Texture* dae::Renderer::FlipTexture(Texture2D& texture, const float x, const
 	if (!vertical)
 	{
 		flip = SDL_FLIP_VERTICAL;
+	}
+	else if(horizontal)
+	{
+		flip = SDL_FLIP_HORIZONTAL;
 	}
 	SDL_RenderCopyEx(GetSDLRenderer(), texture.GetSDLTexture(), &sourceRect, &dst, 180,&center, flip);
 	return texture.GetSDLTexture();

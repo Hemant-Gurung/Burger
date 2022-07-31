@@ -1,0 +1,15 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(510,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (BurgerTime.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Tron.cpp
+  BurgerTime.vcxproj -> C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\x64\Debug\Tron.exe
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2\lib\x64\SDL2.dll
+  1 File(s) copied
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\libjpeg-9.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\libpng16-16.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\libtiff-5.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\libwebp-7.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\SDL2_image.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_image\lib\x64\zlib1.dll
+  6 File(s) copied
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_ttf\lib\x64\libfreetype-6.dll
+  C:\_PROG_4\_Programming_4\_Minigin_Retake\Project\3rdParty\SDL2_ttf\lib\x64\SDL2_ttf.dll
+  2 File(s) copied

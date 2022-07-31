@@ -21,5 +21,8 @@ namespace dae
 		std::weak_ptr<GameObject> m_pGameObject{};
 		//glm::vec2 m_position;
 		Vector2f m_position;
+
+	private:
+		void PlaySoundEffect();
 	};
 }

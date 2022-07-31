@@ -1,5 +1,7 @@
 #include "MiniginPCH.h"
 #include "BaseComponent.h"
+
+#include "SoundManager.h"
 #include "Graphics/Renderer.h"
 #include "Scenegraph/GameObject.h"
 
@@ -30,3 +32,5 @@ Rectf dae::BaseComponent::GetPosition()
 {
 	return Rectf{ 0,0,0,0 };
 }
+
+

@@ -23,21 +23,20 @@ public:
     void Initialize() override;
     void Render() override;
 
-    void Enemy(std::shared_ptr<dae::GameObject>&, EnemyType&, std::shared_ptr<LevelComponent>) ;
-    void AddBurger(std::shared_ptr<dae::GameObject>&,std::shared_ptr<LevelComponent>) ;
-
+    void Enemy( EnemyType&, std::shared_ptr<LevelComponent>) ;
+    void AddBurger(std::shared_ptr<LevelComponent>) ;
+    void AddObserver(std::shared_ptr<dae::Observer> observer);
+    void Notify(dae::BaseComponent&, dae::EVENT);
 private:
     void PlayerOne(std::shared_ptr<LevelComponent> slevel) ;
     void CheckBurgerDropOnEnemy();
     Rectf m_enemyPos;
     Rectf m_PlayerPos;
 
-   std::weak_ptr<dae::PlayerComponent> m_Player;
-   
-   // std::shared_ptr<LevelComponent> m_sLevel;
-    /*
-    std::weak_ptr<dae::ScoreComponent> m_Score;
-    std::weak_ptr<dae::LivesCounterComponent> m_lives;*/
+    std::shared_ptr<dae::PlayerComponent> m_Player;
+    std::shared_ptr<LevelComponent> m_sLevel;
+    std::shared_ptr<dae::ScoreComponent> m_Score;
+    std::shared_ptr<dae::LivesCounterComponent> m_lives;
 
 
     bool m_hasOverlapped;
@@ -48,10 +47,15 @@ private:
     float m_accumulatedDeathTime;
 
     Sound_System* sound;
-   // std::shared_ptr<dae::GameObject> gameObjectEnemy;
-   // std::shared_ptr<dae::GameObject> gameObjectPlayer;
+    std::shared_ptr<dae::GameObject> gameObjectEnemy;
+    std::shared_ptr<dae::GameObject> gameObjectPlayer;
+    std::vector<std::shared_ptr<dae::Observer>> m_Observers;
 
 
 };
+
+
+
+
 
 

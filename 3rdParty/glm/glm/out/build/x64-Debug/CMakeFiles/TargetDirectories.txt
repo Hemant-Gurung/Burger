@@ -1,0 +1,3 @@
+C:/Users/hemt1/source/repos/Engine/Minigin/3rdParty/glm/glm/out/build/x64-Debug/CMakeFiles/glm_dummy.dir
+C:/Users/hemt1/source/repos/Engine/Minigin/3rdParty/glm/glm/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/hemt1/source/repos/Engine/Minigin/3rdParty/glm/glm/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

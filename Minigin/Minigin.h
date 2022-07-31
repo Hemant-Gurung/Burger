@@ -2,7 +2,7 @@
 //#include <SDL_mixer.h>
 #include "Components/LevelComponent.h"
 //#include "box2d.h"
-#include "sdl_sound_system.h"
+//#include "sdl_sound_system.h"
 #include "SVGParser.h"
 #include "Scene.h"
 
@@ -22,7 +22,7 @@ namespace dae
 		~Minigin()
 		{
 			//delete m_pLevel;
-			delete ss;
+			//delete ss;
 		}
 		void Instruction();
 		void Initialize();
@@ -41,7 +41,7 @@ namespace dae
 		SDL_Window* m_Window{};
 		//SDL_Renderer* m_Renderer;
 		 //std::unique_ptr<b2World> m_World{};
-		 sdl_sound_system* ss;
+		// sdl_sound_system* ss;
 		 SVGParser m_svg_parser_;
 		 std::vector<std::vector<Point2f>> m_vertices;
 

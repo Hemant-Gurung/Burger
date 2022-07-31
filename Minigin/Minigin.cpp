@@ -6,6 +6,8 @@
 #include "Renderer.h"
 //#include "Achievements.h"
 #include <SDL_mixer.h>
+
+#include "SoundManager.h"
 #include "SServiceLocator.h"
 
 
@@ -37,7 +39,7 @@ void PrintSDLVersion()
 void dae::Minigin::Instruction()
 {
 	
-	std::cout <<std::endl;
+	/*std::cout <<std::endl;
 	std::cout << "=== GAMEPAD - CONTROLS Player-1 ===\n";
 	std::cout << "PLAYER_DEATH =  GAMEPAD_A\n";
 	std::cout << "PLAYER_SCORE =  GAMEPAD_B\n";
@@ -45,7 +47,7 @@ void dae::Minigin::Instruction()
 	std::cout << std::endl;
 	std::cout << "=== GAMEPAD - CONTROLS Player-2 ===\n";
 	std::cout << "PLAYER_DEATH =  GAMEPAD_X\n";
-	std::cout << "PLAYER_SCORE =  GAMEPAD_Y\n";
+	std::cout << "PLAYER_SCORE =  GAMEPAD_Y\n";*/
 
 }
 
@@ -64,8 +66,8 @@ void dae::Minigin::Initialize()
 
 	
 	//register sound
-	ss = new sdl_sound_system();
-	SServiceLocator::register_sound_system(ss);
+	//ss = new sdl_sound_system();
+	//SServiceLocator::register_sound_system(ss);
 	// make world
 	//b2Vec2 gravity(0.0f, -9.81f);
 	//m_World = std::make_unique<b2World>(gravity);
@@ -91,6 +93,11 @@ void dae::Minigin::Initialize()
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		const std::string error = Mix_GetError();
+		throw std::runtime_error(error);
+	}
 	//m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
 
 	InitializeImgui();
@@ -118,6 +125,7 @@ void dae::Minigin::Cleanup()
 void dae::Minigin::Run()
 {
 	Initialize();
+	SoundManager::GetInstance().Init("../Data/Sounds/");
 	LoadGame();
 	//ms per update const 
 	constexpr float msperupdate = 0.016f;

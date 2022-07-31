@@ -1,19 +1,25 @@
 #include "pch.h"
 #include "SoloLevel.h"
+
 #include <future>
+
 #include "Utils.h"
 #include "InputManager.h"
 #include "BurgerComponent.h"
 #include "ResourceManager.h"
-#include "BurgerGame.h"
+#include "Tron.h"
 #include "EnemyComponent.h"
 #include "PepperComponent.h"
+#include "SoundManager.h"
 #include "SServiceLocator.h"
 
 
 SoloLevel::SoloLevel()
 	:GameScene("SoloLevel")
 ,m_PlayerPos(),
+m_Player(nullptr)
+, m_lives(nullptr)
+,m_Score(nullptr),
 m_accumulatedDeathTime(0)
 {
 	m_hasOverlapped = false;
@@ -40,44 +46,44 @@ void SoloLevel::Initialize()
 	Renderlevel->SetTexture(LEVELS[0]);
 	gameObjectLevel->AddComponent(Renderlevel);
 	////ADD LEVEL SKELETON
-	auto m_sLevel = std::make_shared<LevelComponent>(gameObjectLevel);
-	m_sLevel.get()->Initialize(LEVEL_COLLISIONS[0]);
-	gameObjectLevel->AddComponent(m_sLevel);
+	auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
+	levelVertices.get()->Initialize(LEVEL_COLLISIONS[0]);
+	gameObjectLevel->AddComponent(levelVertices);
 
 	//scene.Add(gameObjectLevel);
 
 
-	//auto level =gameObjectLevel->GetComponent<LevelComponent>();
-	//auto m_sLevel = std::shared_ptr<LevelComponent>(level);
+	auto level =gameObjectLevel->GetComponent<LevelComponent>();
+	m_sLevel = std::shared_ptr <LevelComponent>(level);
 	
 	AddChild(gameObjectLevel);
 	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
-	//auto gameObjectEn = std::make_shared<dae::GameObject>();
-
-	PlayerOne(m_sLevel);
-
+	PlayerOne( m_sLevel);
+	//AddObserver(m_sLevel);
 	
-	auto gameObjectEnemy = std::make_shared<dae::GameObject>();
 
 
 	// Enemy Red
 	EnemyType enemy = EnemyType::Red;
-	Enemy(gameObjectEnemy, enemy, m_sLevel);
-	Enemy(gameObjectEnemy,enemy,m_sLevel);
-	Enemy(gameObjectEnemy,enemy, m_sLevel);
-	Enemy(gameObjectEnemy,enemy, m_sLevel);
+	Enemy( enemy, m_sLevel);
+	Enemy(enemy, m_sLevel);
+	//Enemy(enemy, m_sLevel);
+	//Enemy(enemy, m_sLevel);
 
 	//Enemy Egg
 	enemy = EnemyType::Egg;
-	Enemy(gameObjectEnemy,enemy, m_sLevel);
-	Enemy(gameObjectEnemy,enemy, m_sLevel);
+	//Enemy(enemy, m_sLevel);
+	//Enemy(enemy, m_sLevel);
 
-	AddBurger(gameObjectEnemy,m_sLevel);
+	//AddBurger(m_sLevel);
 
-	auto f1 = std::async(&SServiceLocator::get_sound_system);
-	sound = &f1.get();
-	sound->Play(SoundID::GAMESOUND, 50);
-	
+	//auto f1 = std::async(&SServiceLocator::get_sound_system);
+	//sound = &f1.get();
+	//sound->Play(SoundID::GAMESOUND, 50);
+
+	if (!SoundManager::GetInstance().IsSoundStreamPlaying("GameSong"))
+		SoundManager::GetInstance().PlaySoundStream("GameSong", true);
+
 }
 
 
@@ -97,20 +103,26 @@ void SoloLevel::Update(float dt)
 			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
 			if (enemy0 != nullptr && !enemy0->GetIsDead())
 			{
-				
+				m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
 				m_enemyPos = enemy0->GetEnemyPos();
-				
+
+				// check enemy collision with bullet
+				if (utils::IsOverlapping(m_sLevel.get()->GetBulletPosInLevel(), m_enemyPos))
+				{
+					std::cout << "Killed" << std::endl;
+					enemy0->IsDead(true);
+				}
 			}
 
 			
 
-			if (m_Player.lock() != nullptr)
+			if (m_Player != nullptr)
 			{
 				if (object->GetTag() == L"Player1")
 				{
-					m_PlayerPos = m_Player.lock()->GetPlayerPos();
+					m_PlayerPos = m_Player->GetPlayerPos();
 				}
-				CheckIfPlayerIsDead(*m_Player.lock());
+				CheckIfPlayerIsDead(*m_Player);
 
 			}
 
@@ -148,6 +160,8 @@ void SoloLevel::Update(float dt)
 		}
 	}
 
+	
+
 
 	if (m_hasOverlapped)
 	{
@@ -170,14 +184,15 @@ void SoloLevel::Update(float dt)
 
 bool SoloLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
 {
-	if(m_Player.lock()->GetLives() <=0)
+	
+
+	if(m_Player->GetLives() <=0)
 	{
 		ClearScene();
 		dae::SceneManager::GetInstance().setActive("startScreen");
 		
 	}
-	
-	else if (!m_hasOverlapped && m_enemyPos.left!= 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
 	{
 
 		m_hasOverlapped = true;
@@ -188,6 +203,18 @@ bool SoloLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
 	return false;
 }
 
+void SoloLevel::AddObserver(std::shared_ptr<dae::Observer> observer)
+{
+	m_Observers.push_back(observer);
+}
+
+void SoloLevel::Notify(dae::BaseComponent& actor, dae::EVENT e)
+{
+	for (size_t i = 0; i < m_Observers.size(); ++i)
+	{
+		m_Observers[i]->OnNotify(actor, e);
+	}
+}
 
 
 void SoloLevel::FixedUpdate()
@@ -202,10 +229,10 @@ void SoloLevel::Render()
 	}
 }
 
-void SoloLevel::Enemy(std::shared_ptr<dae::GameObject>& gameObjectEnemy,EnemyType& enemytype, std::shared_ptr<LevelComponent> level)
+void SoloLevel::Enemy( EnemyType& enemytype, std::shared_ptr<LevelComponent> level)
 {
-	//gameObjectEnemy = std::make_shared<dae::GameObject>();
-	auto enemy = std::make_shared<dae::EnemyComponent>(gameObjectEnemy, enemytype, std::move(level));
+	gameObjectEnemy = std::make_shared<dae::GameObject>();
+	auto enemy = std::make_shared<dae::EnemyComponent>(gameObjectEnemy, enemytype, level);
 	gameObjectEnemy->SetTag(L"Enemy");
 	gameObjectEnemy->AddComponent(enemy);
 	enemy->ResetEnemyPos();
@@ -213,7 +240,7 @@ void SoloLevel::Enemy(std::shared_ptr<dae::GameObject>& gameObjectEnemy,EnemyTyp
 	AddChild(gameObjectEnemy);
 }
 
-void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std::shared_ptr<LevelComponent> level)
+void SoloLevel::AddBurger(std::shared_ptr<LevelComponent> level)
 {
 	auto gameobjectBurger = std::make_shared<dae::GameObject>();
 
@@ -231,7 +258,7 @@ void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std:
 
 	Point2f leftPos = Point2f( 55.f,590.f);
 	//float lastpos = 590.f;
-	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, std::move(level), leftPos, burgerPos);
+	auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos, burgerPos);
 	//burger->AddObserver(burgerObserver);
 	burger->AddObserver(enemyObserver);
 	gameobjectBurger->AddComponent(burger);
@@ -244,7 +271,7 @@ void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std:
 	burgerPos.four = 589.f;
 
 	Point2f leftPos2 = Point2f(202.2f,590.f);
-	auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, std::move(level), leftPos2, burgerPos);
+	auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos2, burgerPos);
 	burger2->AddObserver(enemyObserver);
 	//burger2->AddObserver(burgerObserver);
 	gameobjectBurger->AddComponent(burger2);
@@ -255,7 +282,7 @@ void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std:
 	burgerPos.four = 471.9f;
 
 	Point2f leftPos3 = Point2f(348.2f,590.f);
-	auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, std::move(level), leftPos3, burgerPos);
+	auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos3, burgerPos);
 	burger3->AddObserver(enemyObserver);
 	//burger3->AddObserver(burgerObserver);
 	gameobjectBurger->AddComponent(burger3);
@@ -267,7 +294,7 @@ void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std:
 	burgerPos.four = 471.9f;
 
 	Point2f leftPos4 = Point2f(505.f,590.f);
-	auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, std::move(level), leftPos4, burgerPos);
+	auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos4, burgerPos);
 	burger4->AddObserver(enemyObserver);
 	//burger4->AddObserver(burgerObserver);
 	gameobjectBurger->AddComponent(burger4);
@@ -278,16 +305,19 @@ void SoloLevel::AddBurger(std::shared_ptr<dae::GameObject>& gameObjectEnemy,std:
 	AddChild(gameobjectBurger);
 }
 
-void SoloLevel::PlayerOne( std::shared_ptr<LevelComponent> slevel)
+void SoloLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 {
-	auto gameObjectPlayer = std::make_shared<dae::GameObject>();
+	gameObjectPlayer = std::make_shared<dae::GameObject>();
 
 	//Do this inside player class
 	//player commands
 	//if (dae::Input::GetInstance().m_ConsoleCommands.size() <= 0)
 	{
 		//InputAction a = InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne);
-		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<ThrowPepperCommand>(gameObjectPlayer), 'O', GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ShoulderButtonRight), InputAction(std::make_unique<AimTankTurret>(gameObjectPlayer,1.f), VK_RIGHT, GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ShoulderButtonLeft), InputAction(std::make_unique<AimTankTurret>(gameObjectPlayer,-1.f), VK_LEFT, GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonX), InputAction(std::make_unique<ShootBullet>(gameObjectPlayer), 'Q', GamePadIndex::playerOne));
+
 		//dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayer), 'P', GamePadIndex::playerOne));
 		//RIGHT
 		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadRight), InputAction(std::make_unique<MoveRightCommand>(gameObjectPlayer), 'D', GamePadIndex::playerOne));
@@ -307,14 +337,15 @@ void SoloLevel::PlayerOne( std::shared_ptr<LevelComponent> slevel)
 
 	gameObjectPlayer->AddComponent(transformPlayer1);
 	//player one
-	auto player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, std::move(slevel));
-	m_Player = player;
+	//auto player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, slevel);
+	m_Player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, m_sLevel);
+	//m_Player = player;
 
 	//add gameobject to scene
 	//scene.Add(gameObjectPlayer);
 
 
-	gameObjectPlayer->AddComponent(player);
+	gameObjectPlayer->AddComponent(m_Player);
 	//gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
 	//score
 	// gameObjLivesCounter = std::make_shared<GameObject>();
@@ -326,34 +357,24 @@ void SoloLevel::PlayerOne( std::shared_ptr<LevelComponent> slevel)
 	auto fontLives = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 20);
 	auto textLives = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontLives, SDL_Color{ 255,255,255,1 });
 	auto fontScore = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
-	auto textScore = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontScore, SDL_Color{ 255,255,255,1 });
+	auto textScore = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontScore, SDL_Color{ 0,0,255,1 });
 	auto textpepper = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontLives, SDL_Color{ 255,255,255,1 });
 	// score achievement 
-	//auto scoreAchievement = std::make_shared<Achievements>(g_Achievements, 4, gameObjectPlayer);
-
-	//make livescounter component/ observer
-	//if (m_lives == nullptr)
-	//{
-		auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
-		//m_lives = lives;
-	//}
-	//score counter
-	//if (m_Score == nullptr)
-	//{
-		auto score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
-		//m_Score = score;
-	//}
+	
+	auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+	
+	auto score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
 
 	auto pepperComponent = std::make_shared<PepperComponent>(gameObjectPlayer, textpepper);
 
 	//add observers
 	{
-		player->AddObserver(pepperComponent);
+		m_Player->AddObserver(pepperComponent);
 
-		player->AddObserver(lives);
+		m_Player->AddObserver(lives);
 
 		//add score observer
-		player->AddObserver(score);
+		m_Player->AddObserver(score);
 	}
 	//add gameobject scoreAchievement to gameobject
 	//gameObjectPlayer->AddComponent(scoreAchievement);
@@ -378,7 +399,7 @@ void SoloLevel::PlayerOne( std::shared_ptr<LevelComponent> slevel)
 
 	
 	//set score position
-	textScore->SetPosition(350, 5, 0);
+	textScore->SetPosition(130, 50, 0);
 
 	//set lives position
 	//textLives->SetPosition(570, 5, 0);
@@ -394,11 +415,11 @@ void SoloLevel::PlayerOne( std::shared_ptr<LevelComponent> slevel)
 void SoloLevel::ResetScene()
 {
 	//ClearScene();
-	m_Player.lock()->SetPlayerStartPosition(Point2f{ 450.f,450.f });
-	m_PlayerPos = m_Player.lock()->GetPlayerPos();
+	m_Player->SetPlayerStartPosition(Point2f{ 450.f,450.f });
+	m_PlayerPos = m_Player->GetPlayerPos();
 
 	auto playerState = dae::PlayerState::standing;
-	m_Player.lock()->ChangeState(playerState);
+	m_Player->ChangeState(playerState);
 
 	for (auto obj : m_sceneObjects)
 	{
@@ -415,7 +436,7 @@ void SoloLevel::ResetScene()
 
 void SoloLevel::GenerateEnemies()
 {
-	/*EnemyType enemy = EnemyType::Red;
+	EnemyType enemy = EnemyType::Red;
 	
 	Enemy(enemy, m_sLevel);
 	Enemy(enemy, m_sLevel);
@@ -423,6 +444,6 @@ void SoloLevel::GenerateEnemies()
 
 	enemy = EnemyType::Egg;
 	Enemy(enemy, m_sLevel);
-	Enemy(enemy, m_sLevel);*/
+	Enemy(enemy, m_sLevel);
 	
 }

@@ -1,0 +1,22 @@
+﻿  pch.cpp
+  BurgerGame.cpp
+  Main.cpp
+  ScoreScene.cpp
+  SecondLevel.cpp
+  SoloLevel.cpp
+  StartScreen.cpp
+  ThirdLevel.cpp
+  Generating Code...
+  BurgerTime.vcxproj -> C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\Debug\BurgerTime.exe
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2\lib\x86\SDL2.dll
+  1 File(s) copied
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\libjpeg-9.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\libpng16-16.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\libtiff-5.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\libwebp-7.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\SDL2_image.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_image\lib\x86\zlib1.dll
+  6 File(s) copied
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_ttf\lib\x86\libfreetype-6.dll
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\SDL2_ttf\lib\x86\SDL2_ttf.dll
+  2 File(s) copied

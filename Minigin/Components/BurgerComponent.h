@@ -8,7 +8,6 @@ class BurgerComponent :
 {
 public:
     BurgerComponent(std::shared_ptr<dae::GameObject>&, std::shared_ptr<LevelComponent>,const Point2f left,const float4 burgerBottom);
-    ~BurgerComponent() = default;
     void Render() const override;
     void update(float) override;
     void SetPosition(float, float, float) override;

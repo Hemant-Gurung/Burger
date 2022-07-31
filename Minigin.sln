@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Minigin", "Minigin\Minigin.vcxproj", "{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Manaengine", "Minigin\Minigin.vcxproj", "{41B0EC47-D48C-4B0F-951B-D98595FFAE0A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BurgerTime", "BurgerTime\BurgerTime.vcxproj", "{7AC2D018-05B4-4C04-83F9-35DDD12E1E31}"
 	ProjectSection(ProjectDependencies) = postProject

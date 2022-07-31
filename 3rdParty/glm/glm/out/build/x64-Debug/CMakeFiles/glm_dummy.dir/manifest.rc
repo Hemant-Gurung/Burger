@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "C:/Users/hemt1/source/repos/Engine/Minigin/3rdParty/glm/glm/out/build/x64-Debug/CMakeFiles/glm_dummy.dir/embed.manifest"

@@ -46,17 +46,40 @@ public:
 	};
 };
 
-class ThrowPepperCommand : public Command
+class ShootBullet : public Command
 {
 public:
-	ThrowPepperCommand(std::shared_ptr<dae::GameObject> pGameobject)
+	ShootBullet(std::shared_ptr<dae::GameObject> pGameobject)
 		:Command(pGameobject)
 	{};
 	void  Execute() override
 	{
-		m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->ThrowPepper();
+		m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->GenerateBullet();
 
 	};
+};
+
+class AimTankTurret : public Command
+{
+public:
+	AimTankTurret(std::shared_ptr<dae::GameObject> pGameobject,float direction)
+		:Command(pGameobject), m_Direction(direction)
+	{};
+	void  Execute() override
+	{
+		if (m_Direction > 0)
+		{
+			m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->RotateTankTurret(1);
+		}
+		else
+		{
+			m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->RotateTankTurret(-1);
+
+		}
+
+	};
+private:
+	float m_Direction;
 };
 
 
@@ -129,10 +152,10 @@ public:
 		dae::PlayerState state = dae::PlayerState::running;
 		playerObj->ChangeState(state);
 		//m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->SetVelocity();
-		bool checkTexture = playerObj->GetIsFlipped();
+		bool checkTexture = playerObj->GetIsFlippedHorizontal();
 		if (checkTexture)
 		{
-			playerObj->FLipTexture(false);
+			playerObj->FLipTextureHorozontal(false);
 		}
 	}
 };
@@ -152,10 +175,10 @@ public:
 		dae::PlayerState state = dae::PlayerState::running;
 		playerObj->ChangeState(state);
 		playerObj->MoveRight();
-		bool checkTexture = playerObj->GetIsFlipped();
+		bool checkTexture = playerObj->GetIsFlippedHorizontal();
 		if (!checkTexture)
 		{
-			playerObj->FLipTexture(true);
+			playerObj->FLipTextureHorozontal(true);
 		}
 
 	}
@@ -175,6 +198,11 @@ public:
 		playerObj->MoveUp();
 		dae::PlayerState state = dae::PlayerState::climbing;
 		playerObj->ChangeState(state);
+		bool checkTexture = playerObj->GetIsFlippedVertical();
+		if (!checkTexture)
+		{
+			playerObj->FLipTextureVertical(true);
+		}
 	}
 };
 
@@ -193,6 +221,11 @@ public:
 		playerObj->MoveDown();
 		dae::PlayerState state = dae::PlayerState::climbing;
 		playerObj->ChangeState(state);
+		bool checkTexture = playerObj->GetIsFlippedVertical();
+		if (!checkTexture)
+		{
+			playerObj->FLipTextureVertical(true);
+		}
 	}
 };
 

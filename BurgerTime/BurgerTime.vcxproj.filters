@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BurgerGame.cpp">
+    <ClCompile Include="Tron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -47,7 +47,7 @@
     <ClInclude Include="SoloLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BurgerGame.h">
+    <ClInclude Include="Tron.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">

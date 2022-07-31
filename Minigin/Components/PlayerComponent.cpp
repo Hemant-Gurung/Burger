@@ -2,8 +2,10 @@
 #include "Scenegraph/GameObject.h"
 #include "Components/PlayerComponent.h"
 #include "Components/RenderComponent.h"
+#include "BulletComponent.h"
 //#include "sdl_sound_system.h"
 //#include "SServiceLocator.h"
+
 
 #include <future>
 #include <functional>
@@ -20,37 +22,53 @@ namespace dae
 		m_playerPos{},
 		a(nullptr),
 		m_MoveSpeed(70.f),
-		m_SpriteSheetWidth(240.f),
-		m_SpriteSheetHeight(176.f),
-		m_InitialDestRectBottom(450),
+		m_SpriteSheetWidth(35.f),
+		m_SpriteSheetHeight(32.f),
+		m_InitialDestRectBottom(264),
 		m_DestRect(),
 		m_SrcRect(),
-		m_StartPoint(450),
-		m_Colums(15),
-		m_Rows(11),
+		m_StartPoint(429),
+		m_Colums(1),
+		m_Rows(1),
 		m_AccumulatedSec(0.f),
 		m_FramesPerSecond(60),
 		m_CurrFrame(0),
 		m_SpriteSheetLeft(0),
-		m_SpriteSheetTop(11),
+		m_SpriteSheetTop(0),
 		m_PlayerState(PlayerState::standing),
-		IsTextureFlipped(false),
+		IsTextureFlippedHorizontal(false),
+		IsTextureFlippedVertical(false),
 		IsMoving(false),
 		m_playerMovement(playerMovement::idle),
-		m_sLevel(std::move(pLevel))
+		m_sLevel(pLevel)
 		,m_TotalLives(3)
 		,m_Pepper(5)
 		,m_Score(0)
-	,m_ShowDebugLines(false)
+	    ,m_ShowDebugLines(false),
+		m_RotateTurret(0),
+		m_shootBullet(false),
+		m_sGameObject(pGameObj),
+		m_ExecuteBullet(false)
 	{
 		Initialize();
 		m_PepperIcon = std::make_shared<RenderComponent>(pGameObj);
-		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
-		m_SpriteTexture->SetTexture("CharacterSprite.png");
-
 		m_PepperIcon->SetTexture("PepperPng.png");
+
+		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
+		//m_SpriteTexture->SetTexture("CharacterSprite.png");
+		m_SpriteTexture->SetTexture("PlayerTank.png");
+
+		m_SpriteVerticalTexture = std::make_shared<RenderComponent>(pGameObj);
+		m_SpriteVerticalTexture->SetTexture("TronTankVertical.png");
+
+		//turret
+		m_TurretTexture = std::make_shared<RenderComponent>(pGameObj);
+		m_TurretTexture->SetTexture("TankTurret.png");
+
 		m_PlayerIcon = std::make_shared<dae::RenderComponent>(pGameObj);
-		m_PlayerIcon->SetTexture("ChefLogo.png");
+		m_PlayerIcon->SetTexture("TankLive.png");
+
+		
 		//pGameObj->GetComponent<TransformComponent>()->SetPosition(10.f, 400.f, 0.f);
 		//m_SpriteTexture->SetPosition(20.f, 100.f, 0.f);
 		//pGameObj->AddComponent(m_SpriteTexture);
@@ -101,6 +119,11 @@ namespace dae
 		Notify(*this, EVENT::IDLE);
 	}
 
+	void PlayerComponent::ShootBullet()
+	{
+
+	}
+
 	void PlayerComponent::MoveUp()
 	{
 		if (m_PlayerState != PlayerState::dead)
@@ -132,10 +155,11 @@ namespace dae
 	{
 		if (m_PlayerState != PlayerState::dead)
 		{
+			IsTextureFlippedVertical = false;
 			IsMoving = true;
-			auto f1 = std::async(&SServiceLocator::get_sound_system);
-			a = &f1.get();
-			a->Play(SoundID::WALK, 50);
+			//auto f1 = std::async(&SServiceLocator::get_sound_system);
+			//a = &f1.get();
+			//a->Play(SoundID::WALK, 50);
 
 			m_Velocity.x = -m_MoveSpeed;
 			m_Velocity.y = 0;
@@ -166,7 +190,24 @@ namespace dae
 
 	void PlayerComponent::update(float elapsedSec)
 	{
+		if (m_ExecuteBullet)
+		{
+			
 		
+			m_shootBullet = true;
+			m_ExecuteBullet = false;
+		}
+
+		//if(m_shootBullet)
+		{
+			for (auto bullet : m_Bullets)
+			{
+				//m_bullet->update(elapsedSec);
+				bullet->SetLevelInformation(m_sLevel);
+				bullet->update(elapsedSec);
+			}
+		}
+
 		if (a != nullptr)
 			a->Update();
 
@@ -185,6 +226,14 @@ namespace dae
 	{
 		const int size = 30;
 
+		if (m_shootBullet)
+		{
+			/*m_bullet->Render();*/
+			for (auto bullet : m_Bullets)
+			{
+				bullet->Render();
+			}
+		}
 		//get render component
 		//auto rendercom = m_pGameObject.lock()->GetComponent<RenderComponent>();
 
@@ -194,8 +243,18 @@ namespace dae
 			m_SpriteTexture->RenderBox(m_DestRect, size, size);
 		}
 		// draw texture using the render texture function
-		m_SpriteTexture->RenderTexture(m_DestRect, m_SrcRect, IsTextureFlipped);
+		if(IsTextureFlippedVertical)
+		{
+			//IsTextureFlippedHorizontal = false;
+			m_SpriteVerticalTexture->RenderTexture(m_DestRect, m_SrcRect, IsTextureFlippedHorizontal,IsTextureFlippedVertical);
 
+		}
+		else
+		{
+			m_SpriteTexture->RenderTexture(m_DestRect, m_SrcRect, IsTextureFlippedHorizontal, IsTextureFlippedVertical);
+		}
+
+		RenderTankTurret();
 		RenderPlayerLiveCount();
 		RenderPepperIcon();
 	}
@@ -248,16 +307,16 @@ namespace dae
 			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 			break;
 		case PlayerState::running:
-			m_SrcRect.bottom = 32 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 			break;
 		case PlayerState::climbing:
-			m_SrcRect.bottom = 48 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 			break;
 		case PlayerState::throwingPepper:
-			m_SrcRect.bottom = 80; /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0; /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 			break;
 		case PlayerState::dead:
-			m_SrcRect.bottom = 64;
+			m_SrcRect.bottom = 0;
 			break;
 		}
 	}
@@ -267,25 +326,34 @@ namespace dae
 		m_PlayerState = currentstate;
 	}
 
-	void PlayerComponent::FLipTexture(bool flip)
+	void PlayerComponent::FLipTextureHorozontal(bool flip)
 	{
-		IsTextureFlipped = flip;
+		IsTextureFlippedVertical = false;
+		IsTextureFlippedHorizontal = flip;
 		//Texture2D texture;
-		if (IsTextureFlipped)
-		{
-			//texture = m_pGameObject.lock()->GetComponent<RenderComponent>()->FlipTexture(m_DestRect.left, m_DestRect.bottom,m_DestRect.width,m_DestRect.height,m_SrcRect.left, m_SrcRect.bottom, true);
-		}
+	}
+	void PlayerComponent::FLipTextureVertical(bool flip)
+	{
+		IsTextureFlippedHorizontal = false;
+		IsTextureFlippedVertical = flip;
+		//Texture2D texture;
 	}
 
 	void PlayerComponent::InitializeDestRect()
 	{
-		const int  AvatarHeight = 11;
-		const int AvatarWidth = 15;
-		const int size = 20;
-		m_DestRect.width = m_SpriteSheetWidth / AvatarWidth + size;
-		m_DestRect.height = m_SpriteSheetHeight / AvatarHeight + size;
-		m_DestRect.left = m_StartPoint;
-		m_DestRect.bottom = m_InitialDestRectBottom;
+		const int  AvatarHeight = 1;
+		const int AvatarWidth = 1;
+		//const int size = 20;
+		m_DestRect.width = m_SpriteSheetWidth / AvatarWidth ;
+		m_DestRect.height = m_SpriteSheetHeight / AvatarHeight ;
+
+		int index = rand()%(3 - 0 + 1) + 0;
+		for(int i=0;i<5;++i)
+		{
+			index = rand() % (3 - 0 + 1) + 0;
+		}
+		m_DestRect.left = PlayerStartPosition[index].x; // 
+		m_DestRect.bottom = PlayerStartPosition[index].y;
 	}
 
 	void PlayerComponent::InitializeSrcRect()
@@ -312,24 +380,32 @@ namespace dae
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+
 				break;
 			case  PlayerState::running:
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+
 				break;
 			case PlayerState::climbing:
 				m_DestRect.left += m_Velocity.x * elapsedSec;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+
 				break;
 			case PlayerState::throwingPepper:
 				//m_DestRect.left += m_Velocity.x * elapsedSec;
 				//m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+
 				break;
 
 			case PlayerState::dead:
@@ -337,6 +413,8 @@ namespace dae
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
 				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
+
 				break;
 			}
 		}
@@ -363,20 +441,20 @@ namespace dae
 	void PlayerComponent::RenderPlayerLiveCount() const
 	{
 		Rectf plaerIconPos;
-		plaerIconPos.left = 10.f;
-		plaerIconPos.bottom = 500.f;
+		plaerIconPos.left = 150.f;
+		plaerIconPos.bottom = 20.f;
 		plaerIconPos.width = 20.f;
-		plaerIconPos.height = 20.f;
+		plaerIconPos.height = 25.f;
 
 		Rectf plaerIconSrc;
 		plaerIconSrc.left = 0;
 		plaerIconSrc.bottom = 0;
-		plaerIconSrc.width = 7.f;
-		plaerIconSrc.height = 7.f;
+		plaerIconSrc.width = 12.f;
+		plaerIconSrc.height = 16.f;
 
 		for (int i = 0; i < m_TotalLives; ++i)
 		{
-			plaerIconPos.bottom +=25;
+			plaerIconPos.left +=25;
 			m_PlayerIcon->RenderTexture(plaerIconPos, plaerIconSrc);
 		}
 	}
@@ -398,7 +476,51 @@ namespace dae
 		m_PepperIcon->RenderTexture(pepperIconPos, pepperIconSrc);
 	}
 
-	
+	void PlayerComponent::RenderTankTurret() const
+	{
+		Rectf pepperIconSrc;
+		pepperIconSrc.left = 0;
+		pepperIconSrc.bottom = 0;
+		pepperIconSrc.width = 35.f;
+		pepperIconSrc.height = 32.f;
+
+		m_TurretTexture->RenderTexture(m_DestRect, pepperIconSrc, false,false,m_RotateTurret);
+	}
+
+	void PlayerComponent::GenerateBullet()
+	{
+		//m_bullet = std::make_shared<BulletComponent>(m_sGameObject);
+		//if (m_ExecuteBullet)
+		//{
+
+			Vector2f direction = Vector2f(cos(m_RotateTurret * float(M_PI / 180.f)), sin(m_RotateTurret * float(M_PI / 180.f)));
+		/*	if (IsTextureFlippedHorizontal)
+			{
+				direction.x *= -1;
+			}
+			if (IsTextureFlippedVertical)
+			{
+				direction.y *= -1;
+			}*/
+		//m_Bullets.push_back(new BulletComponent(m_sGameObject, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), direction));
+		m_Bullets.push_back(std::make_shared<BulletComponent>(m_sGameObject, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), direction));
+		//std::make_shared<BulletComponent>(m_sGameObject)
+		m_ExecuteBullet = true;
+	}
+
+	void PlayerComponent::RotateTankTurret(float direction)
+	{
+		if (direction>0)
+		{
+			m_RotateTurret+=5;
+		}
+		else
+		{
+			m_RotateTurret-=5;
+		}
+	}
+
+
 	void PlayerComponent::CallPlayerIsDead()
 	{
 		//if (m_sLevel->CheckPlayerEnemyCollision())
@@ -475,6 +597,11 @@ namespace dae
 			//ImGui::SetNextWindowPos()
 			ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
 			ImGui::Checkbox("ShowPlayerCollider", &m_ShowDebugLines);
+			ImGui::SliderFloat("BurgerLeftPosition", &m_DestRect.left, 0.0f, 700.0f);
+			ImGui::SliderFloat("BurgerbottomPosition", &m_DestRect.bottom, 0.0f, 700.0f);
+			//ImGui::SliderFloat("BurgerbottomPosition", &, 0.0f, 700.0f);
+
+
 			//if (ImGui::Button("Reset Speed")) {
 				// This code is executed when the user clicks the button
 				//this->speed = 0;

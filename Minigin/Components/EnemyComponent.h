@@ -8,7 +8,7 @@ namespace dae
 	{
 	public:
 		EnemyComponent(std::shared_ptr<dae::GameObject>&,EnemyType&, std::shared_ptr<LevelComponent>);
-		 ~EnemyComponent() = default;
+		virtual ~EnemyComponent() = default;
 
 		EnemyComponent(const EnemyComponent& other) = delete;
 		EnemyComponent(EnemyComponent&& other) noexcept = delete;
@@ -59,7 +59,7 @@ namespace dae
 				}
 				else
 				{
-					m_DestRect.left = 450;
+					m_DestRect.left = rand()% (int)(450.f-20.f+1.f)+20.f;
 					m_DestRect.bottom = 250;
 				}
 			}
@@ -70,6 +70,9 @@ namespace dae
 		EnemyStates m_enemyState;
 		EnemyType m_enemyType;
 		std::shared_ptr<dae::RenderComponent> m_EnemySprite;
+		std::shared_ptr<dae::RenderComponent> m_EnemySpriteVertical;
+
+		
 		std::weak_ptr<LevelComponent> m_sLevel;
 		Rectf m_DestRect;
 		Rectf m_SrcRect;
@@ -92,6 +95,8 @@ namespace dae
 
 		Vector2f m_Velocity{};
 		float m_MoveSpeed;
+
+		bool m_FlipVertical, m_FlipHorizontal;
 	};
 
 }

@@ -24,6 +24,7 @@
     <ProjectGuid>{7ac2d018-05b4-4c04-83f9-35ddd12e1e31}</ProjectGuid>
     <RootNamespace>BurgerTime</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Tron</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,15 +77,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)BurgerTime\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)BurgerTime\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -101,8 +110,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Win32\Debug;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin;$(OutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Minigin\Build_Win32\$(Configuration);$(SolutionDir)3rdParty\SDL2_mixer\lib\x86;$(SolutionDir)3rdParty\steamworks\redistributable_bin;$(OutputPath);$(SolutionDir)Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -124,7 +133,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Win32\Release;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin;$(OutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Minigin\Build_Win32\$(Configuration);$(SolutionDir)3rdParty\SDL2_mixer\lib\x86;$(SolutionDir)3rdParty\steamworks\redistributable_bin;$(OutputPath);$(SolutionDir)Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -136,15 +145,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)Minigin\Base;$(SolutionDIr)Minigin\Graphics;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Base;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\Debug;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64;$(OutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;steam_api64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Minigin\Build\$(Configuration)\;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64;$(OutputPath);$(SolutionDir)x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +166,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDIr)Minigin\Base;$(SolutionDIr)Minigin\Graphics;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Base;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -166,12 +175,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\Release;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64;$(OutputPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Minigin\Build\$(Configuration)\;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64;$(OutputPath);$(SolutionDir)x64\Release;$(SolutionDir)3rdParty\SDL2_mixer\lib\$(PlatformTarget);$(SolutionDir)3rdParty\steamworks\redistributable_bin\win64;$(OutputPath);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;Manaengine.lib;xinput.lib;SDL2_mixer.lib;steam_api64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BurgerGame.cpp" />
+    <ClCompile Include="Tron.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -186,7 +195,7 @@
     <ClCompile Include="ThirdLevel.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BurgerGame.h" />
+    <ClInclude Include="Tron.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScoreScene.h" />

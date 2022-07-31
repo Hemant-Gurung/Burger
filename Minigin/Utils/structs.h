@@ -14,6 +14,7 @@ struct Window
 	bool isVSyncOn;
 };
 
+
 struct float4
 {
 	float4();
@@ -91,22 +92,35 @@ enum class GamePadIndex
 };
 
 
+
+
 inline const char* LEVELS[3] =
 {
-	"Level_1.png",
+	"Tron/Level_1.png",
 	"Level_2.png",
 	"Level _3.png"
 };
 inline const char* LEVEL_COLLISIONS[3] =
 {
-	"../Data/Level - SDL_1.svg",
+	//"../Data/Level - SDL_1.svg",
+	"../Data/Tron/Level_1.svg",
 	"../Data/BurgerLevel_2_SDL.svg",
 	"../Data/Level -SDL_3.svg"
 };
 
+inline const Point2f PlayerStartPosition[4] = {
+	Point2f{429.f,466.f},Point2f{17.f,466.f},
+	Point2f{15.f,78.f},Point2f{432.f,78.f} };
 
 enum EnemyType
 {
 	Red,
 	Egg
 };
+
+//enum startPos
+//{
+//	Point2f = Point2f( 450.f,450.f ),
+//	//Point2f = Point2f(450.f, 450.f),
+//
+//};

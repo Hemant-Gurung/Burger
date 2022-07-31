@@ -1,12 +1,14 @@
 #include "MiniginPCH.h"
 #include "BurgerComponent.h"
+
+#include "SoundManager.h"
 #include "utils.h"
 
 //using namespace 
 
 BurgerComponent::BurgerComponent(std::shared_ptr<dae::GameObject>& pGameObject, std::shared_ptr<LevelComponent> level, const Point2f leftLast,const float4 burgerBottom)
 	:BaseComponent(pGameObject),
-		m_sLevel(std::move(level))
+		m_sLevel(level)
 		,m_LowestPos(leftLast.y)
 {
 	// Initialize Burger Position
@@ -122,11 +124,7 @@ void BurgerComponent::SetTexture(const std::string& basic_string)
 
 bool BurgerComponent::IsPlayerOverlappingWithPlayer()
 {
-	if (m_sLevel.lock() != nullptr)
-	{
-		return Check_Player_Burger_Collision(m_sLevel.lock()->GetPlayerPositionInTheLevel());
-	}
-	return false;
+	return Check_Player_Burger_Collision(m_sLevel.lock()->GetPlayerPositionInTheLevel());
 }
 
 void BurgerComponent::AddObserver(std::shared_ptr<dae::Observer> observer)
@@ -171,6 +169,8 @@ bool BurgerComponent::Check_Player_Burger_Collision(Rectf& playerPos)
 		m_IsBottomOverlappingWithPlayer = true;
 		return true;
 	}
+
+	
 	
 	return false;
 
@@ -367,7 +367,7 @@ void BurgerComponent::HandleBurgerEnemyCollision()
 
 void BurgerComponent::PlayBurgerSound()
 {
-
+	SoundManager::GetInstance().PlaySoundEffect("DDAttack", 0);
 }
 
 //BOTTOM BURFER BURGER COLLISION LOGINC

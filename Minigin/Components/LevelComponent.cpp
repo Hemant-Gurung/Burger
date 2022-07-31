@@ -9,18 +9,10 @@ LevelComponent::LevelComponent(std::shared_ptr<dae::GameObject>& pGameObject)
 , m_ShowDebugLines(false)
 	/*,m_level()*/
 	,m_vertices()
-,rayStartFirst(Point2f(0,0)),
- rayStartMiddle(Point2f(0, 0)),
- rayStartLast(Point2f(0, 0)),
-	rayEndFirst(Point2f(0, 0)),
-	rayEndMiddle(Point2f(0, 0)),
-	rayEndLast(Point2f(0, 0))
+	
 {
 	
 }
-
-
-
 
 void LevelComponent::Initialize(const std::string& filename)
 {
@@ -253,7 +245,7 @@ void LevelComponent::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity,
 
 void LevelComponent::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity, EnemyStates& enemystate)
 {
-	m_EnemyPos = actorShape;
+	//ddddm_EnemyPos = actorShape;
 	utils::HitInfo h;
 
 	const int lowerRay = 8;
@@ -412,6 +404,11 @@ void LevelComponent::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity,
 			break;
 		}
 	}
+}
+
+void LevelComponent::SetBulletPos(Rectf& bulletPos)
+{
+	m_BulletPos = bulletPos;
 }
 
 bool LevelComponent::doOverlap(Vector2f l1, Vector2f r1, Vector2f l2, Vector2f r2)
