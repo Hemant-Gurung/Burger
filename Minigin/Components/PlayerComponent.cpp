@@ -59,15 +59,15 @@ namespace dae
 		m_IsPlayerShot(false)
 	{
 		Initialize();
-		m_PepperIcon = std::make_shared<RenderComponent>(pGameObj);
+		m_PepperIcon = std::make_unique<RenderComponent>(pGameObj);
 		m_PepperIcon->SetTexture("PepperPng.png");
 
-		m_SpriteTexture = std::make_shared<RenderComponent>(pGameObj);
+		m_SpriteTexture = std::make_unique<RenderComponent>(pGameObj);
 		//m_SpriteTexture->SetTexture("CharacterSprite.png");
 		m_SpriteTexture->SetTexture(playerTexture);
 
-		m_SpriteVerticalTexture = std::make_shared<RenderComponent>(pGameObj);
-		m_TurretTexture = std::make_shared<RenderComponent>(pGameObj);
+		m_SpriteVerticalTexture = std::make_unique<RenderComponent>(pGameObj);
+		m_TurretTexture = std::make_unique<RenderComponent>(pGameObj);
 
 		if (playerTexture == "PlayerTank.png")
 		{
@@ -83,11 +83,11 @@ namespace dae
 		}
 		//turret
 
-		m_PlayerIcon = std::make_shared<dae::RenderComponent>(pGameObj);
+		m_PlayerIcon = std::make_unique<dae::RenderComponent>(pGameObj);
 		m_PlayerIcon->SetTexture("TankLive.png");
 
 		// Explosion
-		m_DeathExplosion = std::make_shared<dae::RenderComponent>(pGameObj);
+		m_DeathExplosion = std::make_unique<dae::RenderComponent>(pGameObj);
 		m_DeathExplosion->SetTexture("PlayerExplosion.png");
 
 		//pGameObj->GetComponent<TransformComponent>()->SetPosition(10.f, 400.f, 0.f);
@@ -227,7 +227,7 @@ namespace dae
 				m_ExecuteBullet = false;
 			}
 
-			for (auto bullet : m_Bullets)
+			for (auto& bullet : m_Bullets)
 			{
 				//m_bullet->update(elapsedSec);
 				bullet->SetLevelInformation(m_sLevel);
@@ -271,7 +271,7 @@ namespace dae
 			if (m_shootBullet)
 			{
 				/*m_bullet->Render();*/
-				for (auto bullet : m_Bullets)
+				for (auto& bullet : m_Bullets)
 				{
 					bullet->Render();
 				}
@@ -544,7 +544,7 @@ namespace dae
 			Vector2f direction = Vector2f(cos(m_RotateTurret * float(M_PI / 180.f)), sin(m_RotateTurret * float(M_PI / 180.f)));
 
 			//m_Bullets.push_back(new BulletComponent(m_sGameObject, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), direction));
-			m_Bullets.push_back(std::make_shared<BulletComponent>(m_sGameObject, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), direction, EnemyType::Egg));
+			m_Bullets.push_back(std::move(std::make_unique<BulletComponent>(m_sGameObject, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), direction, EnemyType::Egg)));
 			//std::make_shared<BulletComponent>(m_sGameObject)
 			m_ExecuteBullet = true;
 			m_AccumulatedTime = 0;
@@ -555,7 +555,9 @@ namespace dae
 	{
 		if (m_shootBullet)
 		{
-			for (auto bullet : m_Bullets)
+			
+
+			for (auto& bullet : m_Bullets)
 			{
 				// first check if the bullet is already destroyed
 				if (utils::IsOverlapping(bullet->GetPosition(), enemyPos))

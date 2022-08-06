@@ -100,14 +100,14 @@ namespace dae
 		std::vector<std::shared_ptr<Observer>> m_Observers;
 		std::shared_ptr<dae::GameObject> m_sGameObject;
 		//std::shared_ptr<TransformComponent> m_TransformComponent;
-		std::shared_ptr<RenderComponent> m_SpriteTexture;
-		std::shared_ptr<RenderComponent> m_SpriteVerticalTexture;
+		std::unique_ptr<RenderComponent> m_SpriteTexture;
+		std::unique_ptr<RenderComponent> m_SpriteVerticalTexture;
 
 		
-		std::shared_ptr<dae::RenderComponent> m_PlayerIcon;
-		std::shared_ptr<dae::RenderComponent> m_PepperIcon;
-		std::shared_ptr<dae::RenderComponent> m_TurretTexture;
-		std::shared_ptr<dae::RenderComponent> m_DeathExplosion;
+		std::unique_ptr<dae::RenderComponent> m_PlayerIcon;
+		std::unique_ptr<dae::RenderComponent> m_PepperIcon;
+		std::unique_ptr<dae::RenderComponent> m_TurretTexture;
+		std::unique_ptr<dae::RenderComponent> m_DeathExplosion;
 
 		
 
@@ -137,7 +137,7 @@ namespace dae
 		PlayerState m_PlayerState{ PlayerState::standing };
 		playerMovement m_playerMovement;
 		std::weak_ptr<LevelComponent> m_sLevel;
-		std::vector<std::shared_ptr<BulletComponent>> m_Bullets;
+		std::vector<std::unique_ptr<BulletComponent>> m_Bullets;
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;
 		float m_SpriteSheetLeft;
