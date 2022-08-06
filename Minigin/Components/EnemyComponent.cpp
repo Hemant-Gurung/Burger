@@ -2,6 +2,7 @@
 #include "MiniginPCH.h"
 #include "EnemyComponent.h"
 #include "GameObject.h"
+#include "Utils.h"
 
 namespace dae
 {
@@ -24,21 +25,43 @@ namespace dae
 		m_enemyState(EnemyStates::movingRight),
 		m_IsDead(false),
 		m_FlipVertical(false),
-		m_FlipHorizontal(false)
+		m_FlipHorizontal(false),
+		m_CountDamageTaken(0),
+		m_ExecuteBullet(false),
+		m_AccumulatedTime(2),
+		timetoWaitBeforeShooting(50)
 
 	{
 		Initialize();
-		m_EnemySprite = std::make_shared<RenderComponent>(pGameobject);
-		m_EnemySprite->SetTexture("EnemyTank.png");
+		m_EnemySprite = std::make_unique<RenderComponent>(pGameobject);
+		m_EnemySpriteVertical = std::make_unique<RenderComponent>(pGameobject);
 
-		m_EnemySpriteVertical = std::make_shared<RenderComponent>(pGameobject);
-		m_EnemySpriteVertical->SetTexture("EnemyTankVertical.png");
-		//pGameobject->AddComponent(m_EnemySprite);
+		if (m_enemyType == EnemyType::Red)
+		{
+			m_EnemySprite->SetTexture("EnemyTank.png");
+			m_EnemySpriteVertical->SetTexture("EnemyTankVertical.png");
 
+			//pGameobject->AddComponent(m_EnemySprite);
+
+			m_EnemyBulletUp = std::make_unique<RenderComponent>(pGameobject);
+			m_EnemyBulletUp->SetTexture("EnemyBulletUp.png");
+
+			m_EnemyBulletSide = std::make_unique<RenderComponent>(pGameobject);
+			m_EnemyBulletSide->SetTexture("EnemyBulletSide.png");
+		}
+		else
+		{
+			m_EnemySprite->SetTexture("RedEnemyTank.png");
+			m_EnemySpriteVertical->SetTexture("RedEnemyTankVertical.png");
+			m_MoveSpeed = 100.f;
+		}
 
 	}
 
+	EnemyComponent::~EnemyComponent()
+	{
 
+	}
 
 
 	void dae::EnemyComponent::Initialize()
@@ -65,7 +88,7 @@ namespace dae
 			break;
 
 		case EnemyType::Egg:
-			m_DestRect.left = m_StartPoint + 100.f;
+			m_DestRect.left = m_StartPoint;
 			m_DestRect.bottom = m_InitialDestRectBottom;
 
 			break;
@@ -83,7 +106,7 @@ namespace dae
 
 	void dae::EnemyComponent::Render() const
 	{
-		if(m_enemyState == EnemyStates::movingDown || m_enemyState == EnemyStates::movingUp)
+		if (m_enemyState == EnemyStates::movingDown || m_enemyState == EnemyStates::movingUp)
 		{
 			m_EnemySpriteVertical->RenderTexture(m_DestRect, m_SrcRect, m_FlipHorizontal, m_FlipVertical);
 
@@ -94,19 +117,50 @@ namespace dae
 
 		}
 
-		//m_pGameObject.lock()->GetComponent<RenderComponent>()->RenderBox(m_DestRect,10,10);
+		if (m_shootBullet)
+		{
+			/*m_bullet->Render();*/
+			for (auto bullet : m_Bullets)
+			{
+				bullet->Render();
+			}
+		}
+		/*Point2f rayStart{ m_DestRect.left + (m_DestRect.width / 2.f),m_DestRect.bottom + m_DestRect.height / 2 };
+		Point2f rayEnd{ rayStart.x + m_Velocity.x * 20,rayStart.y + m_Velocity.y * 20 };
+		m_pGameObject.lock()->GetComponent<RenderComponent>()->RenderLine(rayStart.x, rayStart.y, rayEnd.x, rayEnd.y);*/
 	}
 
 	void dae::EnemyComponent::update(float elapsed)
 	{
 		//BaseComponent::update(elapsed);
 		{
-			
+			CheckIfPlayerIsInFront();
+			CheckIfPlayerIsHit();
 			UpdateSprite(elapsed);
 			UpdateEnemyMovementState(elapsed);
 			UpdateEnemyMovementusingState(elapsed);
+
+
+		}
+		if (m_ExecuteBullet)
+		{
+			m_shootBullet = true;
+			m_ExecuteBullet = false;
 		}
 
+		//if(m_shootBullet)
+		{
+			for (auto bullet : m_Bullets)
+			{
+				//m_bullet->update(elapsedSec);
+				bullet->SetLevelInformation(m_sLevel);
+
+				bullet->update(elapsed);
+			}
+
+		}
+
+		m_sLevel.lock()->SetEnemyPos(m_DestRect);
 	}
 
 	void dae::EnemyComponent::UpdateSprite(float elapsedSec)
@@ -138,7 +192,7 @@ namespace dae
 				break;
 
 			case EnemyType::Egg:
-				m_SrcRect.bottom = 48;
+				m_SrcRect.bottom = 0;
 				break;
 			}
 		}
@@ -260,7 +314,7 @@ namespace dae
 					if (m_enemyState != EnemyStates::movingRight)
 					{
 						m_enemyState = EnemyStates::movingLeft;
-						
+
 
 
 					}
@@ -422,6 +476,140 @@ namespace dae
 
 	void EnemyComponent::IsDead(bool dead)
 	{
+		if (dead)
+		{
+			// damage taken is count here
+			Notify(*this, EVENT::PLAYER_SCOREADD);
+			m_CountDamageTaken++;
+		}
+		// check if the damage is enough
+		if (m_CountDamageTaken >= 3)
+		{
+			m_CountDamageTaken = 0;
+			m_IsDead = dead;
+		}
+	}
+
+	void EnemyComponent::ResetEnemyLife(bool dead)
+	{
+		m_CountDamageTaken = 0;
 		m_IsDead = dead;
+	}
+
+	void EnemyComponent::ResetEnemyPos()
+	{
+
+		int ra = rand() % (11 - 0 + 1) + 0;
+		for (int i = 0; i < 10; ++i)
+		{
+			ra = rand() % (11 - 0 + 1) + 0;
+		}
+		m_DestRect.left = EnemyStartPosition[ra].x; // 
+		m_DestRect.bottom = EnemyStartPosition[ra].y;
+
+
+
+	}
+
+	void EnemyComponent::AddObserver(std::shared_ptr<Observer> observer)
+	{
+		m_Observers.push_back(observer);
+	}
+
+	void EnemyComponent::Notify(BaseComponent& actor, EVENT e)
+	{
+		for (size_t i = 0; i < m_Observers.size(); ++i)
+		{
+			m_Observers[i]->OnNotify(actor, e);
+		}
+	}
+
+	void EnemyComponent::CheckIfPlayerIsInFront()
+	{
+		if (m_enemyType == EnemyType::Red)
+		{
+			Rectf playerpos = m_sLevel.lock()->GetPlayerPositionInTheLevel();
+			Point2f rayStart{ m_DestRect.left + (m_DestRect.width / 2.f),m_DestRect.bottom + m_DestRect.height / 2 };
+			Point2f rayEnd{ rayStart.x + m_Velocity.x * 50,rayStart.y + m_Velocity.y * 50 };
+			if (!GetIsDead() && utils::IsOverlapping(rayStart, rayEnd, playerpos))
+			{
+				GenerateBullet();
+			}
+		}
+	}
+
+	void EnemyComponent::GenerateBullet()
+	{
+		m_AccumulatedTime++;
+
+		if (m_AccumulatedTime >= timetoWaitBeforeShooting)
+		{
+			//Vector2f direction = Vector2f(cos(m_RotateTurret * float(M_PI / 180.f)), sin(m_RotateTurret * float(M_PI / 180.f)));
+			auto gameobj = m_pGameObject.lock();
+			/*auto velocity = Vector2f(m_Velocity.x / m_Velocity.x, m_Velocity.y / m_Velocity.y);
+			velocity.Normalized();*/
+			m_Bullets.push_back(std::make_shared<BulletComponent>(gameobj, Point2f((m_DestRect.left + m_DestRect.width / 2), (m_DestRect.bottom + m_DestRect.height / 2)), m_Velocity.Normalized(), EnemyType::Red));
+			m_ExecuteBullet = true;
+			m_AccumulatedTime = 0;
+		}
+	}
+
+	bool EnemyComponent::CheckIfPlayerIsHit()
+	{
+		
+
+		switch (m_enemyType)
+		{
+		case EnemyType::Red:
+			if (m_shootBullet)
+			{
+				for (auto bullet : m_Bullets)
+				{
+					//m_bullet->update(elapsedSec);
+					//bullet->SetLevelInformation(m_sLevel);
+					if (utils::IsOverlapping(m_sLevel.lock()->GetPlayerPositionInTheLevel(), bullet->GetPosition()))
+					{
+						Notify(*this, EVENT::PLAYER_DEAD);
+						return true;
+						// notify player
+					}
+
+				}
+			}
+			break;
+
+		case EnemyType::Egg:
+			if (!GetIsDead() && utils::IsOverlapping(m_sLevel.lock()->GetPlayerPositionInTheLevel(), m_DestRect))
+			{
+				Notify(*this, EVENT::PLAYER_DEAD);
+				return true;
+				// notify player
+			}
+
+			break;
+
+		}
+
+		return false;
+	}
+
+	bool EnemyComponent::CheckIfPlayer2IsHit()
+	{
+		if (m_shootBullet)
+		{
+			for (auto bullet : m_Bullets)
+			{
+				//m_bullet->update(elapsedSec);
+				//bullet->SetLevelInformation(m_sLevel);
+				if (utils::IsOverlapping(m_sLevel.lock()->GetPlayer2PositionInTheLevel(), bullet->GetPosition()))
+				{
+					Notify(*this, EVENT::PLAYER_DEAD);
+					return true;
+					// notify player
+				}
+
+			}
+		}
+		return false;
 	}
 }

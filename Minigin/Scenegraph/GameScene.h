@@ -23,7 +23,8 @@ public:
     virtual void Update(float) = 0;
     virtual void FixedUpdate() = 0;
     virtual void Render() = 0;
-
+    virtual void SetScore(int /*Score*/){};
+    virtual void SetLives(int) {};
 
     std::string GetSceneName() { return m_sceneName; }
 

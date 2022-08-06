@@ -33,4 +33,9 @@ Rectf dae::BaseComponent::GetPosition()
 	return Rectf{ 0,0,0,0 };
 }
 
+std::string dae::BaseComponent::GetTag() const
+{
+	return "";
+}
+
 

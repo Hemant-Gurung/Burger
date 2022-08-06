@@ -10,90 +10,53 @@
 
 #include "ResourceManager.h"
 #include "SoundManager.h"
-#include "SServiceLocator.h"
+//#include "SServiceLocator.h"
 
 
 StartScreen::StartScreen()
-	:GameScene("startScreen")
+	:GameScene("StartScreen"),
+	m_IsStartButtonPressed(false),m_AccumulatedSeconds(0),m_IsGameStarted(false),m_IsVsLevelChosen(false),m_IsCoOpLevelChosen(false)
 {
+	
 }
 
 void StartScreen::Initialize()
 {
-
+	m_IsGameStarted = false;
 	m_showSecondScreen = false;
 	dae::ResourceManager::GetInstance().Init("../Data/");
 
 	auto gameObjectStart = std::make_shared<dae::GameObject>();
-	//RIGHT
-	dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonX), InputAction(std::make_unique<Button>(gameObjectStart), VK_SPACE, GamePadIndex::playerOne));
-	//LEFT
-
-	//dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::DpadLeft), InputAction(std::make_unique<MoveLeftCommand>(gameObjectStart), 'A', GamePadIndex::playerOne));
-	//UP
-
-
 	auto Renderlevel = std::make_shared<dae::RenderComponent>(gameObjectStart);
-	
 	auto transformLevel_1 = std::make_shared<dae::TransformComponent>(gameObjectStart);
 	gameObjectStart->AddComponent(transformLevel_1);
-
-	//auto texture = dae::ResourceManager::GetInstance().LoadTexture(LEVELS[0]);
-	m_Position = Vector2f(0, 500);
 	Renderlevel->SetPosition(m_Position.x,m_Position.y,0);
-	Renderlevel->SetTexture("StartScreen_made.png");
-	
+	Renderlevel->SetTexture("StartScreenTron.jpeg");
 	gameObjectStart->AddComponent(Renderlevel);
 	gameObjectStart->SetTag(L"Blank");
 
 	AddChild(gameObjectStart);
 
-	auto gameObjectStart_1 = std::make_shared<dae::GameObject>();
-	
-	auto transformLevel_2 = std::make_shared<dae::TransformComponent>(gameObjectStart);
-	gameObjectStart->AddComponent(transformLevel_2);
-	auto Renderlevel1 = std::make_shared<dae::RenderComponent>(gameObjectStart_1);
-	Renderlevel1->SetTexture("StartScreen_made_1.png");
-	gameObjectStart_1->AddComponent(Renderlevel1);
-	gameObjectStart_1->SetTag(L"Blank1");
+	auto gameobjectBullet = std::make_shared<dae::GameObject>();
+	auto BulletStartScreen = std::make_shared<dae::RenderComponent>(gameobjectBullet);
+	BulletStartScreen->SetTexture("TronBullet.png");
+	gameobjectBullet->AddComponent(BulletStartScreen);
+	gameobjectBullet->SetTag(L"bullet");
+	AddChild(gameobjectBullet);
 
-	AddChild(gameObjectStart_1);
-
-
-	//auto f1 = std::async(&SServiceLocator::get_sound_system);
-	//sound = &f1.get();
-	//sound->Play(SoundID::STARTSCREEN, 50);
-
-	if (!SoundManager::GetInstance().IsSoundStreamPlaying("Start"))
-		SoundManager::GetInstance().PlaySoundStream("Start", true);
-	
+	m_DestRect = Rectf{ 230,320,20,20 };
+	m_SrcRect = Rectf{ 0,0,8,7 };
 }
 
 void StartScreen::Update(float dt)
 {
-	auto indx = GamePadIndex::playerOne;
-	if (dae::InputManager::GetInstance().IsDown(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonX), indx))
-	{
-		ClearScene();
-		//dae::SceneManager::GetInstance().setActive("SoloLevel");
-
-	}
+	
 	for (auto obj : m_sceneObjects)
 	{
-		if (obj->GetTag() == L"Blank")
-		{
-			if (m_Position.y >= 0)
-			{
-				m_Position.y -= 50 * dt;
-				obj->GetComponent<dae::RenderComponent>()->SetPosition(m_Position.x, m_Position.y, 0);
-			}
-			else
-			{
-				m_showSecondScreen = true;
-			}
-		}
 		obj->Update(dt);
 	}
+	UpdatePlayerChoice();
+	UpdateChosenLevel(dt);
 }
 
 void StartScreen::FixedUpdate()
@@ -108,17 +71,91 @@ void StartScreen::Render()
 {
 	for (auto obj : m_sceneObjects)
 	{
-		if (obj->GetTag() != L"Blank")
+		auto bullet = obj->GetComponent<dae::RenderComponent>();
+		if (obj->GetTag() == L"bullet" && bullet != nullptr )
 		{
-			if(m_showSecondScreen)
-			{
-				obj->Render();
-			}
+			bullet->RenderTexture(m_DestRect, m_SrcRect, false, false, 0);
 		}
 		else
 		{
 			obj->Render();
 		}
 	}
+}
 
+void StartScreen::ResetLevel()
+{
+	ClearScene();
+	m_AccumulatedSeconds = 0;
+	m_IsStartButtonPressed = false;
+	m_IsVsLevelChosen = false;
+	m_IsCoOpLevelChosen = false;
+	m_IsGameStarted = true;
+	m_DestRect = Rectf{ 230,320,20,20 };
+}
+
+void StartScreen::UpdateChosenLevel(float dt)
+{
+
+	if(m_IsVsLevelChosen)
+	{
+		//dae::InputManager::GetInstance().Quit();
+		m_DestRect.bottom -= 100 * dt;
+		m_AccumulatedSeconds += 0.1f;
+		if (m_AccumulatedSeconds >= 10)
+		{
+			ResetLevel();
+			dae::SceneManager::GetInstance().setActive("VersusLevel");
+		}
+	}
+
+	if (m_IsStartButtonPressed)
+	{
+		m_DestRect.bottom -= 100 * dt;
+		m_AccumulatedSeconds += 0.1f;
+		if (m_AccumulatedSeconds >= 10)
+		{
+			ResetLevel();
+			dae::SceneManager::GetInstance().setActive("SoloLevel");
+		}
+	}
+
+	if (m_IsCoOpLevelChosen)
+	{
+		m_DestRect.bottom -= 100 * dt;
+		m_AccumulatedSeconds += 0.1f;
+		if (m_AccumulatedSeconds >= 10)
+		{
+			ResetLevel();
+			dae::SceneManager::GetInstance().setActive("CoopLevel");
+		}
+	}
+}
+
+void StartScreen::UpdatePlayerChoice()
+{
+	if (!m_IsGameStarted)
+	{
+		auto indx = GamePadIndex::playerOne;
+		/*static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonX*/
+		if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonA), indx))
+		{
+			m_IsStartButtonPressed = true;
+			m_AccumulatedSeconds = 0;
+		}
+		if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonX), indx))
+		{
+			m_IsVsLevelChosen = true;
+			m_AccumulatedSeconds = 0;
+		}
+		if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonB), indx))
+		{
+			m_IsCoOpLevelChosen = true;
+			m_AccumulatedSeconds = 0;
+		}
+		if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonY), indx))
+		{
+			dae::InputManager::GetInstance().Quit();
+		}
+	}
 }

@@ -10,7 +10,7 @@ class InputManager::InputManagetImpl
 	BYTE* m_pKeyboardState2{nullptr};
 
 	bool m_KeyboardStateActive = true;
-
+	bool m_quit = true;
 
 	XINPUT_STATE* m_CurrentState{};
 	XINPUT_STATE* m_PreviousState{};
@@ -62,30 +62,7 @@ public:
 	bool ProcessInput()
 	{
 		// swap the states
-		
-	
-		DWORD dwResult;
-		for (int i = 0; i < XUSER_MAX_COUNT; i++)
-		{
-			std::swap(m_PreviousState[i], m_CurrentState[i]);
 
-			XINPUT_STATE state;
-			ZeroMemory(&state, sizeof(XINPUT_STATE));
-			//get the state
-		    dwResult = XInputGetState(i, &state);
-			m_CurrentState[i] = state;
-			if(dwResult == ERROR_SUCCESS)
-			{
-				//std::cout << "controller " << i << " connected\n";
-				
-			}
-			else
-			{
-				
-				//std::cout << "controller " << i << "not connected\n";
-			}
-		}
-		
 			SDL_Event e;
 			while (SDL_PollEvent(&e)) {
 				if (e.type == SDL_QUIT) {
@@ -100,9 +77,27 @@ public:
 		
 		}
 		
-		return true;
+		return m_quit;
 		
 		
+	}
+	bool UpdateGamePadState()
+	{
+		DWORD dwResult;
+		for (int i = 0; i < XUSER_MAX_COUNT; i++)
+		{
+			std::swap(m_PreviousState[i], m_CurrentState[i]);
+
+			XINPUT_STATE state;
+			ZeroMemory(&state, sizeof(XINPUT_STATE));
+			//get the state
+			dwResult = XInputGetState(i, &state);
+			m_CurrentState[i] = state;
+			if (dwResult == ERROR_SUCCESS)
+			{}
+			
+		}
+		return dwResult;
 	}
 
 	bool UpdateKeyboardState()
@@ -153,9 +148,14 @@ public:
 
 	void Update()
 	{
-		
+		UpdateGamePadState();
 		UpdateKeyboardState();
 
+	}
+
+	void Quit()
+	{
+		m_quit = false;
 	}
 
 	void HandleInput()
@@ -232,6 +232,7 @@ public:
 
 };
 
+
 //map events
 void Input::MapEvent(ControllerKey key, InputAction action)
 {
@@ -276,6 +277,11 @@ void InputManager::HandleInput()
 	
 	pImpl->HandleInput();
 
+}
+
+void InputManager::Quit()
+{
+	pImpl->Quit();
 }
 
 void InputManager::ResetInput()

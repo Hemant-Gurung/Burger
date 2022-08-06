@@ -84,8 +84,8 @@ void dae::Minigin::Initialize()
 		"Programming 4 assignment",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		1280,
-		700,
+		480,
+		512,
 		SDL_WINDOW_OPENGL
 	);
 	if (m_Window == nullptr) 
@@ -142,9 +142,7 @@ void dae::Minigin::Run()
 		bool doContinue = true;
 		while (doContinue)
 		{
-			ImGui_ImplOpenGL2_NewFrame();
-			ImGui_ImplSDL2_NewFrame(m_Window);
-			ImGui::NewFrame();
+			
 
 			auto currTime = chrono::high_resolution_clock::now();
 
@@ -165,13 +163,17 @@ void dae::Minigin::Run()
 				sceneManager.FixedUpdate();
 				lag -= msperupdate;
 			}
+			ImGui_ImplOpenGL2_NewFrame();
+			ImGui_ImplSDL2_NewFrame(m_Window);
+			ImGui::NewFrame();
 
+		
 			sceneManager.Update(deltaTime);
 			//normal update with deltatime
 			// 
 				//call run steamapi callbacks
 			//SteamAPI_RunCallbacks();
-
+			
 			// ImguiUpdate();
 			renderer.Render();
 			

@@ -7,6 +7,7 @@
 
 namespace dae
 {
+	class PlayerComponent;
 	class BaseComponent;
 	class Texture2D;
 
@@ -25,7 +26,7 @@ namespace dae
 		GameObject() = default;
 
 		//adding virtual adds more memory so if not required do not write
-		 ~GameObject();
+		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;
@@ -47,21 +48,26 @@ namespace dae
 			//template function get component
 			for (auto& tempcom : m_sComponents)
 			{
-
 				//dynamic cast the result 
 				T* returntyp = dynamic_cast<T*>(tempcom.get());
-
 				//check for nullptr
 				if (returntyp != nullptr)
 				{
 					return returntyp;
 				}
-
 			}
 			return nullptr;
 		}
 
+		template <class T>
+		bool HasComponent()
+		{
+			return GetComponent<T>() != nullptr;
+		}
 
+		//template<typename T>
+		dae::PlayerComponent* GetComponentByTag(std::string tag);
+		void SetPosition(float x, float y, float z) const;
 		
 
 	private:

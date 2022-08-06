@@ -15,6 +15,7 @@ namespace dae
 		 virtual void SetTexture(const std::string& );
 		 virtual void SetPosition(float, float,float) ;
 		 virtual Rectf GetPosition();
+		 virtual std::string GetTag() const;
 		// virtual void AddPhysics();
 		 
 	protected:

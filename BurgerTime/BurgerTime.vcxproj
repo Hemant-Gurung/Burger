@@ -78,12 +78,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)BurgerTime\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)Intermediate\BurgerTime\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)BurgerTime\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -180,6 +180,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoopLevel.cpp" />
     <ClCompile Include="Tron.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
@@ -193,8 +194,10 @@
     <ClCompile Include="SoloLevel.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="ThirdLevel.cpp" />
+    <ClCompile Include="VersusLevel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoopLevel.h" />
     <ClInclude Include="Tron.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="SoloLevel.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="ThirdLevel.h" />
+    <ClInclude Include="VersusLevel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BurgerTime.rc" />

@@ -5,7 +5,8 @@
 #include <Windows.h>
 #include <Xinput.h>
 #include "Utils/Singleton.h"
-#include "Base/Command.h"
+#include "Command.h"
+#include "structs.h"
 #include <map>
 
 #pragma comment(lib,"XInput.lib")
@@ -13,6 +14,35 @@
 
 namespace dae
 {
+	
+	class InputManager :public Singleton<InputManager>
+	{
+		class InputManagetImpl;
+
+		//std::unique_ptr<InputManagetImpl> pImpl;
+		InputManagetImpl* pImpl;
+
+	public:
+		InputManager();
+		~InputManager();
+
+		void Initialize();
+		void Update();
+		bool ProcessInput();
+		void HandleInput();
+
+		void Quit();
+		bool IsDown(unsigned int button,GamePadIndex&) const;
+		bool IsUp(unsigned int button, GamePadIndex&) const;
+		bool IsPressed(unsigned int button, GamePadIndex&) const;
+		void ResetInput();
+	private:
+		bool m_quit;
+
+	};
+
+	
+
 	class XBOX360Controller
 	{
 
@@ -39,6 +69,8 @@ namespace dae
 			DpadDown1 = XINPUT_GAMEPAD_DPAD_DOWN,
 			DpadLeft1 = XINPUT_GAMEPAD_DPAD_LEFT,
 			DpadRight1 = XINPUT_GAMEPAD_DPAD_RIGHT,
+			ShoulderButtonRight1 = XINPUT_GAMEPAD_RIGHT_SHOULDER,
+			ShoulderButtonLeft1 = XINPUT_GAMEPAD_LEFT_SHOULDER,
 
 
 
@@ -63,32 +95,7 @@ namespace dae
 			held1
 		};
 	};
-	class InputManager final :public Singleton<InputManager>
-	{
-		class InputManagetImpl;
 
-		//std::unique_ptr<InputManagetImpl> pImpl;
-		InputManagetImpl* pImpl;
-
-	public:
-		InputManager();
-		~InputManager();
-
-		void Initialize();
-		void Update();
-		bool ProcessInput();
-		void HandleInput();
-
-		bool IsDown(unsigned int button,GamePadIndex&) const;
-		bool IsUp(unsigned int button, GamePadIndex&) const;
-		bool IsPressed(unsigned int button, GamePadIndex&) const;
-		void ResetInput();
-	private:
-
-
-
-
-	};
 
 	class Input final : public Singleton<Input>
 	{
@@ -98,7 +105,7 @@ namespace dae
 		ControllerCommandMap m_ConsoleCommands{};
 		void MapEvent(ControllerKey key, InputAction);
 		//std::vector<std::unique_ptr<XBOX360Controller>> m_Controllers{};
-		
+
 	private:
 
 
@@ -106,3 +113,4 @@ namespace dae
 	};
 
 }
+

@@ -3,9 +3,8 @@
 #include "Components/PlayerComponent.h"
 #include <iostream>
 #include "SceneManager.h"
-
-
-
+#include "SoundManager.h"
+#include "SServiceLocator.h"
 
 class Command
 {
@@ -16,7 +15,11 @@ public:
 	virtual ~Command() = default;
 	virtual void Execute() = 0;
 	std::weak_ptr<dae::GameObject> m_pGameObject;
+
 };
+
+
+
 
 //jump
 
@@ -54,6 +57,7 @@ public:
 	{};
 	void  Execute() override
 	{
+
 		m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->GenerateBullet();
 
 	};
@@ -229,13 +233,29 @@ public:
 	}
 };
 
-class Button : public Command
+
+class QuitCommand final : public Command
+{
+public:
+	QuitCommand(std::shared_ptr<dae::GameObject> pGameobject) :
+		Command(pGameobject)
+	{
+		
+	}
+
+	void Execute() override
+	{
+		//dae::InputManager::
+	    
+ 	}
+};
+
+class Button final : public Command
 {
 public:
 	Button(std::shared_ptr<dae::GameObject> pGameobject) :
 		Command(pGameobject)
 	{
-		
 		
 	}
 
@@ -251,10 +271,6 @@ public:
 };
 
 
-
-
-
-
 struct InputAction
 {
 	InputAction() :
@@ -262,7 +278,7 @@ struct InputAction
 		, command(nullptr),
 		keyboardCode(-1) {}
 
-	InputAction(std::unique_ptr<Command> command = nullptr,int keyboardCode =-1, GamePadIndex playerIndex = GamePadIndex::playerOne) :
+	InputAction(std::unique_ptr<Command> command = nullptr, int keyboardCode = -1, GamePadIndex playerIndex = GamePadIndex::playerOne) :
 		command(std::move(command)),
 		playerIndex(playerIndex),
 		keyboardCode(keyboardCode)
@@ -272,3 +288,45 @@ struct InputAction
 	GamePadIndex playerIndex;
 	int keyboardCode; //VK 0x07 to 0xFE
 };
+
+//class ButtonSelectCommand  : public Command
+//{
+//public:
+//	ButtonSelectCommand(std::shared_ptr<dae::GameObject> pGameobject) :
+//		Command(pGameobject)
+//	{}
+//
+//
+//	void Execute() override
+//	{
+//		SServiceLocator::GetButtonManager()->GetActiveButtonComp()->ExecuteButton();
+//	}
+//};
+//
+//class ButtonUpCommand  : public Command
+//{
+//public:
+//	ButtonUpCommand(std::shared_ptr<dae::GameObject> pGameobject) :
+//		Command(pGameobject)
+//	{}
+//
+//	void Execute() override
+//	{
+//		SServiceLocator::GetButtonManager()->ButtonUp();
+//	}
+//};
+//
+//class ButtonDownCommand  : public Command
+//{
+//public:
+//	ButtonDownCommand(std::shared_ptr<dae::GameObject> pGameobject) :
+//		Command(pGameobject)
+//	{}
+//
+//	void Execute() override
+//	{
+//		SServiceLocator::GetButtonManager()->ButtonDown();
+//	}
+//};
+
+

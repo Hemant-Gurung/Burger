@@ -30,9 +30,9 @@ class LevelComponent:public dae::BaseComponent
 {
 public:
 
-	LevelComponent(std::shared_ptr<dae::GameObject>&);
+	LevelComponent(std::shared_ptr<dae::GameObject>);
 
-	virtual ~LevelComponent() = default;
+	 virtual ~LevelComponent() = default;
 	
 
 	LevelComponent(const LevelComponent&) = delete;
@@ -47,13 +47,20 @@ public:
 	void HandleCollision(Rectf& actorShape, Vector2f& actorvelocity,playerMovement&);
 	void HandleCollision(Rectf& actorShape, Vector2f& actorvelocity, EnemyStates&);
 	void SetBulletPos(Rectf&);
+	bool checkIfEnemyIsShot();
+	void SetEnemyIsShot(bool value);
 	Rectf& GetBulletPosInLevel() { return m_BulletPos; }
 	bool doOverlap(Vector2f l1, Vector2f r1, Vector2f l2, Vector2f r2);
 	bool IsOnGround(const Rectf& actorShape, Vector2f& actorvelocity);
-	Rectf& GetPlayerPositionInTheLevel() { return m_PlayerPos; }
+	Rectf& GetPlayerPositionInTheLevel();
+	Rectf& GetPlayer2PositionInTheLevel();
+
 	Rectf& GetEnemyPosInTheLevel() { return m_EnemyPos; }
 	void SetEnemyPos(Rectf& enemyPos) { m_EnemyPos = enemyPos; }
 	std::vector<std::vector<Point2f>>& GetVertices() { return m_vertices; }
+	void SetPlayerPosInLevel(const Rectf& pos);
+	void SetPlayer2PosInLevel(const Rectf& pos);
+
 	
 
 
@@ -73,16 +80,17 @@ private:
 	std::vector<std::vector<Point2f>> m_vertices;
 	SVGParser m_svg_parser_;
 	bool m_ShowDebugLines;
-	Rectf m_PlayerPos;
+	Rectf m_PlayerPos,m_PlayerPos2;
 	Rectf m_EnemyPos;
 	Rectf m_BulletPos;
-
+	bool m_IsEnemyShot;
 	//LevelComponent* m_level;
 	/*SDL_Window* m_window;
 	SDL_Renderer* m_Renderer;*/
-
+	bool m_Isused;
 
 	void DrawVertices();
 	void GuiUpdate();
+
 };
 

@@ -3,7 +3,7 @@
 // Prog-2 files
 #include <vector>
 #include "Vector2f.h"
-
+#include "BaseComponent.h"
 namespace utils
 {
 	const float g_Pi{ 3.1415926535f };
@@ -50,6 +50,7 @@ namespace utils
 		float lambda;
 		Point2f intersectPoint;
 		Vector2f normal;
+		Tag type;
 	};
 	bool IsPointInRect(const Point2f& p, const Rectf& r);
 	bool IsPointInCircle(const Point2f& p, const Circlef& c);
@@ -64,8 +65,9 @@ namespace utils
 	bool IsOverlapping( const Circlef& c1, const Circlef& c2 );
 	bool IsOverlapping( const std::vector<Point2f>& vertices, const Circlef& c );
 	bool IsOverlapping( const Point2f* vertices, size_t nrVertices, const Circlef& c );
-	bool Raycast( const Point2f* vertices, const size_t nrVertices, const Point2f& rayP1, const Point2f& rayP2, HitInfo& hitInfo );
-	bool Raycast( const std::vector<Point2f>& vertices, const Point2f& rayP1, const Point2f& rayP2, HitInfo& hitInfo );
+	bool Raycast( const Point2f* vertices, const size_t nrVertices, const Point2f& rayP1, const Point2f& rayP2, HitInfo& hitInfo, const dae::BaseComponent* = nullptr);
+	bool Raycast( const std::vector<Point2f>& vertices, const Point2f& rayP1, const Point2f& rayP2, HitInfo& hitInfo,const dae::BaseComponent* = nullptr);
+	bool Raycast(const Point2f& startpos, const Vector2f& direction,const dae::BaseComponent&);
 
 	bool IntersectLineSegments(const Point2f& p1, const Point2f& p2, const Point2f& q1, const Point2f& q2, float& outLambda1, float& outLambda2, float epsilon = 1e-6);
 	float DistPointLineSegment(const Point2f& p, const Point2f& a, const Point2f& b);

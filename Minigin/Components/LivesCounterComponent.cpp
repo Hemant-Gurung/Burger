@@ -28,6 +28,7 @@ void dae::LivesCounterComponent::Render() const
 
 void dae::LivesCounterComponent::SetPosition(float x, float y, float z)
 {
+	m_position = Vector2f{ x,y};
 	m_TextComponent->SetPosition(x, y, z);
 }
 

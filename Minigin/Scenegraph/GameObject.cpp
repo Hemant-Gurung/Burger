@@ -1,7 +1,7 @@
 #include "MiniginPCH.h"
 #include "GameObject.h"
 #include "Components/BaseComponent.h"
-
+#include "PlayerComponent.h"
 using namespace std;
 dae::GameObject::~GameObject() = default;
 
@@ -67,6 +67,30 @@ void dae::GameObject::RemoveChild(GameObject* go)
 	else
 	{
 		std::cout << "\n";
+	}
+}
+
+dae::PlayerComponent* dae::GameObject::GetComponentByTag(std::string tag)
+{
+	for (auto& tempcom : m_sComponents)
+	{
+		
+		//dynamic cast the result 
+		auto returntyp = dynamic_cast<PlayerComponent*>(tempcom.get());
+		//check for nullptr
+		if (returntyp != nullptr && returntyp->GetTag()== tag)
+		{
+			return returntyp;
+		}
+	}
+	return nullptr;
+}
+
+void dae::GameObject::SetPosition(float x, float y, float z) const
+{
+	for (const auto it : m_pChildrens)
+	{
+		it->SetPosition(x, y, z);
 	}
 }
 

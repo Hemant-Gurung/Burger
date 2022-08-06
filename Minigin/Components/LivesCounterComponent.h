@@ -20,6 +20,10 @@ namespace dae
         void update(float) override;
         void Render() const override;
         void SetPosition(float x,float y,float z);
+        Rectf GetPosition() override
+        {
+            return Rectf{ m_position.x,m_position.y,0,0 };
+        };
         //observer
          void OnNotify(const dae::BaseComponent&, dae::EVENT&);
     private:

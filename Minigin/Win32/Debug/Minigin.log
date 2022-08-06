@@ -1,0 +1,54 @@
+﻿  MiniginPCH.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_opengl2.cpp
+  imgui_impl_sdl.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  Generating Code...
+  imgui_plot.cpp
+  Command.cpp
+  Font.cpp
+  Observer.cpp
+  Achievements.cpp
+  BaseComponent.cpp
+  BurgerComponent.cpp
+  EnemyComponent.cpp
+  FPScomponent.cpp
+  LevelComponent.cpp
+  LivesCounterComponent.cpp
+  PlayerComponent.cpp
+  RenderComponent.cpp
+  ScoreComponent.cpp
+  TextComponent.cpp
+  TextureComponent.cpp
+  TransformComponent.cpp
+  PepperComponent.cpp
+  GameScene.cpp
+  Renderer.cpp
+  Texture2D.cpp
+  Generating Code...
+  Compiling...
+  InputManager.cpp
+  ResourceManager.cpp
+  SceneManager.cpp
+  Minigin.cpp
+  GameObject.cpp
+  Scene.cpp
+  NullSoundSystem.cpp
+  sdl_sound_system.cpp
+  SoundEffect.cpp
+  SoundManager.cpp
+  SoundStream.cpp
+  Sound_System.cpp
+  SServiceLocator.cpp
+  structs.cpp
+  SVGParser.cpp
+  Transform.cpp
+  utils.cpp
+  Vector2f.cpp
+  Generating Code...
+  Minigin.vcxproj -> C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\Win32\Debug\Manaengine.lib
+  C:\_PROG_4\_Programming_4\_MINIGIN\Week_8_MINIGIN\Minigin\3rdParty\steamworks\redistributable_bin\steam_api.dll
+  1 File(s) copied

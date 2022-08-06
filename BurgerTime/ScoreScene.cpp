@@ -16,7 +16,8 @@ void ScoreScene::Initialize()
 
 void ScoreScene::Update(float)
 {
-	m_SText.get()->SetText("Player "+std::to_string(m_Player)+ " " + std::to_string(m_Score));
+	if(m_SText!=nullptr){}
+	    //m_SText.get()->SetText("Player "+std::to_string(m_Player)+ " " + std::to_string(m_Score));
 }
 
 void ScoreScene::FixedUpdate()
@@ -25,5 +26,7 @@ void ScoreScene::FixedUpdate()
 
 void ScoreScene::Render()
 {
-	m_SText.get()->Render();
+	
+	if (m_SText != nullptr)
+	  m_SText.get()->Render();
 }

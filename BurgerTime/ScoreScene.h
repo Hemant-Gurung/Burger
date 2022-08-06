@@ -1,6 +1,7 @@
 #pragma once
 #include "Scenegraph/GameScene.h"
 #include "Components/TextComponent.h"
+#include "RenderComponent.h"
 class ScoreScene :
     public GameScene
 {
@@ -18,6 +19,7 @@ public:
     void Update(float) override;
     void FixedUpdate() override;
     void Render() override;
+    void SetScore(int score) { m_Score = score; }
 
 private:
 
@@ -25,6 +27,9 @@ private:
     bool m_showSecondScreen;*/
     float m_countSecondsToShowScore;
     std::shared_ptr<dae::TextComponent> m_SText;
+    std::shared_ptr<dae::RenderComponent> m_REnderText;
+
+    std::vector<int> m_ScoresList;
     int m_Score;
     int m_Player;
 };

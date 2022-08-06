@@ -1,6 +1,9 @@
 #include "BaseComponent.h"
 #include "RenderComponent.h"
 #include "LevelComponent.h"
+#include "BulletComponent.h"
+#include "Observer.h"
+
 namespace dae
 {
 	
@@ -8,7 +11,7 @@ namespace dae
 	{
 	public:
 		EnemyComponent(std::shared_ptr<dae::GameObject>&,EnemyType&, std::shared_ptr<LevelComponent>);
-		virtual ~EnemyComponent() = default;
+		 ~EnemyComponent();
 
 		EnemyComponent(const EnemyComponent& other) = delete;
 		EnemyComponent(EnemyComponent&& other) noexcept = delete;
@@ -30,53 +33,39 @@ namespace dae
 		void HandleEnemyCollision();
 		bool checkIfMovementIsPossible(EnemyStates&);
 		Rectf& GetEnemyPos();
+		void UpdatePlayerPosInLevel(const Rectf& playerpos) { m_PlayerPos = playerpos; }
 
 		void IsDead(bool);
 		bool GetIsDead() { return m_IsDead; }
-		void ResetEnemyPos()
-		{
-			if(this->m_enemyType == EnemyType::Egg)
-			{
-				int ra = rand() % (1 - 0 + 1) + 0;
-				if (ra == 1)
-				{
-					m_DestRect.left = 0;
-					m_DestRect.bottom = 450;
-				}
-				else
-				{
-					m_DestRect.left = 450;
-					m_DestRect.bottom = 10;
-				}
-			}
-			else
-			{
-				int ra = rand() % (1 - 0 + 1) + 0;
-				if (ra == 1)
-				{
-					m_DestRect.left = 0;
-					m_DestRect.bottom = 0;
-				}
-				else
-				{
-					m_DestRect.left = rand()% (int)(450.f-20.f+1.f)+20.f;
-					m_DestRect.bottom = 250;
-				}
-			}
-			
-		}
+		void ResetEnemyLife(bool dead);
+		void ResetEnemyPos();
+		Vector2f& GetVelocity() { return m_Velocity; }
+
+		void AddObserver(std::shared_ptr<Observer> observer);
+		void Notify(BaseComponent&, EVENT);
+		bool CheckIfPlayerIsHit();
+		bool CheckIfPlayer2IsHit();
+
+
 	
 	private:
 		EnemyStates m_enemyState;
 		EnemyType m_enemyType;
-		std::shared_ptr<dae::RenderComponent> m_EnemySprite;
-		std::shared_ptr<dae::RenderComponent> m_EnemySpriteVertical;
+		std::unique_ptr<dae::RenderComponent> m_EnemySprite;
+		std::unique_ptr<dae::RenderComponent> m_EnemySpriteVertical;
+
+		//Bullet
+		std::unique_ptr<dae::RenderComponent> m_EnemyBulletUp;
+		std::unique_ptr<dae::RenderComponent> m_EnemyBulletSide;
+
+
 
 		
 		std::weak_ptr<LevelComponent> m_sLevel;
 		Rectf m_DestRect;
 		Rectf m_SrcRect;
 
+		Rectf m_PlayerPos;
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;
 		float m_SpriteSheetLeft;
@@ -97,6 +86,18 @@ namespace dae
 		float m_MoveSpeed;
 
 		bool m_FlipVertical, m_FlipHorizontal;
+		int m_CountDamageTaken;
+
+		void CheckIfPlayerIsInFront();
+		void GenerateBullet();
+		bool m_shootBullet;
+		bool m_ExecuteBullet;
+		float m_AccumulatedTime;
+		int timetoWaitBeforeShooting;
+		std::vector<std::shared_ptr<BulletComponent>> m_Bullets;
+		std::vector<std::shared_ptr<Observer>> m_Observers;
+
+
 	};
 
 }

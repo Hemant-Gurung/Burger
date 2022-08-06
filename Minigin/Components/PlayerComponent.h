@@ -24,7 +24,7 @@ namespace dae
 	class PlayerComponent : public BaseComponent
 	{
 	public:
-		PlayerComponent(std::shared_ptr<GameObject>&, std::shared_ptr<LevelComponent>);
+		PlayerComponent(std::shared_ptr<GameObject>&, std::shared_ptr<LevelComponent>,std::string textureName = "PlayerTank.png");
 		~PlayerComponent();
 
 		PlayerComponent(const PlayerComponent& other) = delete;
@@ -44,6 +44,8 @@ namespace dae
 		void MoveRight();
 		void ButtonsNotPressed();
 		void ShootBullet();
+		std::string GetTag() const override { return m_Tag; };
+		void SetTag(std::string tag) { m_Tag = tag; }
 
 		void AddObserver(std::shared_ptr<Observer> observer);
 		void update(float) override;
@@ -56,8 +58,8 @@ namespace dae
 		void UpdateSprite(float elapsedSec);
 		void UpdateSourceRect();
 		void ChangeState(PlayerState&);
-		bool GetIsFlippedHorizontal() { return IsTextureFlippedHorizontal; }
-		bool GetIsFlippedVertical() { return IsTextureFlippedVertical; }
+		bool GetIsFlippedHorizontal()const { return IsTextureFlippedHorizontal; }
+		bool GetIsFlippedVertical() const { return IsTextureFlippedVertical; }
 		void FLipTextureHorozontal(bool flip);
 		void FLipTextureVertical(bool flip);
 
@@ -70,21 +72,24 @@ namespace dae
 		void ThrowPepper();
 		void DestroyLive();
 		void AddScore();
+		void SetScore(int score) { m_Score = score; }
+		void SetLives(int lives) { m_TotalLives = lives; }
 		int GetScore() { return m_Score; }
 		void DecreasePepper();
-		int GetLives() { return m_TotalLives; }
-		int GetRemainingPepper() { return m_Pepper; }
+		int GetLives() const { return m_TotalLives; }
+		int GetRemainingPepper() const { return m_Pepper; }
 		void RotateTankTurret(float direction);
 
 		void GenerateBullet();
+		bool CheckPlayerBulletEnemyCollision(Rectf&);
+		void InitializeDestRect();
 
 		void SetPlayerStartPosition(const Point2f& pos)
 		{
 			m_DestRect.bottom = pos.y;
 			m_DestRect.left = pos.x;
 		}
-		bool m_shootBullet;
-		bool m_ExecuteBullet;
+		
 		//bool m_SetVelocity = false;
 	protected:
 		
@@ -102,6 +107,8 @@ namespace dae
 		std::shared_ptr<dae::RenderComponent> m_PlayerIcon;
 		std::shared_ptr<dae::RenderComponent> m_PepperIcon;
 		std::shared_ptr<dae::RenderComponent> m_TurretTexture;
+		std::shared_ptr<dae::RenderComponent> m_DeathExplosion;
+
 		
 
 		EVENT eve;
@@ -112,7 +119,7 @@ namespace dae
 		Sound_System* a;
 		std::thread walk;
 		std::thread die;
-		
+		std::string m_Tag;
 
 		//sprite
 		Rectf m_DestRect;
@@ -130,7 +137,6 @@ namespace dae
 		PlayerState m_PlayerState{ PlayerState::standing };
 		playerMovement m_playerMovement;
 		std::weak_ptr<LevelComponent> m_sLevel;
-		std::shared_ptr<BulletComponent> m_bullet;
 		std::vector<std::shared_ptr<BulletComponent>> m_Bullets;
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;
@@ -139,7 +145,6 @@ namespace dae
 		float m_StartPoint;
 		float m_InitialDestRectBottom;
 
-		void InitializeDestRect();
 		void InitializeSrcRect();
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
@@ -149,7 +154,7 @@ namespace dae
 		
 	
 		void PlayDeadSound();
-
+		void WaitBeforeEnteringTheArena();
 		void GuiUpdate();
 
 		int m_TotalLives;
@@ -158,6 +163,13 @@ namespace dae
 
 		bool m_ShowDebugLines;
 		float m_RotateTurret;
+
+		bool m_shootBullet;
+		bool m_ExecuteBullet;
+		float m_AccumulatedTime;
+		int timetoWaitBeforeShooting;
+		float m_TimeToWaitBeforeEntering;
+		bool m_IsPlayerShot;
 		
 	};
 }

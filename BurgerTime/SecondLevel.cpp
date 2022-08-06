@@ -4,138 +4,189 @@
 #include "EnemyComponent.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include <algorithm>
 #include "Utils.h"
+#include <fstream>
+
+#include "imgui.h"
+#include "SoundManager.h"
 
 SecondLevel::SecondLevel()
 	:GameScene("SecondLevel")
-	,m_PlayerPos()
-	,m_Player(nullptr)
+	, m_PlayerPos()
+	, m_Player(nullptr)
 	, m_lives(nullptr)
 	, m_Score(nullptr),
-	m_accumulatedDeathTime(0)
+	m_accumulatedDeathTime(0),
+	m_IsInitialized(false),
+	m_ShowScore(false)
+	, m_GotoLevel3(false)
 {
 	m_hasOverlapped = false;
 }
 
 void SecondLevel::Initialize()
 {
-	//auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
-	m_hasOverlapped = false;
-	//dae::SceneManager::GetInstance().AddGameScene("Demo");
-	dae::ResourceManager::GetInstance().Init("../Data/");
+	if (!m_IsInitialized)
+	{
+		//auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
+		m_hasOverlapped = false;
+		//dae::SceneManager::GetInstance().AddGameScene("Demo");
+		dae::ResourceManager::GetInstance().Init("../Data/");
 
-	auto gameObjectLevel = std::make_shared<dae::GameObject>();
-	////make render component
-	auto Renderlevel = std::make_shared<dae::RenderComponent>(gameObjectLevel);
-	auto transformLevel_1 = std::make_shared<dae::TransformComponent>(gameObjectLevel);
-	gameObjectLevel->AddComponent(transformLevel_1);
+		auto gameObjectLevel = std::make_shared<dae::GameObject>();
+		////make render component
+		auto Renderlevel = std::make_shared<dae::RenderComponent>(gameObjectLevel);
+		auto transformLevel_1 = std::make_shared<dae::TransformComponent>(gameObjectLevel);
+		gameObjectLevel->AddComponent(transformLevel_1);
 
-	//auto texture = dae::ResourceManager::GetInstance().LoadTexture(LEVELS[0]);
-	Renderlevel->SetTexture(LEVELS[1]);
-	gameObjectLevel->AddComponent(Renderlevel);
-	////ADD LEVEL SKELETON
-	auto levelVertices = std::make_shared<LevelComponent>(gameObjectLevel);
-	levelVertices.get()->Initialize(LEVEL_COLLISIONS[1]);
-	gameObjectLevel->AddComponent(levelVertices);
+		//auto texture = dae::ResourceManager::GetInstance().LoadTexture(LEVELS[0]);
+		Renderlevel->SetTexture(LEVELS[1]);
+		gameObjectLevel->AddComponent(Renderlevel);
+		////ADD LEVEL SKELETON
+		auto level = std::make_shared<LevelComponent>(gameObjectLevel);
+		level.get()->Initialize(LEVEL_COLLISIONS[1]);
+		gameObjectLevel->AddComponent(level);
 
-	//scene.Add(gameObjectLevel);
+		//scene.Add(gameObjectLevel);
+		auto gameObjecttHighScore = std::make_shared<dae::GameObject>();
+
+		auto fontScore = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
+		auto textScore = std::make_shared<dae::TextComponent>(gameObjecttHighScore, " ", fontScore, SDL_Color{ 0,0,255,1 });
+		auto transformHighScore = std::make_shared<dae::TransformComponent>(gameObjecttHighScore);
+
+		m_HightestScore = std::make_shared<dae::ScoreComponent>(gameObjecttHighScore, textScore);
+
+		// find highest score
+		std::ifstream input("../Data/best_score.txt");
+		int s{ -1 };
+		std::string t;
+		std::vector<int> scores;
+		while (input >> s)
+		{
+			scores.push_back(s);
+
+		}
+		m_HightestScore.get()->setScore("HIGHEST SCORE: ", std::to_string(*std::max_element(scores.begin(), scores.end())));
+
+		gameObjecttHighScore->AddComponent(transformHighScore);
+		m_HightestScore->SetPosition(260, 5, 0);
+
+		gameObjecttHighScore->AddComponent(m_HightestScore);
+
+		AddChild(gameObjecttHighScore);
 
 
 
-	auto Level = gameObjectLevel->GetComponent<LevelComponent>();
-	m_sLevel = std::shared_ptr<LevelComponent>(Level);
-	AddChild(gameObjectLevel);
-	//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
-	PlayerOne(m_sLevel);
+		//auto Level = gameObjectLevel->GetComponent<LevelComponent>();
+		//m_sLevel = std::shared_ptr<LevelComponent>(Level);
+		AddChild(gameObjectLevel);
+		//===PLAYER ONE ===========================================================>>>>>>>>>>>>>>>
+		PlayerOne(level);
 
-	AddBurger(m_sLevel);
-
-
-	// Enemy Red
-	EnemyType enemy = EnemyType::Red;
-	Enemy(enemy, m_sLevel);
+		//AddBurger(m_sLevel);
 
 
-	//Enemy Egg
-	enemy = EnemyType::Egg;
-	Enemy(enemy, m_sLevel);
+		// Enemy Red
+		EnemyType enemy = EnemyType::Egg;
+		Enemy(enemy, level);
+		Enemy(enemy, level);
+		Enemy(enemy, level);
 
 
+		//Enemy Egg
+		/*enemy = EnemyType::Egg;
+		Enemy(enemy, m_sLevel);*/
+
+	}
 }
 
 void SecondLevel::Update(float dt)
 {
+	
+
+	if (!m_ShowScore && gameObjectPlayer != nullptr)
+	{
+		auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+		if (player != nullptr && player->GetLives() <= 0)
+		{
+			m_ShowScore = true;
+			m_HightestScore->SetPosition(50, 200, 0);
+			m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), std::to_string(player->GetScore()));
+			//m_Score.get()->setScore("SCORE: ", std::to_string(m_Player.get()->GetScore()));
+
+			gameObjectPlayer->GetComponent<dae::ScoreComponent>()->setScore("SCORE: ", std::to_string(player->GetScore()));
+			//m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), "0");
+
+			for (const auto& object : m_sceneObjects)
+			{
+				object->Update(dt);
+			}
+			ClearScene();
+		}
+		//dae::SceneManager::GetInstance().GetGameScene("ScoreScene")->SetScore(m_Player->GetScore());
+		//dae::SceneManager::GetInstance().setActive("ScoreScene");
+	}
+
+	//bool isPlayerOverlappingWithBurger = false;
 	if (m_sceneObjects.size() > 0)
 	{
 		for (const auto& object : m_sceneObjects)
 		{
+			object->Update(dt);
 			// get enemy0 pos
 			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
-			if (enemy0 != nullptr)
+			if (enemy0 != nullptr && !enemy0->GetIsDead())
 			{
+				// get player component
+				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+				//m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
+				enemy0->UpdatePlayerPosInLevel(player->GetPlayerPos());
+
 				m_enemyPos = enemy0->GetEnemyPos();
-			}
 
-			//if (m_PlayerPos.width <= 0)
-			//{
-			//	auto player1 = object->GetComponent<dae::PlayerComponent>();
-			//	
-			//	if (player1 != nullptr)
-			//	{
-			//		m_Player = player1;
-			//	}
-			//}
-
-			if (m_Player != nullptr)
-			{
-				if (object->GetTag() == L"Player1")
+				if (player->CheckPlayerBulletEnemyCollision(m_enemyPos) && enemy0->GetIsDead() == false)
 				{
-					m_PlayerPos = m_Player->GetPlayerPos();
+					std::cout << "Killed" << std::endl;
+					//	m_sLevel.get()->SetEnemyIsShot(true);
+					enemy0->IsDead(true);
 				}
-				CheckIfPlayerIsDead(*m_Player);
 
 			}
 
-			// check for game win
-			if (object->GetTag() == L"Burger")
-			{
-				int count = 0;
-				for (auto burger : object.get()->GetAllcomponents())
-				{
-					const int burgerLastPosCheck = 350;
-					if (burger->GetPosition().bottom > burgerLastPosCheck)
-					{
-						count++;
-					}
-				}
-				if (count >= 4)
-				{
-					//Game won
-					std::cout << "Game Won";
-					ClearScene();
-						//dae::InputManager::GetInstance().ResetInput();
-					dae::SceneManager::GetInstance().setActive("ThirdLevel");
-					break;
-				}
-			}
-
-			//if(player)
-
-			object->Update(dt);
 		}
-	}
 
-
-	if (m_hasOverlapped)
-	{
-		m_accumulatedDeathTime += 10 * dt;
-		if (m_accumulatedDeathTime >= 50.f)
+		int count{};
+		//check burger enemy collision
+		for (const auto& object : m_sceneObjects)
 		{
-			m_accumulatedDeathTime = 0;
-			ResetScene();
-			m_hasOverlapped = false;
+			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+			if (enemy0!=nullptr && !enemy0->GetIsDead())
+			{
+				count++;
+			}
 		}
+		if (count == 0 || m_GotoLevel3)
+		{
+			//Game won
+			m_GotoLevel3 = false;
+			SoundManager::GetInstance().PlaySoundEffect("End", 0);
+
+			m_GotoLevel3 = false;
+			ClearScene();
+			dae::InputManager::GetInstance().ResetInput();
+			dae::SceneManager::GetInstance().setActive("ThirdLevel");
+			auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetScore(player->GetScore());
+			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetLives(player->GetLives());
+			//break;
+		}
+		UpdateImgui();
 	}
+
 }
 
 void SecondLevel::FixedUpdate()
@@ -144,22 +195,55 @@ void SecondLevel::FixedUpdate()
 
 void SecondLevel::Render()
 {
+	if (m_ShowScore)
+	{
+		m_Score.get()->Render();
+	}
+
 	for (const auto& object : m_sceneObjects)
 	{
 		object->Render();
 	}
+
+	if (m_HightestScore != nullptr)
+		m_HightestScore.get()->Render();
+}
+
+void SecondLevel::SetScore(int score)
+{
+
+	auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+	player->SetScore(score);
+}
+
+void SecondLevel::SetLives(int lives)
+{
+	auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+	player->SetLives(lives);
 }
 
 void SecondLevel::Enemy(EnemyType& enemytype, std::shared_ptr<LevelComponent>level)
 {
 	auto gameObjectEnemy = std::make_shared<dae::GameObject>();
-
-
-
-	auto enemy = std::make_shared<dae::EnemyComponent>(gameObjectEnemy, enemytype, level);
+	
+	gameObjectEnemy = std::make_shared<dae::GameObject>();
+	auto enemy = std::make_shared<dae::EnemyComponent>(gameObjectEnemy, enemytype, std::move(level));
 	gameObjectEnemy->SetTag(L"Enemy");
 	gameObjectEnemy->AddComponent(enemy);
+	enemy->ResetEnemyPos();
 
+	auto fontLives = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 20);
+	auto textLives = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontLives, SDL_Color{ 255,255,255,1 });
+	auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+
+	enemy->AddObserver(lives);
+
+	//auto fontScore = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
+	//auto textScore = std::make_shared<dae::TextComponent>(gameObjectPlayer, " ", fontScore, SDL_Color{ 0,0,255,1 });
+	//m_Score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
+
+	enemy->AddObserver(m_Score);
 	//scene.Add(gameObjectEnemy);
 	AddChild(gameObjectEnemy);
 }
@@ -188,7 +272,7 @@ void SecondLevel::AddBurger(std::shared_ptr<LevelComponent> level)
 	burgerPos.three = 369.7f;
 	burgerPos.four = 424.f;
 
-	Point2f leftPos2 = Point2f(202.2f,590.f);
+	Point2f leftPos2 = Point2f(202.2f, 590.f);
 	auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos2, burgerPos);
 	burger2->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger2);
@@ -198,7 +282,7 @@ void SecondLevel::AddBurger(std::shared_ptr<LevelComponent> level)
 	burgerPos.three = 322.7f;
 	burgerPos.four = 424.7f;
 
-	Point2f leftPos3 = Point2f(348.f,590.f);
+	Point2f leftPos3 = Point2f(348.f, 590.f);
 	auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos3, burgerPos);
 	burger3->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger3);
@@ -209,7 +293,7 @@ void SecondLevel::AddBurger(std::shared_ptr<LevelComponent> level)
 	burgerPos.three = 135.8f;
 	burgerPos.four = 228.090f;
 
-	Point2f leftPos4 = Point2f(505.6f,430.f);
+	Point2f leftPos4 = Point2f(505.6f, 430.f);
 	auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos4, burgerPos);
 	burger4->AddObserver(m_Score);
 	gameobjectBurger->AddComponent(burger4);
@@ -222,12 +306,16 @@ void SecondLevel::AddBurger(std::shared_ptr<LevelComponent> level)
 
 void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 {
-	auto gameObjectPlayer = std::make_shared<dae::GameObject>();
+	gameObjectPlayer = std::make_shared<dae::GameObject>();
 
 	//Do this inside player class
 	//player commands
 	//if (dae::Input::GetInstance().m_ConsoleCommands.size() <= 0)
 	{
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::ShoulderButtonRight), InputAction(std::make_unique<AimTankTurret>(gameObjectPlayer, 1.f), VK_RIGHT, GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::held, dae::XBOX360Controller::ControllerButton::ShoulderButtonLeft), InputAction(std::make_unique<AimTankTurret>(gameObjectPlayer, -1.f), VK_LEFT, GamePadIndex::playerOne));
+		dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonX), InputAction(std::make_unique<ShootBullet>(gameObjectPlayer), 'Q', GamePadIndex::playerOne));
+
 		//InputAction a = InputAction(std::make_unique<DeathCommand>(gameObjectPlayer), GamePadIndex::playerOne);
 		//dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonA), InputAction(std::make_unique<ThrowPepperCommand>(gameObjectPlayer), 'O', GamePadIndex::playerOne));
 		//dae::Input::GetInstance().MapEvent(std::make_pair(dae::XBOX360Controller::ButtonState::down, dae::XBOX360Controller::ControllerButton::ButtonB), InputAction(std::make_unique<ScoreCommand>(gameObjectPlayer), 'P', GamePadIndex::playerOne));
@@ -250,7 +338,7 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	gameObjectPlayer->AddComponent(transformPlayer1);
 	//player one
 	m_Player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, slevel);
-	
+
 
 	//add gameobject to scene
 	//scene.Add(gameObjectPlayer);
@@ -274,17 +362,17 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	//auto scoreAchievement = std::make_shared<Achievements>(g_Achievements, 4, gameObjectPlayer);
 
 	//make livescounter component/ observer
-	if (m_lives == nullptr)
-	{
-		auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
-		m_lives = lives;
-	}
+
+	
+	m_lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+		//m_lives = lives;
+	
 	//score counter
-	if (m_Score == nullptr)
-	{
-		auto score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
-		m_Score = score;
-	}
+	
+	
+	m_Score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
+		//m_Score = score;
+	
 	//score achievement observer
 	//player->AddObserver(scoreAchievement);
 
@@ -313,7 +401,7 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	gameObjectPlayer->AddComponent(textScore);
 
 	//set score position
-	textScore->SetPosition(350, 5, 0);
+	textScore->SetPosition(130, 50, 0);
 
 	//set lives position
 	textLives->SetPosition(570, 5, 0);
@@ -346,22 +434,50 @@ void SecondLevel::ResetScene()
 
 bool SecondLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
 {
+	//if (m_Player->GetLives() <= 0)
+	//{
+	//	//ClearScene();
+	//	//dae::SceneManager::GetInstance().setActive("startScreen");
+
+	//}
+
+	//else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+	//{
+
+	//	m_hasOverlapped = true;
+	//	player.CallPlayerIsDead();
+	//	//m_Player = nullptr;
+	//	//m_PlayerPos = Rectf(0, 0, 0, 0);
+	//	return true;
+	//}
+	//return false;
 	if (m_Player->GetLives() <= 0)
 	{
-		//ClearScene();
-		//dae::SceneManager::GetInstance().setActive("startScreen");
+		ClearScene();
+		dae::SceneManager::GetInstance().setActive("StartScreen");
 
 	}
-
 	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
 	{
 
 		m_hasOverlapped = true;
 		player.CallPlayerIsDead();
-		//m_Player = nullptr;
-		//m_PlayerPos = Rectf(0, 0, 0, 0);
+
 		return true;
 	}
+	//Rectf playerpos = m_sLevel.get()->GetPlayerPositionInTheLevel();
 	return false;
 }
 
+void SecondLevel::UpdateImgui()
+{
+
+	ImGui::Begin("GotoLevel3", NULL);
+	//ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
+	//ImGui::SetNextWindowPos()
+	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
+	ImGui::Checkbox("GotoLevel2", &m_GotoLevel3);
+
+	ImGui::End();
+
+}

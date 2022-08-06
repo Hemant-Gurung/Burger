@@ -24,7 +24,6 @@ namespace dae
 		virtual void Render() const override;
 		virtual void SetTexture(const std::string& filename) override;
 		virtual void SetPosition(float x, float y,float z) override;
-
 		
 	private:
 		//Transform m_Transform{};

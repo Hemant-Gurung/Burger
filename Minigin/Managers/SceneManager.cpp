@@ -65,11 +65,16 @@ void dae::SceneManager::setActive(std::string name)
 	
 	for(auto scene:m_Scenes)
 	{
+		/*if(m_CurrentScene.get()->GetSceneName() == name )
+		{
+			m_CurrentScene->Initialize();
+			return;
+		}*/
 		if(scene->GetSceneName() == name)
 		{
 
 			m_CurrentScene = scene;
-			InputManager::GetInstance().ResetInput();
+			//InputManager::GetInstance().ResetInput();
 			m_CurrentScene->Initialize();
 			return;
 		}

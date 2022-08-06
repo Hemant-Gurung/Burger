@@ -4,9 +4,11 @@
 #include "RenderComponent.h"
 #include "utils.h"
 
-LevelComponent::LevelComponent(std::shared_ptr<dae::GameObject>& pGameObject)
+LevelComponent::LevelComponent(std::shared_ptr<dae::GameObject> pGameObject)
 	:BaseComponent(pGameObject)
-, m_ShowDebugLines(false)
+, m_ShowDebugLines(false),
+m_IsEnemyShot(false),
+m_Isused(false)
 	/*,m_level()*/
 	,m_vertices()
 	
@@ -71,7 +73,9 @@ void LevelComponent::Render() const
 
 void LevelComponent::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity, playerMovement& movement)
 {
-	m_PlayerPos = actorShape;
+	
+		m_PlayerPos = actorShape;
+	
 	utils::HitInfo h;
 	
 	const int lowerRay = 8;
@@ -406,9 +410,20 @@ void LevelComponent::HandleCollision(Rectf& actorShape, Vector2f& actorVelocity,
 	}
 }
 
+
 void LevelComponent::SetBulletPos(Rectf& bulletPos)
 {
 	m_BulletPos = bulletPos;
+}
+
+bool LevelComponent::checkIfEnemyIsShot()
+{
+	return m_IsEnemyShot;
+}
+
+void LevelComponent::SetEnemyIsShot(bool value)
+{
+	 m_IsEnemyShot = value;
 }
 
 bool LevelComponent::doOverlap(Vector2f l1, Vector2f r1, Vector2f l2, Vector2f r2)
@@ -456,6 +471,29 @@ bool LevelComponent::IsOnGround(const Rectf& actorShape, Vector2f& actorvelocity
 		}
 	}
 	return false;
+}
+
+Rectf& LevelComponent::GetPlayerPositionInTheLevel()
+{
+	m_Isused = false;
+	return m_PlayerPos;
+}
+
+Rectf& LevelComponent::GetPlayer2PositionInTheLevel()
+{
+	return m_PlayerPos2;
+}
+
+void LevelComponent::SetPlayerPosInLevel(const Rectf& pos)
+{
+	
+	m_PlayerPos = pos;
+	
+}
+
+void LevelComponent::SetPlayer2PosInLevel(const Rectf& pos)
+{
+	m_PlayerPos2 = pos;
 }
 
 

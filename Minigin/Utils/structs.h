@@ -14,6 +14,12 @@ struct Window
 	bool isVSyncOn;
 };
 
+struct Tag
+{
+	Tag();
+	explicit Tag(std::string type);
+	std::string type;
+};
 
 struct float4
 {
@@ -97,26 +103,38 @@ enum class GamePadIndex
 inline const char* LEVELS[3] =
 {
 	"Tron/Level_1.png",
-	"Level_2.png",
-	"Level _3.png"
+	"Tron/Level_2.png",
+	"Tron/Level_3.png"
 };
 inline const char* LEVEL_COLLISIONS[3] =
 {
 	//"../Data/Level - SDL_1.svg",
 	"../Data/Tron/Level_1.svg",
-	"../Data/BurgerLevel_2_SDL.svg",
-	"../Data/Level -SDL_3.svg"
+	"../Data/Tron/Level_2.svg",
+	"../Data/Tron/Level_3.svg"
 };
 
-inline const Point2f PlayerStartPosition[4] = {
+inline const Point2f PlayerStartPosition[4] = 
+{
 	Point2f{429.f,466.f},Point2f{17.f,466.f},
-	Point2f{15.f,78.f},Point2f{432.f,78.f} };
+	Point2f{15.f,78.f}, Point2f{432.f,78.f}
+};
+
+inline const Point2f EnemyStartPosition[12] =
+{
+	Point2f{429.f,78.f },  Point2f{17.f,78.f},Point2f{150.f,78.f},
+	Point2f{429.f,350.f},  Point2f{17.f,350.f},Point2f{150.f,350.f},
+	Point2f{429.f,200.f},  Point2f{17.f,200.f},Point2f{150.f,200.f},
+	Point2f{429.f,466.f}, Point2f{17.f,466.f},Point2f{150.f,466.f}
+
+};
 
 enum EnemyType
 {
 	Red,
 	Egg
 };
+
 
 //enum startPos
 //{

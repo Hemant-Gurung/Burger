@@ -3,6 +3,7 @@
 #include "RenderComponent.h"
 #include "LevelComponent.h"
 #include "PlayerComponent.h"
+
 class BurgerComponent :
     public dae::BaseComponent
 {
