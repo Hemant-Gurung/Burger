@@ -110,7 +110,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Base;$(SolutionDir)BurgerTime\Data;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +138,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,7 +169,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Base;$(SolutionDir)BurgerTime\Data;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -201,7 +201,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)BurgerTime\Data;$(SolutionDir)Minigin\Base;$(SolutionDIr)Minigin\Scenegraph;$(SolutionDIr)Minigin\Graphics;$(SolutionDir)Minigin\Managers;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\lib\x64;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\steamworks\steam;$(SolutionDir)Minigin\Utils;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin\Components;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>MiniginPCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -239,6 +239,7 @@
     <ClInclude Include="Components\Achievements.h" />
     <ClInclude Include="Components\BaseComponent.h" />
     <ClInclude Include="Components\BurgerComponent.h" />
+    <ClInclude Include="Components\ButtonComponent.h" />
     <ClInclude Include="Components\EnemyComponent.h" />
     <ClInclude Include="Components\FPScomponent.h" />
     <ClInclude Include="Components\LevelComponent.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Components\TextureComponen.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Components\PepperComponent.h" />
+    <ClInclude Include="Managers\ButtonManager.h" />
     <ClInclude Include="Scenegraph\GameScene.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Texture2D.h" />
@@ -335,6 +337,7 @@
     <ClCompile Include="Components\Achievements.cpp" />
     <ClCompile Include="Components\BaseComponent.cpp" />
     <ClCompile Include="Components\BurgerComponent.cpp" />
+    <ClCompile Include="Components\ButtonComponent.cpp" />
     <ClCompile Include="Components\EnemyComponent.cpp" />
     <ClCompile Include="Components\FPScomponent.cpp" />
     <ClCompile Include="Components\LevelComponent.cpp" />
@@ -346,6 +349,7 @@
     <ClCompile Include="Components\TextureComponent.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp" />
     <ClCompile Include="Components\PepperComponent.cpp" />
+    <ClCompile Include="Managers\ButtonManager.cpp" />
     <ClCompile Include="Scenegraph\GameScene.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Texture2D.cpp" />

@@ -261,7 +261,7 @@ public:
 
 	void Execute() override
 	{
-		
+		//SServiceLocator::GetButtonManager().get()->ButtonDown();
 		dae::SceneManager::GetInstance().setActive("SoloLevel");
 		/*auto playerObj = m_pGameObject.lock()->GetComponent<dae::PlayerComponent>();
 		playerObj->MoveDown();

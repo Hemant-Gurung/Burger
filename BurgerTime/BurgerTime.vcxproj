@@ -105,7 +105,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Base;$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,7 +126,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Utils;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Managers;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Components;$(SolutionDir)Minigin\Base;$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +147,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Base;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,7 +168,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)Minigin\Base;$(SolutionDir)Minigin\Graphics;$(SolutionDir)Minigin\Scenegraph;$(SolutionDir)Minigin\Utils;$(SolutionDir)\Minigin\Managers;$(SolutionDir)\Minigin\Components;$(ProjectDir);$(SolutionDir)3rdParty\SDL2\include;$(SolutionDir)3rdParty\SDL2_mixer\include;$(SolutionDir)3rdParty\imgui-1.86;$(SolutionDir)Minigin;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -26,13 +26,13 @@ public:
     void SetLives(int lives);
     void UpdateImgui();
 private:
-    std::shared_ptr<dae::PlayerComponent> m_Player;
+    //std::shared_ptr<dae::PlayerComponent> m_Player;
     //std::shared_ptr<LevelComponent> m_sLevel;
     //LevelComponent* m_pLevel;
     std::shared_ptr<dae::ScoreComponent> m_Score;
-    std::shared_ptr<dae::LivesCounterComponent> m_lives;
-    std::shared_ptr<dae::TextComponent> m_Textlives;
-    std::shared_ptr<dae::TextComponent> m_TextScore;
+   // std::shared_ptr<dae::LivesCounterComponent> m_lives;
+   // std::shared_ptr<dae::TextComponent> m_Textlives;
+    //std::shared_ptr<dae::TextComponent> m_TextScore;
 
 
     std::shared_ptr<dae::ScoreComponent>m_HightestScore;

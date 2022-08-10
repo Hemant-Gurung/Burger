@@ -33,7 +33,7 @@ Tron::~Tron()
 void Tron::LoadGame() const
 {
 	Minigin::LoadGame();
-	//SServiceLocator::Init();
+	SServiceLocator::Init();
 	SoundManager::GetInstance().LoadSoundStream("GameSong", "GameMusic.ogg");
 	SoundManager::GetInstance().LoadSoundEffect("Loss", "Lose-Life.ogg");
 	SoundManager::GetInstance().LoadSoundEffect("Victory", "Victory.ogg");

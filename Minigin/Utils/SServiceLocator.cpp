@@ -4,5 +4,5 @@
 Sound_System* SServiceLocator::_ss_instance = &_default_ss;
 
 
-//std::shared_ptr<ButtonManager> SServiceLocator::m_pButtonManager;
-//std::shared_ptr<ButtonManager> SServiceLocator::m_pDefaultButtonManager;
+std::shared_ptr<ButtonManager> SServiceLocator::m_pButtonManager;
+std::shared_ptr<ButtonManager> SServiceLocator::m_pDefaultButtonManager;

@@ -124,17 +124,7 @@ void dae::ScoreComponent::SetPosition(float x, float y, float z)
 
 std::string  dae::ScoreComponent::ShowFinalScores()
 {
-	//std::string score;
-	//m_ScoreList.push_back(std::stoi(m_Score));
-	//std::sort(m_ScoreList.begin(), m_ScoreList.end(), std::greater<>());
-	//for(int i =0;i<10;++i)
-	//{
-	//	score += std::to_string(m_ScoreList[i])+" ";
-	//}
-
-	//std::cout << score;
-	//m_Score = "HIGHEST SCORES: "+ score;
-	//m_TextComponent->SetText(m_Score);
+	
 	m_ShowFinalScore = true;
 	return m_Score;
 	

@@ -46,7 +46,6 @@ namespace dae
 		m_playerMovement(playerMovement::idle),
 		m_sLevel(pLevel)
 		, m_TotalLives(3)
-		, m_Pepper(5)
 		, m_Score(0)
 		, m_ShowDebugLines(false),
 		m_RotateTurret(0),
@@ -59,8 +58,7 @@ namespace dae
 		m_IsPlayerShot(false)
 	{
 		Initialize();
-		m_PepperIcon = std::make_unique<RenderComponent>(pGameObj);
-		m_PepperIcon->SetTexture("PepperPng.png");
+	
 
 		m_SpriteTexture = std::make_unique<RenderComponent>(pGameObj);
 		//m_SpriteTexture->SetTexture("CharacterSprite.png");
@@ -90,9 +88,6 @@ namespace dae
 		m_DeathExplosion = std::make_unique<dae::RenderComponent>(pGameObj);
 		m_DeathExplosion->SetTexture("PlayerExplosion.png");
 
-		//pGameObj->GetComponent<TransformComponent>()->SetPosition(10.f, 400.f, 0.f);
-		//m_SpriteTexture->SetPosition(20.f, 100.f, 0.f);
-		//pGameObj->AddComponent(m_SpriteTexture);
 	}
 
 	PlayerComponent::~PlayerComponent()
@@ -105,12 +100,6 @@ namespace dae
 		}
 		if (walk.joinable())walk.join();
 		if (die.joinable())die.join();
-
-		//for(int i=0;i<m_Bullets.size();++i)
-	//	{
-			//delete [] m_Bullets;
-			//m_Bullets[i] = nullptr;
-		//}
 	}
 
 
@@ -185,10 +174,7 @@ namespace dae
 		{
 			IsTextureFlippedVertical = false;
 			IsMoving = true;
-			//auto f1 = std::async(&SServiceLocator::get_sound_system);
-			//a = &f1.get();
-			//a->Play(SoundID::WALK, 50);
-
+		
 			m_Velocity.x = -m_MoveSpeed;
 			m_Velocity.y = 0;
 			m_playerMovement = playerMovement::movingleft;
@@ -227,19 +213,8 @@ namespace dae
 				m_ExecuteBullet = false;
 			}
 
-			for (auto& bullet : m_Bullets)
-			{
-				//m_bullet->update(elapsedSec);
-				bullet->SetLevelInformation(m_sLevel);
-
-				bullet->update(elapsedSec);
-			}
-
-
-		/*	if (a != nullptr)
-				a->Update();*/
-
-			//CheckIfPlayerIsDead();
+			UpdateBullet(elapsedSec);
+			
 			UpdateSprite(elapsedSec);
 			if (m_PlayerState != PlayerState::dead)
 			{
@@ -276,9 +251,7 @@ namespace dae
 					bullet->Render();
 				}
 			}
-			//get render component
-			//auto rendercom = m_pGameObject.lock()->GetComponent<RenderComponent>();
-
+		
 			if (m_ShowDebugLines)
 			{
 				// draw box using the render box
@@ -298,7 +271,6 @@ namespace dae
 
 			RenderTankTurret();
 			RenderPlayerLiveCount();
-			RenderPepperIcon();
 		}
 	}
 
@@ -338,25 +310,18 @@ namespace dae
 
 	void PlayerComponent::UpdateSourceRect()
 	{
-		/*if(m_SrcRect.left>48)
-		{
-			m_SrcRect.left = 0;
-		}*/
+		
 		m_SrcRect.left = m_SpriteSheetLeft + (int)m_CurrFrame % m_Colums * m_SrcRect.width;
-		//m_SrcRect.bottom = 96 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
 		switch (m_PlayerState)
 		{
 		case PlayerState::standing:
-			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0 ;
 			break;
 		case PlayerState::running:
-			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0 ;
 			break;
 		case PlayerState::climbing:
-			m_SrcRect.bottom = 0 /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
-			break;
-		case PlayerState::throwingPepper:
-			m_SrcRect.bottom = 0; /*m_SpriteSheetTop + (m_Colums + 1) * m_SrcRect.height*/;
+			m_SrcRect.bottom = 0;
 			break;
 		case PlayerState::dead:
 			m_SrcRect.bottom = 0;
@@ -443,15 +408,6 @@ namespace dae
 				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
 
 				break;
-			case PlayerState::throwingPepper:
-				//m_DestRect.left += m_Velocity.x * elapsedSec;
-				//m_DestRect.bottom += m_Velocity.y * elapsedSec;
-				m_pGameObject.lock()->GetComponent<TransformComponent>()->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-				m_SpriteTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-				m_TurretTexture->SetPosition(m_DestRect.left, m_DestRect.bottom, 0);
-
-				break;
-
 			case PlayerState::dead:
 				m_DestRect.left += 0;
 				m_DestRect.bottom += m_Velocity.y * elapsedSec;
@@ -505,22 +461,6 @@ namespace dae
 
 	}
 
-	void PlayerComponent::RenderPepperIcon() const
-	{
-		Rectf pepperIconPos;
-		pepperIconPos.left = 483.f;
-		pepperIconPos.bottom = 15.f;
-		pepperIconPos.width = 50.f;
-		pepperIconPos.height = 10.f;
-
-		Rectf pepperIconSrc;
-		pepperIconSrc.left = 0;
-		pepperIconSrc.bottom = 0;
-		pepperIconSrc.width = 25.f;
-		pepperIconSrc.height = 6.f;
-
-		m_PepperIcon->RenderTexture(pepperIconPos, pepperIconSrc);
-	}
 
 	void PlayerComponent::RenderTankTurret() const
 	{
@@ -600,15 +540,6 @@ namespace dae
 		ScoreCall();
 	}
 
-	void PlayerComponent::ThrowPepper()
-	{
-		if (m_PlayerState != PlayerState::throwingPepper)
-		{
-			Notify(*this, EVENT::PLAYER_PEPPERTHROW);
-		}
-		m_PlayerState = PlayerState::throwingPepper;
-	}
-
 
 	void PlayerComponent::DestroyLive()
 	{
@@ -631,14 +562,6 @@ namespace dae
 		m_Score += 50;
 	}
 
-	void PlayerComponent::DecreasePepper()
-	{
-		m_Pepper--;
-		if (m_Pepper <= 0)
-		{
-			m_Pepper = 0;
-		}
-	}
 
 	void PlayerComponent::PlayDeadSound()
 	{
@@ -685,6 +608,18 @@ namespace dae
 		//}
 		//ImGui::SliderFloat("Speed", &this->speed, 0.0f, 10.0f);
 		ImGui::End();
+
+	}
+
+	void PlayerComponent::UpdateBullet(float elapsedSec)
+	{
+		for (auto& bullet : m_Bullets)
+		{
+			//m_bullet->update(elapsedSec);
+			bullet->SetLevelInformation(m_sLevel);
+
+			bullet->update(elapsedSec);
+		}
 
 	}
 }

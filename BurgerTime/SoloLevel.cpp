@@ -85,7 +85,7 @@ void SoloLevel::Initialize()
 		m_HightestScore.get()->setScore("HIGHEST SCORE: ", std::to_string(*std::max_element(scores.begin(),scores.end())));
 		
 		gameObjecttHighScore->AddComponent(transformHighScore);
-		m_HightestScore->SetPosition(260, 5, 0);
+		m_HightestScore->SetPosition(230, 5, 0);
 
 		gameObjecttHighScore->AddComponent(m_HightestScore);
 
@@ -267,6 +267,7 @@ void SoloLevel::Render()
 	if (m_ShowScore)
 	{
 		m_Score.get()->Render();
+		
 	}
 
 	if(m_HightestScore!=nullptr)
@@ -472,16 +473,6 @@ void SoloLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	AddChild(gameObjectPlayer);
 }
 
-//void SoloLevel::ResetScene()
-//{
-//	//ClearScene();
-//	m_Player->SetPlayerStartPosition(Point2f{ 450.f,450.f });
-//	m_PlayerPos = m_Player->GetPlayerPos();
-//
-//	auto playerState = dae::PlayerState::standing;
-//	m_Player->ChangeState(playerState);
-//
-//}
 
 void SoloLevel::GenerateEnemies()
 {
@@ -494,10 +485,9 @@ void SoloLevel::GenerateEnemies()
 
 void SoloLevel::UpdateImgui()
 {
-	
 	ImGui::Begin("GotoLevel2", NULL);
+	
 	//ImGui::SetWindowSize(ImVec2((float)10.f, (float)10.f));
-	//ImGui::SetNextWindowPos()
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Platform");
 	ImGui::Checkbox("GotoLevel2", &m_gotoLevel_2);
 

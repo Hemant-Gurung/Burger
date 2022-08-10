@@ -31,8 +31,8 @@ private:
 	float m_BulletSpriteHeight;
 	bool m_IsBulletHittingSomething;
 
-	std::shared_ptr<dae::RenderComponent> m_BulletTexture;
-	std::shared_ptr<dae::RenderComponent> m_BulletDamageEffect;
+	std::unique_ptr<dae::RenderComponent> m_BulletTexture;
+	std::unique_ptr<dae::RenderComponent> m_BulletDamageEffect;
 
 	std::shared_ptr<dae::GameObject> m_pGameObject;
 	std::weak_ptr<LevelComponent> m_sLevel;
@@ -53,8 +53,8 @@ private:
 	EnemyType m_enemyType;
 	int m_BulletToBeBounced;
 
-	std::shared_ptr<dae::RenderComponent> m_EnemyBulletUp;
-	std::shared_ptr<dae::RenderComponent> m_EnemyBulletSide;
+	std::unique_ptr<dae::RenderComponent> m_EnemyBulletUp;
+	std::unique_ptr<dae::RenderComponent> m_EnemyBulletSide;
 
 
 	void InitializeBulletDestRect();

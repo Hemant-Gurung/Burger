@@ -183,6 +183,12 @@
     <ClInclude Include="Components\BulletComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\ButtonManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ButtonComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">
@@ -327,6 +333,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\BulletComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ButtonManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ButtonComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

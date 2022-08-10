@@ -14,8 +14,8 @@
 SecondLevel::SecondLevel()
 	:GameScene("SecondLevel")
 	, m_PlayerPos()
-	, m_Player(nullptr)
-	, m_lives(nullptr)
+	//, m_Player(nullptr)
+	//, m_lives(nullptr)
 	, m_Score(nullptr),
 	m_accumulatedDeathTime(0),
 	m_IsInitialized(false),
@@ -337,14 +337,14 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 
 	gameObjectPlayer->AddComponent(transformPlayer1);
 	//player one
-	m_Player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, slevel);
+	auto Player = std::make_shared<dae::PlayerComponent>(gameObjectPlayer, slevel);
 
 
 	//add gameobject to scene
 	//scene.Add(gameObjectPlayer);
-	m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
+	//m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
 
-	gameObjectPlayer->AddComponent(m_Player);
+	gameObjectPlayer->AddComponent(Player);
 	//gameObjectPlayer->GetComponent<TransformComponent>()->SetPosition(200.f, 10.f, 0.f);
 	//score
 	// gameObjLivesCounter = std::make_shared<GameObject>();
@@ -364,7 +364,7 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	//make livescounter component/ observer
 
 	
-	m_lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+	auto  lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
 		//m_lives = lives;
 	
 	//score counter
@@ -377,10 +377,10 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	//player->AddObserver(scoreAchievement);
 
 	//add observers
-	m_Player->AddObserver(m_lives);
+	Player->AddObserver(lives);
 
 	//add score observer
-	m_Player->AddObserver(m_Score);
+	Player->AddObserver(m_Score);
 
 	//add gameobject scoreAchievement to gameobject
 	//gameObjectPlayer->AddComponent(scoreAchievement);
@@ -388,13 +388,13 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	gameObjectPlayer->AddComponent(transformLives);
 
 	//add counter to gameobject
-	gameObjectPlayer->AddComponent(m_lives);
+	gameObjectPlayer->AddComponent(lives);
 
 	//add score component to gameobject
 	gameObjectPlayer->AddComponent(m_Score);
 
 	//add text component for lives
-	gameObjectPlayer->AddComponent(textLives);
+	//gameObjectPlayer->AddComponent(textLives);
 
 
 	//add textComponent for score
@@ -412,62 +412,62 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	AddChild(gameObjectPlayer);
 }
 
-void SecondLevel::ResetScene()
-{
-	//ClearScene();
-	m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
-	m_PlayerPos = m_Player->GetPlayerPos();
+//void SecondLevel::ResetScene()
+//{
+//	//ClearScene();
+//	m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
+//	m_PlayerPos = m_Player->GetPlayerPos();
+//
+//	auto playerState = dae::PlayerState::standing;
+//	m_Player->ChangeState(playerState);
+//
+//	for (auto obj : m_sceneObjects)
+//	{
+//		if (obj->GetTag() == L"Enemy")
+//		{
+//			obj->GetComponent<dae::EnemyComponent>()->ResetEnemyPos();
+//		}
+//	}
+//
+//
+//}
 
-	auto playerState = dae::PlayerState::standing;
-	m_Player->ChangeState(playerState);
-
-	for (auto obj : m_sceneObjects)
-	{
-		if (obj->GetTag() == L"Enemy")
-		{
-			obj->GetComponent<dae::EnemyComponent>()->ResetEnemyPos();
-		}
-	}
-
-
-}
-
-bool SecondLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
-{
-	//if (m_Player->GetLives() <= 0)
-	//{
-	//	//ClearScene();
-	//	//dae::SceneManager::GetInstance().setActive("startScreen");
-
-	//}
-
-	//else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
-	//{
-
-	//	m_hasOverlapped = true;
-	//	player.CallPlayerIsDead();
-	//	//m_Player = nullptr;
-	//	//m_PlayerPos = Rectf(0, 0, 0, 0);
-	//	return true;
-	//}
-	//return false;
-	if (m_Player->GetLives() <= 0)
-	{
-		ClearScene();
-		dae::SceneManager::GetInstance().setActive("StartScreen");
-
-	}
-	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
-	{
-
-		m_hasOverlapped = true;
-		player.CallPlayerIsDead();
-
-		return true;
-	}
-	//Rectf playerpos = m_sLevel.get()->GetPlayerPositionInTheLevel();
-	return false;
-}
+//bool SecondLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
+//{
+//	//if (m_Player->GetLives() <= 0)
+//	//{
+//	//	//ClearScene();
+//	//	//dae::SceneManager::GetInstance().setActive("startScreen");
+//
+//	//}
+//
+//	//else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+//	//{
+//
+//	//	m_hasOverlapped = true;
+//	//	player.CallPlayerIsDead();
+//	//	//m_Player = nullptr;
+//	//	//m_PlayerPos = Rectf(0, 0, 0, 0);
+//	//	return true;
+//	//}
+//	//return false;
+//	if (m_Player->GetLives() <= 0)
+//	{
+//		ClearScene();
+//		dae::SceneManager::GetInstance().setActive("StartScreen");
+//
+//	}
+//	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
+//	{
+//
+//		m_hasOverlapped = true;
+//		player.CallPlayerIsDead();
+//
+//		return true;
+//	}
+//	//Rectf playerpos = m_sLevel.get()->GetPlayerPositionInTheLevel();
+//	return false;
+//}
 
 void SecondLevel::UpdateImgui()
 {

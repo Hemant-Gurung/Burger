@@ -30,21 +30,21 @@ BulletComponent::BulletComponent(std::shared_ptr<dae::GameObject>& pGameObject,P
 	//m_DestRectEnemy.bottom = startPos.y;
 	
 
-	m_BulletTexture = std::make_shared<dae::RenderComponent>(m_pGameObject);
+	m_BulletTexture = std::make_unique<dae::RenderComponent>(m_pGameObject);
 	m_BulletTexture->SetTexture("TronBullet.png");
 
-	m_BulletDamageEffect = std::make_shared<dae::RenderComponent>(m_pGameObject);
+	m_BulletDamageEffect = std::make_unique<dae::RenderComponent>(m_pGameObject);
 	m_BulletDamageEffect->SetTexture("DamageEffect.png");
 
-	m_EnemyBulletUp = std::make_shared<dae::RenderComponent>(m_pGameObject);
+	m_EnemyBulletUp = std::make_unique<dae::RenderComponent>(m_pGameObject);
 	m_EnemyBulletUp->SetTexture("EnemyBulletUp.png");
 
-	m_EnemyBulletSide = std::make_shared<dae::RenderComponent>(m_pGameObject);
+	m_EnemyBulletSide = std::make_unique<dae::RenderComponent>(m_pGameObject);
 	m_EnemyBulletSide->SetTexture("EnemyBulletSide.png");
 
 	if(m_enemyType == EnemyType::Red)
 	{
-		m_BulletTexture = m_EnemyBulletUp;
+		m_BulletTexture = std::move(m_EnemyBulletUp);
 		m_BulletToBeBounced = 1;
 		m_BulletSpeed = 200;
 	}

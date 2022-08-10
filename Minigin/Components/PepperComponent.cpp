@@ -16,7 +16,7 @@ void PepperComponent::update(float)
 {
 	if (m_pGameObject.lock() != nullptr)
 	{
-		m_TextComponent->SetText(" " + std::to_string(m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->GetRemainingPepper()));
+		//m_TextComponent->SetText(" " + std::to_string(m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->GetRemainingPepper()));
 	}
 }
 
@@ -38,7 +38,7 @@ void PepperComponent::OnNotify(const dae::BaseComponent&, dae::EVENT& notifyEven
 	{
 		{
 			
-			m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->DecreasePepper();
+			//m_pGameObject.lock()->GetComponent<dae::PlayerComponent>()->DecreasePepper();
 			
 		}
 	}

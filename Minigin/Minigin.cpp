@@ -57,20 +57,6 @@ void dae::Minigin::Initialize()
 	//m_pLevel = new LevelComponent();
 	isOn = false;
 
-
-	//Mix_Init(MIX_INIT_MP3);
-	//Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 0);
-	//auto a = Mix_LoadMUS("prasansa.mp3");
-	//Mix_PlayMusic(a, 1);
-
-
-	
-	//register sound
-	//ss = new sdl_sound_system();
-	//SServiceLocator::register_sound_system(ss);
-	// make world
-	//b2Vec2 gravity(0.0f, -9.81f);
-	//m_World = std::make_unique<b2World>(gravity);
 	PrintSDLVersion();
 	Instruction();
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
@@ -84,7 +70,7 @@ void dae::Minigin::Initialize()
 		"Programming 4 assignment",
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		480,
+		600,
 		512,
 		SDL_WINDOW_OPENGL
 	);
@@ -137,7 +123,6 @@ void dae::Minigin::Run()
 		auto lastTime = chrono::high_resolution_clock::now();
 		
 
-
 		float lag = 0.0f;
 		bool doContinue = true;
 		while (doContinue)
@@ -167,19 +152,8 @@ void dae::Minigin::Run()
 			ImGui_ImplSDL2_NewFrame(m_Window);
 			ImGui::NewFrame();
 
-		
 			sceneManager.Update(deltaTime);
-			//normal update with deltatime
-			// 
-				//call run steamapi callbacks
-			//SteamAPI_RunCallbacks();
-			
-			// ImguiUpdate();
 			renderer.Render();
-			
-			//Mix_FreeMusic(gMusic);
-			//Mix_Quit();
-			
 		}
 	}
 	

@@ -44,9 +44,7 @@ namespace dae
 		void MoveRight();
 		void ButtonsNotPressed();
 		void ShootBullet();
-		std::string GetTag() const override { return m_Tag; };
 		void SetTag(std::string tag) { m_Tag = tag; }
-
 		void AddObserver(std::shared_ptr<Observer> observer);
 		void update(float) override;
 		void Render()const override;
@@ -62,22 +60,18 @@ namespace dae
 		bool GetIsFlippedVertical() const { return IsTextureFlippedVertical; }
 		void FLipTextureHorozontal(bool flip);
 		void FLipTextureVertical(bool flip);
-
-		
 		Rectf& GetPlayerPos() { return m_DestRect; }
+		std::string GetTag() const override { return m_Tag; };
 		void CallPlayerIsDead();
 
 		void CallScoreNotify();
 
-		void ThrowPepper();
 		void DestroyLive();
 		void AddScore();
 		void SetScore(int score) { m_Score = score; }
 		void SetLives(int lives) { m_TotalLives = lives; }
 		int GetScore() { return m_Score; }
-		void DecreasePepper();
 		int GetLives() const { return m_TotalLives; }
-		int GetRemainingPepper() const { return m_Pepper; }
 		void RotateTankTurret(float direction);
 
 		void GenerateBullet();
@@ -102,14 +96,13 @@ namespace dae
 		//std::shared_ptr<TransformComponent> m_TransformComponent;
 		std::unique_ptr<RenderComponent> m_SpriteTexture;
 		std::unique_ptr<RenderComponent> m_SpriteVerticalTexture;
-
-		
 		std::unique_ptr<dae::RenderComponent> m_PlayerIcon;
-		std::unique_ptr<dae::RenderComponent> m_PepperIcon;
 		std::unique_ptr<dae::RenderComponent> m_TurretTexture;
 		std::unique_ptr<dae::RenderComponent> m_DeathExplosion;
-
-		
+		PlayerState m_PlayerState{ PlayerState::standing };
+		playerMovement m_playerMovement;
+		std::weak_ptr<LevelComponent> m_sLevel;
+		std::vector<std::unique_ptr<BulletComponent>> m_Bullets;
 
 		EVENT eve;
 		Vector2f m_playerPos;
@@ -134,10 +127,7 @@ namespace dae
 		bool IsTextureFlippedHorizontal;
 		bool IsTextureFlippedVertical;
 
-		PlayerState m_PlayerState{ PlayerState::standing };
-		playerMovement m_playerMovement;
-		std::weak_ptr<LevelComponent> m_sLevel;
-		std::vector<std::unique_ptr<BulletComponent>> m_Bullets;
+		
 		float m_SpriteSheetWidth;
 		float m_SpriteSheetHeight;
 		float m_SpriteSheetLeft;
@@ -149,17 +139,14 @@ namespace dae
 		void UpdatePlayerMovement(float elapsedSec);
 		void ChangeFrameRate(bool lower);
 		void RenderPlayerLiveCount() const;
-		void RenderPepperIcon() const ;
 		void RenderTankTurret() const;
-		
-	
 		void PlayDeadSound();
 		void WaitBeforeEnteringTheArena();
 		void GuiUpdate();
+		void UpdateBullet(float);
 
 		int m_TotalLives;
 		int m_Score;
-		int m_Pepper;
 
 		bool m_ShowDebugLines;
 		float m_RotateTurret;

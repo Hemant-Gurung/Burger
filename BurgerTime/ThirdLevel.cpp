@@ -200,6 +200,12 @@ void ThirdLevel::Render()
 		object->Render();
 	}
 
+	if (m_ShowScore)
+	{
+		m_Score.get()->Render();
+
+	}
+
 	if (m_HightestScore != nullptr)
 		m_HightestScore.get()->Render();
 }
@@ -300,12 +306,12 @@ void ThirdLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 
 	//make livescounter component/ observer
 
-		auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
+	auto lives = std::make_shared<dae::LivesCounterComponent>(gameObjectPlayer, textLives);
 		//m_lives = lives;
 	
 	//score counter
 	
-		m_Score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
+	m_Score = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
 		//m_Score = score;
 	
 	//score achievement observer
@@ -336,7 +342,7 @@ void ThirdLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	gameObjectPlayer->AddComponent(textScore);
 
 	//set score position
-	textScore->SetPosition(350, 5, 0);
+	textScore->SetPosition(130, 5, 0);
 
 	//set lives position
 	textLives->SetPosition(570, 5, 0);
@@ -347,41 +353,4 @@ void ThirdLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	AddChild(gameObjectPlayer);
 }
 
-//bool ThirdLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
-//{
-//	if (m_Player->GetLives() <= 0)
-//	{
-//		//ClearScene();
-//		//dae::SceneManager::GetInstance().setActive("startScreen");
-//
-//	}
-//
-//	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
-//	{
-//
-//		m_hasOverlapped = true;
-//		player.CallPlayerIsDead();
-//		//m_Player = nullptr;
-//		//m_PlayerPos = Rectf(0, 0, 0, 0);
-//		return true;
-//	}
-//	return false;
-//}
 
-//void ThirdLevel::ResetScene()
-//{
-//	//ClearScene();
-//	m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
-//	m_PlayerPos = m_Player->GetPlayerPos();
-//
-//	auto playerState = dae::PlayerState::standing;
-//	m_Player->ChangeState(playerState);
-//
-//	for (auto obj : m_sceneObjects)
-//	{
-//		if (obj->GetTag() == L"Enemy")
-//		{
-//			obj->GetComponent<dae::EnemyComponent>()->ResetEnemyPos();
-//		}
-//	}
-//}
