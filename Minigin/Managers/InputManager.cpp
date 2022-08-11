@@ -49,14 +49,10 @@ public:
 
 	~InputManagetImpl()
 	{
-
 		delete m_CurrentState;
 		m_CurrentState = nullptr;
 		delete m_PreviousState;
 		m_PreviousState = nullptr;
-
-
-
 	}
 
 	bool ProcessInput()
@@ -74,13 +70,10 @@ public:
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
 					
 				}
-		
 		}
-		
 		return m_quit;
-		
-		
 	}
+
 	bool UpdateGamePadState()
 	{
 		DWORD dwResult;

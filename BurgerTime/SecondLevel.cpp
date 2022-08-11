@@ -104,88 +104,9 @@ void SecondLevel::Initialize()
 void SecondLevel::Update(float dt)
 {
 	
-
-	if (!m_ShowScore && gameObjectPlayer != nullptr)
-	{
-		auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-		if (player != nullptr && player->GetLives() <= 0)
-		{
-			m_ShowScore = true;
-			m_HightestScore->SetPosition(50, 200, 0);
-			m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), std::to_string(player->GetScore()));
-			//m_Score.get()->setScore("SCORE: ", std::to_string(m_Player.get()->GetScore()));
-
-			gameObjectPlayer->GetComponent<dae::ScoreComponent>()->setScore("SCORE: ", std::to_string(player->GetScore()));
-			//m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), "0");
-
-			for (const auto& object : m_sceneObjects)
-			{
-				object->Update(dt);
-			}
-			ClearScene();
-		}
-		//dae::SceneManager::GetInstance().GetGameScene("ScoreScene")->SetScore(m_Player->GetScore());
-		//dae::SceneManager::GetInstance().setActive("ScoreScene");
-	}
-
-	//bool isPlayerOverlappingWithBurger = false;
-	if (m_sceneObjects.size() > 0)
-	{
-		for (const auto& object : m_sceneObjects)
-		{
-			object->Update(dt);
-			// get enemy0 pos
-			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
-			if (enemy0 != nullptr && !enemy0->GetIsDead())
-			{
-				// get player component
-				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-				//m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
-				enemy0->UpdatePlayerPosInLevel(player->GetPlayerPos());
-
-				m_enemyPos = enemy0->GetEnemyPos();
-
-				if (player->CheckPlayerBulletEnemyCollision(m_enemyPos) && enemy0->GetIsDead() == false)
-				{
-					std::cout << "Killed" << std::endl;
-					//	m_sLevel.get()->SetEnemyIsShot(true);
-					enemy0->IsDead(true);
-				}
-
-			}
-
-		}
-
-		int count{};
-		//check burger enemy collision
-		for (const auto& object : m_sceneObjects)
-		{
-			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
-			if (enemy0!=nullptr && !enemy0->GetIsDead())
-			{
-				count++;
-			}
-		}
-		if (count == 0 || m_GotoLevel3)
-		{
-			//Game won
-			m_GotoLevel3 = false;
-			SoundManager::GetInstance().PlaySoundEffect("End", 0);
-
-			m_GotoLevel3 = false;
-			ClearScene();
-			dae::InputManager::GetInstance().ResetInput();
-			dae::SceneManager::GetInstance().setActive("ThirdLevel");
-			auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetScore(player->GetScore());
-			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetLives(player->GetLives());
-			//break;
-		}
-		UpdateImgui();
-	}
+	CheckIfPlayerLostTheGame(dt);
+	CheckIfPlayerIsInTheDiamond();
+	UpdateIfTheGameIsWon(dt);
 
 }
 
@@ -195,16 +116,19 @@ void SecondLevel::FixedUpdate()
 
 void SecondLevel::Render()
 {
+	// after the game
 	if (m_ShowScore)
 	{
 		m_Score.get()->Render();
 	}
 
+	// before the game ends
 	for (const auto& object : m_sceneObjects)
 	{
 		object->Render();
 	}
 
+	// during and after the game
 	if (m_HightestScore != nullptr)
 		m_HightestScore.get()->Render();
 }
@@ -412,62 +336,114 @@ void SecondLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 	AddChild(gameObjectPlayer);
 }
 
-//void SecondLevel::ResetScene()
-//{
-//	//ClearScene();
-//	m_Player->SetPlayerStartPosition(Point2f{ 303.f,459.f });
-//	m_PlayerPos = m_Player->GetPlayerPos();
-//
-//	auto playerState = dae::PlayerState::standing;
-//	m_Player->ChangeState(playerState);
-//
-//	for (auto obj : m_sceneObjects)
-//	{
-//		if (obj->GetTag() == L"Enemy")
-//		{
-//			obj->GetComponent<dae::EnemyComponent>()->ResetEnemyPos();
-//		}
-//	}
-//
-//
-//}
+void SecondLevel::ReplacePlacePos()
+{
+	auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
 
-//bool SecondLevel::CheckIfPlayerIsDead(dae::PlayerComponent& player)
-//{
-//	//if (m_Player->GetLives() <= 0)
-//	//{
-//	//	//ClearScene();
-//	//	//dae::SceneManager::GetInstance().setActive("startScreen");
-//
-//	//}
-//
-//	//else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
-//	//{
-//
-//	//	m_hasOverlapped = true;
-//	//	player.CallPlayerIsDead();
-//	//	//m_Player = nullptr;
-//	//	//m_PlayerPos = Rectf(0, 0, 0, 0);
-//	//	return true;
-//	//}
-//	//return false;
-//	if (m_Player->GetLives() <= 0)
-//	{
-//		ClearScene();
-//		dae::SceneManager::GetInstance().setActive("StartScreen");
-//
-//	}
-//	else if (!m_hasOverlapped && m_enemyPos.left != 0 && utils::IsOverlapping(m_PlayerPos, m_enemyPos))
-//	{
-//
-//		m_hasOverlapped = true;
-//		player.CallPlayerIsDead();
-//
-//		return true;
-//	}
-//	//Rectf playerpos = m_sLevel.get()->GetPlayerPositionInTheLevel();
-//	return false;
-//}
+	player->InitializeDestRect();
+}
+
+void SecondLevel::CheckIfPlayerIsInTheDiamond()
+{
+	Rectf diamondX{ 200.f,260.f,0.f,0.f };
+	Rectf diamondY{ 255.f,293.f,0.f,0.f };
+
+	if (m_PlayerPos.left > diamondX.left && m_PlayerPos.left < diamondX.bottom && m_PlayerPos.bottom >diamondY.left && m_PlayerPos.bottom < diamondY.bottom)
+	{
+		ReplacePlacePos();
+	}
+}
+
+void SecondLevel::CheckIfPlayerLostTheGame(float dt)
+{
+	if (!m_ShowScore && gameObjectPlayer != nullptr)
+	{
+		auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+		if (player != nullptr && player->GetLives() <= 0)
+		{
+			m_ShowScore = true;
+			m_HightestScore->SetPosition(50, 200, 0);
+			m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), std::to_string(player->GetScore()));
+			//m_Score.get()->setScore("SCORE: ", std::to_string(m_Player.get()->GetScore()));
+
+			gameObjectPlayer->GetComponent<dae::ScoreComponent>()->setScore("SCORE: ", std::to_string(player->GetScore()));
+			//m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), "0");
+
+			for (const auto& object : m_sceneObjects)
+			{
+				object->Update(dt);
+			}
+			ClearScene();
+		}
+		//dae::SceneManager::GetInstance().GetGameScene("ScoreScene")->SetScore(m_Player->GetScore());
+		//dae::SceneManager::GetInstance().setActive("ScoreScene");
+	}
+}
+
+void SecondLevel::UpdateIfTheGameIsWon(float dt)
+{
+
+	//bool isPlayerOverlappingWithBurger = false;
+	if (m_sceneObjects.size() > 0)
+	{
+		for (const auto& object : m_sceneObjects)
+		{
+			object->Update(dt);
+			// get enemy0 pos
+			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+			if (enemy0 != nullptr && !enemy0->GetIsDead())
+			{
+				// get player component
+				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+				m_PlayerPos = player->GetPlayerPos();
+				//m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
+				enemy0->UpdatePlayerPosInLevel(player->GetPlayerPos());
+
+				m_enemyPos = enemy0->GetEnemyPos();
+
+				if (player->CheckPlayerBulletEnemyCollision(m_enemyPos) && enemy0->GetIsDead() == false)
+				{
+					std::cout << "Killed" << std::endl;
+					//	m_sLevel.get()->SetEnemyIsShot(true);
+					enemy0->IsDead(true);
+				}
+
+			}
+
+		}
+
+		int count{};
+		//check burger enemy collision
+		for (const auto& object : m_sceneObjects)
+		{
+			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+			if (enemy0 != nullptr && !enemy0->GetIsDead())
+			{
+				count++;
+			}
+		}
+		if (count == 0 || m_GotoLevel3)
+		{
+			//Game won
+			m_GotoLevel3 = false;
+			SoundManager::GetInstance().PlaySoundEffect("End", 0);
+
+			m_GotoLevel3 = false;
+			ClearScene();
+			dae::InputManager::GetInstance().ResetInput();
+			dae::SceneManager::GetInstance().setActive("ThirdLevel");
+			auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetScore(player->GetScore());
+			dae::SceneManager::GetInstance().GetGameScene("ThirdLevel").get()->SetLives(player->GetLives());
+			//break;
+		}
+		UpdateImgui();
+	}
+
+}
+
 
 void SecondLevel::UpdateImgui()
 {

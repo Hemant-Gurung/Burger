@@ -51,6 +51,10 @@ private:
     void AddBurger(std::shared_ptr<LevelComponent>);
     void PlayerOne(std::shared_ptr<LevelComponent> slevel);
     bool CheckIfPlayerIsDead(dae::PlayerComponent&);
+    void ReplacePlacePos();
+    void CheckIfPlayerIsInTheDiamond();
+    void CheckIfPlayerLostTheGame(float);
+    void UpdateIfTheGameIsWon(float);
     //void ResetScene();
 };
 

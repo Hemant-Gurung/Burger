@@ -53,6 +53,11 @@ private:
     bool CheckIfPlayerIsDead(dae::PlayerComponent&);
     void ResetScene();
 
+    void ReplacePlacePos();
+    void CheckIfPlayerIsInTheDiamond();
+    void CheckIfPlayerLostTheGame(float);
+    void UpdateIfTheGameIsWon(float);
+
     std::shared_ptr<dae::GameObject> gameObjectPlayer;
     bool m_ShowScore;
     bool m_IsInitialized;

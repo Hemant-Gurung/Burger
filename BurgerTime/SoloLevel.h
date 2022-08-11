@@ -27,7 +27,6 @@ public:
     void SetLives(int lives);
 
     void Enemy( EnemyType&, std::shared_ptr<LevelComponent>) ;
-    void AddBurger(std::shared_ptr<LevelComponent>) ;
     void AddObserver(std::shared_ptr<dae::Observer> observer);
     void Notify(dae::BaseComponent&, dae::EVENT);
 private:
@@ -55,8 +54,10 @@ private:
     bool m_IsInitialized;
 
     void UpdateImgui();
-
-
+    void ReplacePlacePos();
+    void CheckIfPlayerIsInTheDiamond();
+    void CheckIfPlayerLostTheGame(float);
+    void UpdateIfTheGameIsWon(float);
     bool m_gotoLevel_2;
 };
 

@@ -25,14 +25,23 @@
     <Filter Include="Sound">
       <UniqueIdentifier>{1c354b49-641d-4907-9adc-8a6b22fa0e69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Component Class">
+      <UniqueIdentifier>{f5c69a3e-42fb-4c05-991e-58b976da5fe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{a622a317-922f-4549-a97c-108f6e220189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{5f679517-a718-4352-8221-9b9f7f645bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HelperClass">
+      <UniqueIdentifier>{a2830a0f-24e2-4c2f-aa2b-bf80ad4c3fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameScene">
+      <UniqueIdentifier>{23936d03-787e-4eb5-897a-2c5c90b88a6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MiniginPCH.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Minigin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\3rdParty\imgui-1.86\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -60,143 +69,143 @@
     <ClInclude Include="..\3rdParty\imgui-1.86\imgui_plot.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Components\Achievements.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Components\BaseComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\BurgerComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\EnemyComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\FPScomponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\LevelComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\LivesCounterComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\PlayerComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\RenderComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\ScoreComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\TextComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\TextureComponen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\TransformComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Managers\SceneManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Singleton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\SVGParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Vector2f.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenegraph\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenegraph\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Command.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Font.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\Observer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\NullSoundSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\sdl_sound_system.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Sound_System.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\SServiceLocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Base\SceneObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenegraph\SceneObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scenegraph\GameScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Components\PepperComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\SoundEffect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\SoundManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils\SoundStream.h">
-      <Filter>Header Files</Filter>
+      <Filter>Component Class</Filter>
     </ClInclude>
     <ClInclude Include="Components\BulletComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Component Class</Filter>
     </ClInclude>
-    <ClInclude Include="Managers\ButtonManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Components\BurgerComponent.h">
+      <Filter>Component Class</Filter>
     </ClInclude>
     <ClInclude Include="Components\ButtonComponent.h">
-      <Filter>Header Files</Filter>
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\EnemyComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\FPScomponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\LevelComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\LivesCounterComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\PepperComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\PlayerComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\RenderComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\ScoreComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TextComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TextureComponen.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\TransformComponent.h">
+      <Filter>Component Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ButtonManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\InputManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ResourceManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\SceneManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SoundManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Command.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Minigin.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniginPCH.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Observer.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SServiceLocator.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Texture2D.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\Font.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\structs.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SVGParser.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Transform.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\utils.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Vector2f.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenegraph\GameObject.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenegraph\GameScene.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenegraph\Scene.h">
+      <Filter>GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\NullSoundSystem.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\sdl_sound_system.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Sound_System.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SoundEffect.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\SoundStream.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Achievements.h">
+      <Filter>Steam</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Singleton.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\SceneObject.h">
+      <Filter>HelperClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenegraph\SceneObject.h">
+      <Filter>HelperClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MiniginPCH.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Minigin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.86\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -221,125 +230,131 @@
     <ClCompile Include="..\3rdParty\imgui-1.86\imgui_plot.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Achievements.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Components\BaseComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\BurgerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\EnemyComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\FPScomponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\LevelComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\LivesCounterComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\PlayerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\RenderComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\ScoreComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\TextComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\TextureComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\TransformComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\ResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\SceneManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\structs.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\SVGParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\Vector2f.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenegraph\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenegraph\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Base\Command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Base\Font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Base\Observer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\NullSoundSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\sdl_sound_system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\Sound_System.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\SServiceLocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scenegraph\GameScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\PepperComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\SoundEffect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\SoundManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils\SoundStream.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Component Class</Filter>
     </ClCompile>
     <ClCompile Include="Components\BulletComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Component Class</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\ButtonManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Components\BurgerComponent.cpp">
+      <Filter>Component Class</Filter>
     </ClCompile>
     <ClCompile Include="Components\ButtonComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\EnemyComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\FPScomponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\LevelComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\LivesCounterComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\PepperComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\PlayerComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\RenderComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\ScoreComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TextComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TextureComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TransformComponent.cpp">
+      <Filter>Component Class</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ButtonManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\InputManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\SceneManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ResourceManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SoundManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Minigin.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniginPCH.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Observer.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SServiceLocator.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Font.cpp">
+      <Filter>HelperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\structs.cpp">
+      <Filter>HelperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SVGParser.cpp">
+      <Filter>HelperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\utils.cpp">
+      <Filter>HelperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Vector2f.cpp">
+      <Filter>HelperClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\Command.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Achievements.cpp">
+      <Filter>Steam</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenegraph\GameObject.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenegraph\GameScene.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenegraph\Scene.cpp">
+      <Filter>GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\NullSoundSystem.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\sdl_sound_system.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Sound_System.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SoundEffect.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\SoundStream.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Texture2D.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Transform.cpp">
+      <Filter>HelperClass</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

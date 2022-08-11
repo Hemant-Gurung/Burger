@@ -116,106 +116,9 @@ void SoloLevel::Initialize()
 
 void SoloLevel::Update(float dt)
 {
-	if (sound != nullptr)
-	{
-		//sound->Update();
-	}
-	auto indx = GamePadIndex::playerOne;
-
-	if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonY), indx))
-	{
-		dae::InputManager::GetInstance().Quit();
-	}
-
-	if (!m_ShowScore && gameObjectPlayer!=nullptr)
-	{
-		auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-		if (player != nullptr && player->GetLives() <= 0)
-		{
-			m_ShowScore = true;
-
-			m_HightestScore->SetPosition(50, 200, 0);
-			m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), std::to_string(player->GetScore()));
-
-			//auto score = gameObjectPlayer->GetComponent<dae::PlayerComponent>()->GetScore();
-			gameObjectPlayer->GetComponent<dae::ScoreComponent>()->setScore("SCORE: ", std::to_string(player->GetScore()));
-			//m_Score.get()->setScore("SCORE: ",std::to_string(player->GetScore()));
-
-			for (const auto& object : m_sceneObjects)
-			{
-				object->Update(dt);
-			}
-
-			ClearScene();
-		}
-		
-	}
-	
-	//bool isPlayerOverlappingWithBurger = false;
-	if (m_sceneObjects.size() > 0)
-	{
-		for (const auto& object : m_sceneObjects)
-		{
-			object->Update(dt);
-			
-			// get enemy0 pos
-			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
-			if (enemy0 != nullptr && !enemy0->GetIsDead())
-			{
-				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-				m_PlayerPos = player->GetPlayerPos();
-				//m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
-				enemy0->UpdatePlayerPosInLevel(m_PlayerPos);
-
-				m_enemyPos = enemy0->GetEnemyPos();
-
-				if (player->CheckPlayerBulletEnemyCollision(m_enemyPos) && enemy0->GetIsDead() == false)
-				{
-					std::cout << "Killed" << std::endl;
-					//	m_sLevel.get()->SetEnemyIsShot(true);
-					enemy0->IsDead(true);
-				}
-
-			}
-
-
-		}
-
-		
-			int count{};
-			//check burger enemy collision
-			for (const auto& object : m_sceneObjects)
-			{
-				auto enemy0 = object->GetComponent<dae::EnemyComponent>();
-				if (enemy0 != nullptr && !enemy0->GetIsDead())
-				{
-					count++;
-				}
-			}
-			if (count == 0 || m_gotoLevel_2)
-			{
-				//Game won
-				std::cout << "Game Won";
-				// pass score to the second level
-				SoundManager::GetInstance().PlaySoundEffect("End",0);
-				m_gotoLevel_2 = false;
-				ClearScene();
-				dae::InputManager::GetInstance().ResetInput();
-				dae::SceneManager::GetInstance().setActive("SecondLevel");
-				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
-
-				dae::SceneManager::GetInstance().GetGameScene("SecondLevel").get()->SetScore(player->GetScore());
-				dae::SceneManager::GetInstance().GetGameScene("SecondLevel").get()->SetLives(player->GetLives());
-				m_IsInitialized = false;
-				//m_sLevel.reset();
-				//break;
-			}
-
-		UpdateImgui();
-
-	}
+	CheckIfPlayerLostTheGame(dt);
+	CheckIfPlayerIsInTheDiamond();
+	UpdateIfTheGameIsWon(dt);
 }
 
 
@@ -298,70 +201,6 @@ void SoloLevel::Enemy( EnemyType& enemytype, std::shared_ptr<LevelComponent> lev
 	AddChild(gameObjectEnemy);
 }
 
-void SoloLevel::AddBurger(std::shared_ptr<LevelComponent> /*level*/)
-{
-	//auto gameobjectBurger = std::make_shared<dae::GameObject>();
-
-	//auto fontScore = dae::ResourceManager::GetInstance().LoadFont("VPPixel-Simplified.otf", 16);
-	//auto textScore = std::make_shared<dae::TextComponent>(gameObjectEnemy, " ", fontScore, SDL_Color{ 255,255,255,1 });
-	//auto enemyObserver = std::make_shared<dae::ScoreComponent>(gameObjectEnemy, textScore);
-	////auto burgerObserver = std::make_shared<dae::ScoreComponent>(gameObjectPlayer, textScore);
-	//
-	//float4 burgerPos;
-	////Bottom
-	//burgerPos.one = 25.f;
-	//burgerPos.two = 123.6f;
-	//burgerPos.three = 224.7f;
-	//burgerPos.four = 370.78f;
-
-	//Point2f leftPos = Point2f( 55.f,590.f);
-	////float lastpos = 590.f;
-	//auto burger = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos, burgerPos);
-	////burger->AddObserver(burgerObserver);
-	//burger->AddObserver(enemyObserver);
-	//gameobjectBurger->AddComponent(burger);
-
-	////float4 burgerPos;
-	////Bottom
-	//burgerPos.one = 173.f;
-	//burgerPos.two = 275.2f;
-	//burgerPos.three = 369.7f;
-	//burgerPos.four = 589.f;
-
-	//Point2f leftPos2 = Point2f(202.2f,590.f);
-	//auto burger2 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos2, burgerPos);
-	//burger2->AddObserver(enemyObserver);
-	////burger2->AddObserver(burgerObserver);
-	//gameobjectBurger->AddComponent(burger2);
-
-	//burgerPos.one = 125.f;
-	//burgerPos.two = 275.2f;
-	//burgerPos.three = 369.7f;
-	//burgerPos.four = 471.9f;
-
-	//Point2f leftPos3 = Point2f(348.2f,590.f);
-	//auto burger3 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos3, burgerPos);
-	//burger3->AddObserver(enemyObserver);
-	////burger3->AddObserver(burgerObserver);
-	//gameobjectBurger->AddComponent(burger3);
-
-
-	//burgerPos.one = 125.8f;
-	//burgerPos.two = 220.83f;
-	//burgerPos.three = 322.225f;
-	//burgerPos.four = 471.9f;
-
-	//Point2f leftPos4 = Point2f(505.f,590.f);
-	//auto burger4 = std::make_shared<BurgerComponent>(gameobjectBurger, level, leftPos4, burgerPos);
-	//burger4->AddObserver(enemyObserver);
-	////burger4->AddObserver(burgerObserver);
-	//gameobjectBurger->AddComponent(burger4);
-
-
-	//gameobjectBurger->SetTag(L"Burger");
-	////scene.Add(gameobjectBurger);
-	//AddChild(gameobjectBurger);
-}
 
 void SoloLevel::PlayerOne(std::shared_ptr<LevelComponent> slevel)
 {
@@ -493,4 +332,126 @@ void SoloLevel::UpdateImgui()
 
 	ImGui::End();
 	
+}
+
+void SoloLevel::ReplacePlacePos()
+{
+	auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+	player->InitializeDestRect();
+}
+
+void SoloLevel::CheckIfPlayerIsInTheDiamond()
+{
+	Rectf diamondX{ 215.f,230.f,0.f,0.f };
+	Rectf diamondY{ 245.f,305.f,0.f,0.f };
+
+	if(m_PlayerPos.left> diamondX.left && m_PlayerPos.left < diamondX.bottom && m_PlayerPos.bottom >diamondY.left && m_PlayerPos.bottom< diamondY.bottom )
+	{
+		ReplacePlacePos();
+	}
+
+}
+
+void SoloLevel::CheckIfPlayerLostTheGame(float dt)
+{
+	auto indx = GamePadIndex::playerOne;
+
+	if (dae::InputManager::GetInstance().IsPressed(static_cast<unsigned int>(dae::XBOX360Controller::ControllerButton::ButtonY), indx))
+	{
+		dae::InputManager::GetInstance().Quit();
+	}
+
+	if (!m_ShowScore && gameObjectPlayer != nullptr)
+	{
+		auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+		if (player != nullptr && player->GetLives() <= 0)
+		{
+			m_ShowScore = true;
+
+			m_HightestScore->SetPosition(50, 200, 0);
+			m_HightestScore.get()->setScore(m_HightestScore.get()->ShowFinalScores(), std::to_string(player->GetScore()));
+
+			//auto score = gameObjectPlayer->GetComponent<dae::PlayerComponent>()->GetScore();
+			gameObjectPlayer->GetComponent<dae::ScoreComponent>()->setScore("SCORE: ", std::to_string(player->GetScore()));
+			//m_Score.get()->setScore("SCORE: ",std::to_string(player->GetScore()));
+
+			for (const auto& object : m_sceneObjects)
+			{
+				object->Update(dt);
+			}
+
+			ClearScene();
+		}
+
+	}
+
+}
+
+void SoloLevel::UpdateIfTheGameIsWon(float dt)
+{
+	//bool isPlayerOverlappingWithBurger = false;
+	if (m_sceneObjects.size() > 0)
+	{
+		for (const auto& object : m_sceneObjects)
+		{
+			object->Update(dt);
+
+			// get enemy0 pos
+			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+			if (enemy0 != nullptr && !enemy0->GetIsDead())
+			{
+				auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+				m_PlayerPos = player->GetPlayerPos();
+				//m_sLevel.get()->SetEnemyPos(enemy0->GetEnemyPos());
+				enemy0->UpdatePlayerPosInLevel(m_PlayerPos);
+
+				m_enemyPos = enemy0->GetEnemyPos();
+
+				if (player->CheckPlayerBulletEnemyCollision(m_enemyPos) && enemy0->GetIsDead() == false)
+				{
+					std::cout << "Killed" << std::endl;
+					//	m_sLevel.get()->SetEnemyIsShot(true);
+					enemy0->IsDead(true);
+				}
+
+			}
+
+		}
+
+
+		int count{};
+		//check burger enemy collision
+		for (const auto& object : m_sceneObjects)
+		{
+			auto enemy0 = object->GetComponent<dae::EnemyComponent>();
+			if (enemy0 != nullptr && !enemy0->GetIsDead())
+			{
+				count++;
+			}
+		}
+		if (count == 0 || m_gotoLevel_2)
+		{
+			//Game won
+			std::cout << "Game Won";
+			// pass score to the second level
+			SoundManager::GetInstance().PlaySoundEffect("End", 0);
+			m_gotoLevel_2 = false;
+			ClearScene();
+			dae::InputManager::GetInstance().ResetInput();
+			dae::SceneManager::GetInstance().setActive("SecondLevel");
+			auto player = gameObjectPlayer->GetComponent<dae::PlayerComponent>();
+
+			dae::SceneManager::GetInstance().GetGameScene("SecondLevel").get()->SetScore(player->GetScore());
+			dae::SceneManager::GetInstance().GetGameScene("SecondLevel").get()->SetLives(player->GetLives());
+			m_IsInitialized = false;
+			//m_sLevel.reset();
+			//break;
+		}
+
+		UpdateImgui();
+
+	}
 }
