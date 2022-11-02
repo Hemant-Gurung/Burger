@@ -22,5 +22,5 @@ The level are read from the file, and the collisions are all done using a raycas
 
  
  
-For the graphical user interface Imgui is used. It  is a graphical user interface design pattern 
+For the graphic user interface Imgui is used. It is a graphical user interface design pattern 
 which uses an immediate mode graphics library to create the GUI.
