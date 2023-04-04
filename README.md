@@ -1,7 +1,7 @@
 # Manaengine
 
-#Description
-This is a 2D engine made with C++. It is made with the help of professors and the resources from the book Game Programming patterns.
+# Description
+This is a 2D engine made with C++. It is made with the help of professors and the from the multiple resources.
 This engine is also based on a book by Robert Nystrom "Game Programming Patterns".
 
 Programming Patterns Used:
